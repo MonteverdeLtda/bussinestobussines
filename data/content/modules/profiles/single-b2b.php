@@ -8,7 +8,7 @@
 						<!-- // <div class="panel-body profile" style="background: url('assets/images/gallery/music-4.jpg') center center no-repeat;"> -->
 						<div class="panel-body profile" style="background: url('https://m.healthhub.sg/PHApps/SSP/AIC.SSP.LandingPage/images/bg-help.png') center center no-repeat;">
 							<div class="profile-image">
-								<img src="/assets/images/users/user3.jpg" alt="Nadia Ali"/>
+								<img :src="'/api/media/?w=250&picture=' + post.avatar"/>
 							</div>
 							<div class="profile-data">
 								<div class="profile-data-name" style="color: #666;">{{ post.names }} {{ post.surname }}</div>
@@ -17,7 +17,7 @@
 							<div class="profile-controls">
 								<a href="#" class="profile-control-left twitter"><span class="fa fa-twitter"></span></a>
 								<a href="#" class="profile-control-right facebook"><span class="fa fa-facebook"></span></a>
-							</div>                                    
+							</div>
 						</div>                                
 						<div class="panel-body">                                    
 							<div class="row">

@@ -36,6 +36,7 @@ Class MV
 		
 		global $absolute_path;
 		$this->path_principal = $absolute_path;
+		if(!isset($_SERVER['REDIRECT_STATUS'])){ $_SERVER['REDIRECT_STATUS'] = 'https://b2b.monteverdeltda.com'; }
 		$this->status = $_SERVER['REDIRECT_STATUS'];
 		
 		
@@ -45,6 +46,7 @@ Class MV
 		$this->host = $parse_uri['host'];
 		$this->port = $parse_uri['port'];
 		$this->path = $parse_uri['path'];
+		if(!isset($parse_uri['query']) || $parse_uri['query'] == null){ $parse_uri['query'] = ''; }
 		parse_str($parse_uri['query'], $this->query);
 		
 		

@@ -29,6 +29,11 @@
 		<style scope="app">
 			.page-container {
 				height: calc(100vh);
+				overflow: auto;
+			}
+			
+			.content-frame-right {
+				height: auto !important;
 			}
 		</style>
 		<?php $this->include_file_global("/navigation.php"); ?>

@@ -40,7 +40,8 @@
 <script type='text/javascript' src='/js/plugins/jquery-validation/jquery.validate.js'></script>
 <script type='text/javascript' src='/js/plugins/maskedinput/jquery.maskedinput.min.js'></script>
 
-
+        <script type="text/javascript" src="/js/plugins/moment.min.js"></script>
+        <script type="text/javascript" src="/js/plugins/fullcalendar/fullcalendar.min.js"></script>
 
 <!-- END THIS PAGE PLUGINS-->
 <script type="text/javascript">

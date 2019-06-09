@@ -257,8 +257,8 @@
                <div class="panel panel-default">
                   <div class="panel-heading">
                      <div class="panel-title-box">
-                        <h3>Sales</h3>
-                        <span>Sales activity by period you selected</span>
+                        <h3>Direcciones</h3>
+                        <span>Direcciones en el sistema</span>
                      </div>
                      <ul class="panel-controls panel-controls-title">
                         <li>

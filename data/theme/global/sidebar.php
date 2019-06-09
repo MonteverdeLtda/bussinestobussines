@@ -10,22 +10,21 @@
 				</li>
 				<li class="xn-profile">
 					<a href="#" class="profile-mini">
-						<img src="/assets/images/users/avatar.jpg" alt="John Doe"/>
+						<img :src="'/api/media/?picture=' + $root.authResponse.userData.avatar" />
 					</a>
 					<div class="profile">
 						<div class="profile-image">
-							<img src="/assets/images/users/avatar.jpg" alt="John Doe"/>
+							<img :src="'/api/media/?picture=' + $root.authResponse.userData.avatar"/>
+							{{  }}
 						</div>
 						<div class="profile-data">
 							<div class="profile-data-name">{{ $root.authResponse.userData.names }}</div>
 							<div class="profile-data-title">{{ $root.authResponse.userData.permissions.name }}</div>
 						</div>
 						<div class="profile-controls">
-							<!-- // 
 							<router-link tag="a" :to="{ name: 'page-profiles-b2b-for-id-view', params: { user_id: $root.authResponse.userID } }" class="profile-control-left">
 								<span class="fa fa-info"></span>
 							</router-link>
-							-->
 							<!-- // <a href="pages-messages.html" class="profile-control-right"><span class="fa fa-envelope"></span></a> -->
 						</div>
 					</div>
@@ -100,6 +99,23 @@
 					</ul>
 				</li>
 				<!-- // END USERS -->
+				
+				<!-- // MEDIA -->
+				<li class="xn-openable">
+					<a href="#"><span class="fas fa-users-cog"></span> <span class="xn-text"> Multimedia</span></a>
+					<ul>
+						<li><a @click="router.push({ name: 'page-gallery-pictures' })"><span class="fas fa-list"></span> Galería de Imagenes</a></li>
+						<!-- //
+						<li class="xn-openable">
+							<a href="#"><span class="fas fa-stream"></span> Mas opciones</a>
+							<ul>
+								<li><a @click="router.push({ name: 'page-contacts-list' })"><span class="fas fa-list"></span> Listar X Cuentas</span></a></li>
+							</ul>
+						</li>
+						-->
+					</ul>
+				</li>
+				<!-- // END MEDIA -->
 				
 				<!--
 				<li class="xn-openable">

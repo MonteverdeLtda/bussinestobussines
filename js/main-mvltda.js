@@ -89,21 +89,47 @@ var Component_Sidebar_Left = Vue.component('component-sidebar-left', {
 
 var Component_Navigation_Top = Vue.component('component-navigation-top', {
 	template: '#component-navigation-top',
-	props: [
-		''
-	],
-	data: function () {
+	data: function() {
 		return {
+			requests: [],
 		};
 	},
 	mounted: function () {
 		var self = this;
-		
+		self.find();
 	},
 	methods: {
-		find: function(){
+		linkRequests(request_id, account_id){
+			var self = this;
+			if(request_id != undefined && account_id != undefined){
+				if(self.$route.name == 'page-accounts-requests-single-view'){
+					router.push({ name: 'page-accounts-requests-single-view', params: { request_id: request_id, account_id: account_id } });
+					window.location.reload();
+				}else{
+					router.push({ name: 'page-accounts-requests-single-view', params: { request_id: request_id, account_id: account_id } });
+				}				
+			}
+		},
+		find(){
 			var self = this;
 			
+			FG.api('GET','/requests', {
+				filter: [
+					'status,in,1,2,3,4,5,8',
+				],
+				join: [
+					'clients',
+					'status_requests',
+				]
+			}, function(r){
+				if(r[0] != undefined && r[0].id > 0){
+					console.log(r[0]);
+					r.forEach(function(a){
+						a.addresses = JSON.parse(a.addresses);
+						self.requests.push(a);
+					});
+				}
+			});
 		}
 	}
 });
@@ -237,7 +263,8 @@ var PagesDashboard = Vue.extend({
 		return {
 			users: 0,
 			users_clients: 0,
-			requests: 0
+			requests: 0,
+			addresses: 0,
 		};
 	},
 	created: function() {
@@ -372,30 +399,42 @@ var PagesDashboard = Vue.extend({
 				  gridLineColor: '#E5E5E5'
 				});
 				/* End Moris Area Chart */
-				/* Vector Map */
-				var jvm_wm = new jvm.WorldMap({container: $('#dashboard-map-seles'),
-						map: 'world_mill_en', 
-						backgroundColor: '#FFFFFF',                                      
-						regionsSelectable: true,
-						regionStyle: {selected: {fill: '#B64645'},
-										initial: {fill: '#33414E'}},
-						markerStyle: {initial: {fill: '#1caf9a',
-									   stroke: '#1caf9a'}},
-						markers: [{latLng: [50.27, 30.31], name: 'Kyiv - 1'},                                              
-								  {latLng: [52.52, 13.40], name: 'Berlin - 2'},
-								  {latLng: [48.85, 2.35], name: 'Paris - 1'},                                            
-								  {latLng: [51.51, -0.13], name: 'London - 3'},                                                                                                      
-								  {latLng: [40.71, -74.00], name: 'New York - 5'},
-								  {latLng: [35.38, 139.69], name: 'Tokyo - 12'},
-								  {latLng: [37.78, -122.41], name: 'San Francisco - 8'},
-								  {latLng: [28.61, 77.20], name: 'New Delhi - 4'},
-								  {latLng: [39.91, 116.39], name: 'Beijing - 3'}]
-					});
-				$(".x-navigation-minimize").on("click",function(){
-					setTimeout(function(){
-						//rdc_resize();
-					},200);    
+				
+				
+				FG.api('GET', '/addresses', {
+				}, function(r){
+					if(r.length > 0 && r[0].id > 0){
+						self.addresses = r;
+						
+						array = [];
+						r.forEach(function(e){
+							array.push({
+								latLng: [e.lat, e.lon], 
+								name: e.display_name
+							});
+						});
+						
+						/* Vector Map */
+						var jvm_wm = new jvm.WorldMap({container: $('#dashboard-map-seles'),
+								map: 'world_mill_en', 
+								zoomMax: 18, 
+								backgroundColor: '#FFFFFF',                                      
+								regionsSelectable: true,
+								regionStyle: {selected: {fill: '#B64645'},
+												initial: {fill: '#33414E'}},
+								markerStyle: {initial: {fill: '#1caf9a',
+											   stroke: '#1caf9a'}},
+								markers: array
+							});
+						$(".x-navigation-minimize").on("click",function(){
+							setTimeout(function(){
+								//rdc_resize();
+							},200);    
+						});
+					}
+					
 				});
+				
 			// });
 		}
 	}
@@ -409,15 +448,24 @@ var PagesLogin = Vue.extend({
 	},
 	created: function() {
 		var self = this;
+		
 	},
 	mounted: function () {
 		var self = this;
 		 //self.$parent.LogInPop();
 		 
+		// localStorage.clear();
+		/*
+		FG.callback("POST", FG.url_api(), {
+			'logout': true
+		}, function(response){
+		});*/
+		
 		 if(self.$root.status === 'connected'){
 			/*router.push({
 				name: 'page-dashboard'
 			});*/
+			
 		}
 	},
 	computed: {
@@ -809,114 +857,6 @@ var PagesAccountsAdd = Vue.extend({
 	}
 });
 
-var PagesAccountsView = Vue.extend({
-	template: '#page-accounts-view',
-	data: function() {
-		return {
-			options: {
-				types_identifications: [],
-				geo_departments: [],
-				geo_citys: [],
-			},
-			post: {
-				"id": this.$route.params.account_id,
-				"type": {
-					"id": 0,
-					"name": ""
-				},
-				"identification_type": {
-					"id": 0,
-					"name": ""
-				},
-				"identification_number": "",
-				"names": "",
-				"address_principal": "",
-				"address_principal_department": {
-					"id": 0,
-					"code": "",
-					"name": ""
-				},
-				"address_principal_city": {
-					"id": 0,
-					"name": "",
-					"department": 0
-				},
-				"address_invoices": "",
-				"address_invoices_department": {
-					"id": 0,
-					"code": "",
-					"name": ""
-				},
-				"address_invoices_city": {
-					"id": 0,
-					"name": "",
-					"department": 0
-				},
-				"represent_legal": {
-					"id": 0,
-					"identification_type": 0,
-					"identification_number": "",
-					"first_name": "",
-					"second_name": "",
-					"surname": "",
-					"second_surname": "",
-					"birthdaydate": "",
-					"phone": "",
-					"phone_mobile": "",
-					"mail": "",
-					"department": 0,
-					"city": 0,
-					"address": ""
-				},
-				"contact": {
-					"id": 0,
-					"identification_type": 0,
-					"identification_number": "",
-					"first_name": "",
-					"second_name": "",
-					"surname": "",
-					"second_surname": "",
-					"birthdaydate": "",
-					"phone": "",
-					"phone_mobile": "",
-					"mail": "",
-					"department": 0,
-					"city": 0,
-					"address": ""
-				},
-				"audit_enabled": 0
-			}
-		};
-	},
-	created: function () {
-		var self = this;
-		self.$root._mpb("show",{value: [0,0],speed: 0});
-	},
-	mounted: function () {
-		var self = this;
-		self.find();
-	},
-	methods: {
-		find: function(){
-			var self = this;
-			FG.api('GET', '/clients/' + self.$route.params.account_id, {
-				join: [
-					'types_clients',
-					'types_identifications',
-					'geo_departments',
-					'geo_citys',
-					'contacts',
-				]
-			}, function(r){
-				if(r != undefined && r.id > 0){
-					self.post = r;
-					self.$root._mpb("show",{value: [0,10],speed: 1});
-				}
-			});
-		},
-	}
-});
-
 var PagesAccountsEdit = Vue.extend({
 	template: '#page-accounts-edit',
 	data: function() {
@@ -1300,6 +1240,1304 @@ var PagesAccountsEdit = Vue.extend({
 		}
 	}
 });
+
+var Component_Navigation_Top_PagesAccounts = Vue.component('component-navigation-top-pages-accounts', {
+	template: '#component-navigation-top-pages-accounts',
+	props: [
+		''
+	],
+	data: function () {
+		return {
+		};
+	},
+	mounted: function () {
+		var self = this;
+		
+	},
+	methods: {
+		find: function(){
+			var self = this;
+			
+		},
+		isActiveClass(thisName){
+			var self = this;
+			
+					
+			
+			
+			if(self.$route.name == thisName){
+				return 'active';
+			}else{
+				return 'not-active';
+			};
+			
+		},
+	}
+});
+
+var PagesAccountsView = Vue.extend({
+	template: '#page-accounts-view',
+	data: function() {
+		return {
+			options: {
+				types_identifications: [],
+				geo_departments: [],
+				geo_citys: [],
+			},
+			post: {
+				"id": this.$route.params.account_id,
+				"type": {
+					"id": 0,
+					"name": ""
+				},
+				"identification_type": {
+					"id": 0,
+					"name": ""
+				},
+				"identification_number": "",
+				"names": "",
+				"address_principal": "",
+				"address_principal_department": {
+					"id": 0,
+					"code": "",
+					"name": ""
+				},
+				"address_principal_city": {
+					"id": 0,
+					"name": "",
+					"department": 0
+				},
+				"address_invoices": "",
+				"address_invoices_department": {
+					"id": 0,
+					"code": "",
+					"name": ""
+				},
+				"address_invoices_city": {
+					"id": 0,
+					"name": "",
+					"department": 0
+				},
+				"represent_legal": {
+					"id": 0,
+					"identification_type": 0,
+					"identification_number": "",
+					"first_name": "",
+					"second_name": "",
+					"surname": "",
+					"second_surname": "",
+					"birthdaydate": "",
+					"phone": "",
+					"phone_mobile": "",
+					"mail": "",
+					"department": 0,
+					"city": 0,
+					"address": ""
+				},
+				"contact": {
+					"id": 0,
+					"identification_type": 0,
+					"identification_number": "",
+					"first_name": "",
+					"second_name": "",
+					"surname": "",
+					"second_surname": "",
+					"birthdaydate": "",
+					"phone": "",
+					"phone_mobile": "",
+					"mail": "",
+					"department": 0,
+					"city": 0,
+					"address": ""
+				},
+				"audit_enabled": 0,
+				"crew_clients": [],
+			}
+		};
+	},
+	created: function () {
+		var self = this;
+		self.$root._mpb("show",{value: [0,0],speed: 0});
+	},
+	mounted: function () {
+		var self = this;
+		self.find();
+	},
+	methods: {
+		find: function(){
+			var self = this;
+			FG.api('GET', '/clients/' + self.$route.params.account_id, {
+				join: [
+					'types_clients',
+					'types_identifications',
+					'geo_departments',
+					'geo_citys',
+					'contacts',
+					'crew_clients',
+					'crew_clients,contacts',
+					'crew_clients,types_contacts',
+					'crew_clients,contacts,types_identifications',
+				]
+			}, function(r){
+				if(r != undefined && r.id > 0){
+					self.post = r;
+					self.$root._mpb("show",{value: [0,10],speed: 1});
+					
+					$(".datatable-contacts tbody").html('');
+					r.crew_clients.forEach(function(el){
+						$(".datatable-contacts tbody").append(`
+							<tr>
+								<td>` + el.contact.identification_type.name + `</td>
+								<td>` + el.contact.identification_number + `</td>
+								<td>` + el.contact.first_name + ` ` + el.contact.second_name + `</td>
+								<td>` + el.contact.surname + ` ` + el.contact.second_surname + `</td>
+								<td>` + el.contact.phone + `</td>
+								<td>` + el.contact.phone_mobile + `</td>
+								<td>` + el.contact.mail + `</td>
+								<td>` + el.type_contact.name + `</td>
+								<td>
+									<button data-toggle="tooltip" data-placement="top" title="Ver Usuario" class="btn btn-default btn-rounded btn-xs" onClick="javascript:window.location.href = 'https://b2b.monteverdeltda.com/#/contacts/view/` + el.contact.id + `';">
+										<i class="fas fa-eye"></i>
+									</button>
+								</td>
+							</tr>
+						`);
+					});
+					$(".datatable-contacts").DataTable();
+					
+					
+					$(".datatable-requests tbody").html('');
+					r.request.forEach(function(el){
+						$(".datatable-requests tbody").append(`
+							<tr>
+								<td>` + el.id + `</td>
+								<td>
+								</td>
+							</tr>
+						`);
+					});
+					$(".datatable-requests").DataTable();
+				}
+			});
+		},
+	}
+});
+
+var PagesAccountsContactsView = Vue.extend({
+	template: '#page-accounts-contacts-view',
+	data: function() {
+		return {
+			options: {
+				types_identifications: [],
+				geo_departments: [],
+				geo_citys: [],
+			},
+			post: {
+				"id": this.$route.params.account_id,
+				"type": {
+					"id": 0,
+					"name": ""
+				},
+				"identification_type": {
+					"id": 0,
+					"name": ""
+				},
+				"identification_number": "",
+				"names": "",
+				"address_principal": "",
+				"address_principal_department": {
+					"id": 0,
+					"code": "",
+					"name": ""
+				},
+				"address_principal_city": {
+					"id": 0,
+					"name": "",
+					"department": 0
+				},
+				"address_invoices": "",
+				"address_invoices_department": {
+					"id": 0,
+					"code": "",
+					"name": ""
+				},
+				"address_invoices_city": {
+					"id": 0,
+					"name": "",
+					"department": 0
+				},
+				"represent_legal": {
+					"id": 0,
+					"identification_type": 0,
+					"identification_number": "",
+					"first_name": "",
+					"second_name": "",
+					"surname": "",
+					"second_surname": "",
+					"birthdaydate": "",
+					"phone": "",
+					"phone_mobile": "",
+					"mail": "",
+					"department": 0,
+					"city": 0,
+					"address": ""
+				},
+				"contact": {
+					"id": 0,
+					"identification_type": 0,
+					"identification_number": "",
+					"first_name": "",
+					"second_name": "",
+					"surname": "",
+					"second_surname": "",
+					"birthdaydate": "",
+					"phone": "",
+					"phone_mobile": "",
+					"mail": "",
+					"department": 0,
+					"city": 0,
+					"address": ""
+				},
+				"audit_enabled": 0,
+				"crew_clients": [],
+			}
+		};
+	},
+	created: function () {
+		var self = this;
+		self.$root._mpb("show",{value: [0,0],speed: 0});
+	},
+	mounted: function () {
+		var self = this;
+		self.find();
+	},
+	methods: {
+		find: function(){
+			var self = this;
+			FG.api('GET', '/clients/' + self.$route.params.account_id, {
+				join: [
+					'types_clients',
+					'types_identifications',
+					'geo_departments',
+					'geo_citys',
+					'contacts',
+					'crew_clients',
+					'crew_clients,contacts',
+					'crew_clients,types_contacts',
+					'crew_clients,contacts,types_identifications',
+				]
+			}, function(r){
+				if(r != undefined && r.id > 0){
+					self.post = r;
+					self.$root._mpb("show",{value: [0,10],speed: 1});
+					
+					$(".datatable-contacts tbody").html('');
+					r.crew_clients.forEach(function(el){
+						$(".datatable-contacts tbody").append(`
+							<tr>
+								<td>` + el.contact.identification_type.name + `</td>
+								<td>` + el.contact.identification_number + `</td>
+								<td>` + el.contact.first_name + ` ` + el.contact.second_name + `</td>
+								<td>` + el.contact.surname + ` ` + el.contact.second_surname + `</td>
+								<td>` + el.contact.phone + `</td>
+								<td>` + el.contact.phone_mobile + `</td>
+								<td>` + el.contact.mail + `</td>
+								<td>` + el.type_contact.name + `</td>
+								<td>
+									<button data-toggle="tooltip" data-placement="top" title="Ver Usuario" class="btn btn-default btn-rounded btn-xs" 
+										onClick="javascript:window.location.href = 'https://b2b.monteverdeltda.com/#/accounts/view/` + self.$route.params.account_id + `/contacts/` + el.id + `';">
+										<i class="fas fa-eye"></i>
+									</button>
+								</td>
+							</tr>
+						`);
+					});
+					$(".datatable-contacts").DataTable();
+					
+					
+					$(".datatable-requests tbody").html('');
+					r.request.forEach(function(el){
+						$(".datatable-requests tbody").append(`
+							<tr>
+								<td>` + el.id + `</td>
+								<td>
+								</td>
+							</tr>
+						`);
+					});
+					$(".datatable-requests").DataTable();
+				}
+			});
+		},
+	}
+});
+
+var PagesAccountsContactsSingleView = Vue.extend({
+	template: '#page-accounts-contacts-single-view',
+	data: function() {
+		return {
+			options: {
+				types_identifications: [],
+				geo_departments: [],
+				geo_citys: [],
+			},
+			post: {
+				id: this.$route.params.contact_id,
+				client: this.$route.params.account_id,
+				contact: {
+					id: 0,
+					identification_type: {
+						id: null,
+						name: null
+					},
+					identification_number: null,
+					first_name: null,
+					second_name: '---',
+					surname: null,
+					second_surname: '---',
+					birthdaydate: '0000-00-00',
+					phone: null,
+					phone_mobile: null,
+					mail: 'contacto@sincorreo.com',
+					department: {
+						id: null,
+						name: null
+					},
+					city: {
+						id: null,
+						department: null,
+						name: null
+					},
+					address: '---'
+				},
+				type_contact: {
+					id: 0,
+					name: ''
+				}
+			},
+		};
+	},
+	created: function () {
+		var self = this;
+		self.$root._mpb("show",{value: [0,0],speed: 0});
+	},
+	mounted: function () {
+		var self = this;
+		self.find();
+	},
+	methods: {
+		set_type_contact(){
+			var self = this;
+			FG.api('GET', '/types_contacts', {}, function(r){
+				if(r[0] != undefined && r[0].id > 0){
+					array = [{
+						text: 'Selecciona una opción...',
+						value: '',
+					}];
+					r.forEach(function(el){
+						array.push({
+							text: el.name,
+							value: el.id
+						});
+					});
+					
+					bootbox.prompt({
+						title: "Seleccione la relaccion nueva del contacto.",
+						inputType: 'select',
+						inputOptions: array,
+						callback: function (result) {
+							if(Number(result) > 0){
+								FG.api('PUT', '/crew_clients/' + self.$route.params.contact_id, {
+									id: self.$route.params.contact_id,
+									type_contact: result
+								}, function(s){
+									if(s != undefined && s > 0){
+										$.notify("El contacto fue modificado correctamente.!", "success");
+										self.find();
+									}
+								});
+							}
+						}
+					});
+				}
+			});
+			
+		},
+		find: function(){
+			var self = this;
+			FG.api('GET', '/crew_clients/' + self.$route.params.contact_id, {
+				join: [
+					'contacts',
+					'contacts,types_identifications',
+					'contacts,geo_departments',
+					'contacts,geo_citys',
+					'types_contacts',
+				]
+			}, function(r){
+				if(r != undefined && r.id > 0){
+					self.post = r;
+					self.$root._mpb("show",{value: [0,10],speed: 1});
+				}
+			});
+		},
+		delete_row(contact){
+			var self = this;
+			bootbox.confirm({
+				message: "Estas tratando de realizar cambios irreversibles, antes de realizar dichos cambios debes confirmar por seguridad! Deseas continuar?",
+				buttons: {
+					confirm: {
+						label: 'Si',
+						className: 'btn-success'
+					},
+					cancel: {
+						label: 'No',
+						className: 'btn-danger'
+					}
+				},
+				callback: function (a) {
+					if(a === true){
+						FG.api('DELETE','/crew_clients/' + contact, {
+						}, function(r){
+							if(r == true)
+							{
+								$.notify("Se elimino con éxito!", "success");
+								router.go(-1)
+							}else{
+								if(r.data.message && r.data.message != '')
+									$.notify(r.data.message, "error");
+								
+								$.notify("Ocurrio un inconveniente al intentar eliminar el contacto!", "error");
+							}
+						});
+					}
+				}
+			});
+		}
+	}
+});
+
+var PagesAccountsAddressesView = Vue.extend({
+	template: '#page-accounts-addresses-view',
+	data: function() {
+		return {
+			posts: [],
+		};
+	},
+	created: function () {
+		var self = this;
+	},
+	mounted: function () {
+		var self = this;
+		self.find();
+	},
+	methods: {
+		find: function(){
+			var self = this;
+			$(".datatable tbody").html('');
+			FG.api('GET', '/clients_addresses', {
+				filter: [
+					'client,eq,' + self.$route.params.account_id,
+				],
+				join: [
+					'addresses',
+					'addresses,geo_citys',
+					'addresses,geo_departments',
+				]
+			}, function(r){
+				if(r.length > 0 && r[0].id > 0){
+					$(".datatable tbody").html('');
+					r.forEach(function(el){
+						$(".datatable tbody").append(`
+							<tr>
+								<td>` + el.address.display_name + `</td>
+								<td>` + el.address.city.name + `</td>
+								<td>` + el.address.department.name + `</td>
+								<td>
+									<button data-toggle="tooltip" data-placement="top" title="Ver Dirección" class="btn btn-default btn-rounded btn-xs" onClick="javascript:window.location.href = 'https://b2b.monteverdeltda.com/#/accounts/view/` + self.$route.params.account_id + `/addresses/` + el.id + `';">
+										<i class="fas fa-eye"></i>
+									</button>
+								</td>
+							</tr>
+						`);
+					});
+					$(".datatable").DataTable();
+				}
+			});
+		},
+	}
+});
+
+var PagesAccountsAddressesSingleView = Vue.extend({
+	template: '#page-accounts-addresses-single-view',
+	data: function() {
+		return {
+			post: {
+				"id": this.$route.params.address_id,
+				"place_id": null,
+				"place_rank": null,
+				"address_input": null,
+				"display_name": null,
+				"city": {
+					id: 0,
+					name: '',
+					department: 0,
+				},
+				"department": {
+					id: 0,
+					name: ''
+				},
+				"lat": null,
+				"lon": null,
+				"completo": null,
+			},
+			map: null,
+			popup: null,
+			currentPolygon: null,
+			currentMarker: null,
+		};
+	},
+	created: function () {
+		var self = this;
+		self.$root._mpb("show", { value: [0, 0], speed: 1 });
+	},
+	mounted: function () {
+		var self = this;
+		self.rederMap();
+	},
+	methods: {
+		rederMap(){
+				var self = this;
+				
+				/*
+				var jvm_usm = new jvm.WorldMap({container: $('#vector_world_map'),
+					map: 'world_mill_en', 
+					backgroundColor: '#B3D1FF',
+					regionsSelectable: true,
+					regionStyle: {selected: {fill: '#33414E'},
+									initial: {fill: '#FFFFFF'}},
+					onRegionSelected: function(){
+						$("#vector_usa_map_value").val(jvm_usm.getSelectedRegions().toString());
+					}
+				});
+				*/
+				
+				self.map = new L.Map('vector_world_map');
+				
+				/*
+				var openstreet = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+					maxZoom: 18
+				}).addTo(self.map);
+				var subscriptionKey = 'tTk1JVEaeNvDkxxnxHm9cYaCvqlOq1u-fXTvyXn2XkA';
+				var satellite = L.tileLayer('https://atlas.microsoft.com/map/imagery/png?api-version=1&style=satellite&tileSize=256&zoom={z}&x={x}&y={y}&subscription-key=' + subscriptionKey, {
+					attribution: '© ' + new Date().getFullYear() + ' Microsoft, © ' + new Date().getFullYear() + ' DigitalGlobe',
+					tileSize: 256,
+					maxZoom: 18
+				}).addTo(self.map);
+				var CartoDB = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+					attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+				 }).addTo(self.map);
+				 */
+				 
+				var satelliteGoogleHybrid = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
+					attribution: '&copy; ',
+					maxZoom: 20
+				 }).addTo(self.map);
+				 
+				var layerControl = L.control.layers({
+					// 'OpenStreetMap': openstreet,
+					// 'CartoDB': CartoDB,
+					// 'Mapa Satelite': satellite,
+					'Hibrido': satelliteGoogleHybrid,
+				}).addTo(self.map);
+				self.map.attributionControl.setPrefix('');
+				
+				var colombia = new L.LatLng(2.8894434,-73.783892); 
+				self.map.setView(colombia, 5);
+				
+				self.popup = L.popup();
+				self.map.on('click', self.onMapClick);
+			self.find();
+		},
+		onMapClick: function(e){
+				var self = this;
+				var parametros = {
+					'lat': e.latlng.lat,
+					'lon': e.latlng.lng,
+					'format': 'jsonv2',
+					'addressdetails': 1,
+					'namedetails': 1,
+					'accept-language': 'es',
+					//'polygon': 1,
+					'limit': 50,
+				};
+				
+				aPiMap.get('/reverse', {
+					params: parametros
+				})
+				.then(function (r) {
+					info = r.data;
+					
+					searchTxT = '';
+					if(info.address.street != undefined){ searchTxT += info.address.street + ' '; }
+					if(info.address.road != undefined){ searchTxT += info.address.road + ' '; }
+					if(info.address.suburb != undefined){ searchTxT += info.address.suburb + ' '; }
+					
+					self.geo_search.street = searchTxT;
+					
+					self.address_search();
+					
+					
+					self.popup
+						.setLatLng(e.latlng)
+						// .setContent(info.display_name + "(" + e.latlng.toString() + ")")
+						.setContent(info.display_name)
+						.openOn(self.map);
+				})
+				.catch(function (er) {
+					console.log(er);
+				});
+			},
+		find: function(){
+			var self = this;
+			FG.api('GET', '/clients_addresses/' + self.$route.params.address_id, {
+				join: [
+					'addresses',
+					'addresses,geo_citys',
+					'addresses,geo_departments',
+				]
+			}, function(a){
+				if(a != undefined && a.id > 0){
+					d = a.address;
+					self.post = a.address;
+					d.completo = JSON.parse(d.completo);
+					if(d.place_rank > 18){ d.place_rank = 18; }
+					
+					var LatLng = new L.LatLng(d.lat, d.lon); 
+					self.map.setView(LatLng, (Number(d.place_rank)-2));
+					
+					var greenIcon = L.icon({
+						iconUrl: 'https://mv.dataservix.com/admin/global/images/icons/leaf-green.png',
+						shadowUrl: 'https://mv.dataservix.com/admin/global/images/icons/leaf-shadow.png',
+
+						iconSize:     [19, 47.5], // tamaño del icono
+						shadowSize:   [25, 32], // tamaño de la sombra
+						iconAnchor:   [11, 47], // Punto del icono que corresponderá a la ubicación del marcador.
+						shadowAnchor: [2, 31], // lo mismo para la sombra
+						popupAnchor:  [-1.5, -38] // Punto desde el que se abrirá la ventana emergente en relación con el icono.
+					});
+					
+					self.currentMarker = new L.Marker(LatLng, {icon: greenIcon});
+					self.map.addLayer(self.currentMarker);
+					self.currentMarker.bindPopup(d.display_name);
+					
+					var polygonPoints = [];
+					d.completo.polygonpoints.forEach(function(a){
+						polygonPoints.push(new L.LatLng(a[1], a[0]))
+					});
+					
+					self.currentPolygon = new L.Polygon(polygonPoints);
+					self.map.addLayer(new L.Polygon(polygonPoints));
+					
+				}
+			});
+		},
+	}
+});
+
+var PagesAccountsRequestsView = Vue.extend({
+	template: '#page-accounts-requests-view',
+	data: function() {
+		return {
+			options: {
+			},
+			post: {
+				"id": this.$route.params.request_id,
+			}
+		};
+	},
+	created: function () {
+		var self = this;
+		self.$root._mpb("show",{value: [0,0],speed: 0});
+	},
+	mounted: function () {
+		var self = this;
+		self.find();
+	},
+	methods: {
+		find: function(){
+			var self = this;
+			FG.api('GET', '/requests', {
+				join: [
+					'status_requests',
+					'contacts',
+				]
+			}, function(r){
+				if(r[0] != undefined && r[0].id > 0){
+					$(".datatable tbody").html('');
+					r.forEach(function(el){
+						el.addresses = JSON.parse(el.addresses);
+						
+												
+						rows = '';
+						el.addresses.forEach(function(t){
+							services = '';
+							t.services.forEach(function(p){
+								services += `
+									<li>
+										<a>` + p.name + `</a>
+										<ul>
+											<li><a>` + p.repeat.name + `</a></li>
+										</ul>
+									</li>
+								`;
+								
+							});
+
+							rows += `
+								<li>
+									<a><b>` + t.display_name + ', ' + t.city.name + ', ' + t.department.name + `</b></a>
+									<ul>` + services + `</ul>
+								</li>
+							`;
+						});
+						
+						$(".datatable tbody").append(`
+							<tr>
+								<td>` + self.$root.zfill(el.id, 5) + `</td>
+								<td>` + el.status.name + `</td>
+								<td>` + el.contact.first_name + ` ` + el.contact.second_name + `</td>
+								<td><ul>` + rows + `</ul></td>
+								<td>` + el.request_notes + `</td>
+								<td>
+									<button data-toggle="tooltip" data-placement="top" title="Ver Solicitud" class="btn btn-default btn-rounded btn-xs" onClick="javascript:window.location.href = 'https://b2b.monteverdeltda.com/#/accounts/view/` + self.$route.params.account_id + `/requests/` + el.id + `';">
+										<i class="fas fa-eye"></i>
+									</button>
+								</td>
+							</tr>
+						`);
+					});
+					$(".datatable").DataTable();
+					
+					self.$root._mpb("show",{value: [0,100],speed: 0});
+				}
+			});
+		},
+	}
+});
+
+var PagesAccountsRequestsSingleView = Vue.extend({
+	template: '#page-accounts-requests-single-view',
+	data: function() {
+		return {
+			options: {
+				status_requests: []
+			},
+			post: {
+				"id": this.$route.params.request_id,
+				"status": 0,
+				"client": this.$route.params.account_id,
+				"contact": 0,
+				"addresses": [],
+				"request_notes": "",
+				"requests_activity": []
+			}
+		};
+	},
+	created: function () {
+		var self = this;
+		
+	},
+	beforeMount() {
+		var self = this;
+	},
+	mounted() {
+		var self = this;
+		self.$root._mpb("show", { value: [0, 0], speed: 1 });
+		self.load_options_selects();
+	},
+	methods: {
+		load_options_selects(){
+			var self = this;
+			FG.api('GET', '/status_requests', {
+			}, function(a){
+				if(a[0] != undefined && a[0].id > 0){
+					self.options.status_requests = a;
+				}
+				self.find();
+			});
+			
+		},
+		find(){
+			var self = this;
+			FG.api('GET', '/requests/' + self.$route.params.request_id, {
+				filter: [
+					'client,eq,' + self.$route.params.account_id
+				],
+				join: [
+					'status_requests',
+					'contacts',
+					'requests_activity',
+					'quotations',
+					'quotations,status_quotations',
+				]
+			}, function(a){
+				if(a != undefined && a.id > 0){
+					a.addresses = JSON.parse(a.addresses);
+					self.post = a;
+					self.$root._mpb("show", { value: [0, 100], speed: 1 });
+				}
+			});
+		},
+		changeStatusRequest(){
+			var self = this;
+			FG.api('GET', '/requests/' + self.$route.params.request_id, {
+				client: self.$route.params.account_id,
+			}, function (a) {
+				if(a != undefined && a.id > 0){
+					if(a.status != self.post.status.id){
+						FG.api('PUT', '/requests/' + self.$route.params.request_id, {
+							id: self.$route.params.request_id,
+							client: self.$route.params.account_id,
+							status: self.post.status.id
+						}, function(s){
+							if(s != undefined && s > 0){
+								FG.api('POST', '/requests_activity', {
+									request: self.$route.params.request_id,
+									comment: 'Se cambio el estado de la solicitud por ' + self.post.status.name
+								}, function (c) {
+									$.notify("La solicitud fue actualizada de manera correctamenta.!", "success");
+									self.find()
+									return false;
+								});
+							}else{
+								$.notify('Ocurrio un error intenta nuevamente, si el problema persiste contacta con el equipo de Monteverde LTDA.', 'error');
+								return false;
+							}
+						});
+					}else{
+						$.notify('La solucitud ya se encuentra en este Estado.', 'warning');
+					}
+				}
+			});
+				
+			
+		},
+	}
+});
+
+var PagesAccountsRequestsQuotationsSingleView = Vue.extend({
+	template: '#page-accounts-requests-quotations-single-view',
+	data: function() {
+		return {
+			options: {
+				status_requests: []
+			},
+			post: 
+			{
+			"id": 0,
+			"client": {
+				"id": 0,
+				"type": 0,
+				"identification_type": 0,
+				"identification_number": "",
+				"names": "",
+				"address_principal": "",
+				"address_principal_department": {
+					"id": 0,
+					"code": "",
+					"name": ""
+				},
+				"address_principal_city": {
+					"id": 0,
+					"name": "",
+					"department": 0
+				},
+				"address_invoices": "",
+				"address_invoices_department": {
+					"id": 0,
+					"code": "",
+					"name": ""
+				},
+				"address_invoices_city": {
+					"id": 0,
+					"name": "",
+					"department": 0
+				},
+				"represent_legal": 3,
+				"contact": 2,
+				"audit_enabled": 0
+			},
+			"request": {
+				"id": 0,
+				"status": 0,
+				"client": 0,
+				"contact": {
+					"id": 0,
+					"identification_type": 0,
+					"identification_number": "",
+					"first_name": "",
+					"second_name": "",
+					"surname": "",
+					"second_surname": "",
+					"birthdaydate": null,
+					"phone": "",
+					"phone_mobile": "",
+					"mail": "",
+					"department": {
+						"id": 0,
+						"name": ""
+					},
+					"city": {
+						"id": 0,
+						"name": "",
+						"department": 0
+					},
+					"address": ""
+				},
+				"addresses": [],
+				"request_notes": ""
+			},
+			"values": [],
+			"status": {
+				"id": 0,
+				"name": "",
+				"request_status_continue": 0
+			},
+			"created": "",
+			"updated": "",
+			"validity": 0,
+			"accept": null
+			},
+		};
+	},
+	created: function () {
+		var self = this;
+		
+	},
+	mounted: function () {
+		var self = this;
+		self.$root._mpb("show", { value: [0, 0], speed: 1 });
+		self.find();
+	},
+	methods: {
+		find(){
+			var self = this;
+			FG.api('GET', '/quotations/' + self.$route.params.quotation_id, {
+				filter: [
+					'client,eq,' + self.$route.params.account_id,
+					'request,eq,' + self.$route.params.request_id
+				],
+				join: [
+					'clients',
+					'clients,geo_departments',
+					'clients,geo_citys',
+					'requests',
+					'requests,contacts',
+					'requests,contacts,geo_departments',
+					'requests,contacts,geo_citys',
+					'status_quotations',
+				]
+			}, function(a){
+				if(a != undefined && a.id > 0){
+					a.values = JSON.parse(a.values);
+					a.request.addresses = JSON.parse(a.request.addresses);
+					self.post = a;
+					self.$root._mpb("show", { value: [0, 100], speed: 1 });
+				}
+			});
+		},
+	}
+});
+
+var PagesAccountsRequestsQuotationsAdd = Vue.extend({
+	template: '#page-accounts-requests-quotations-add',
+	data: function() {
+		return {
+			options: {
+				status_requests: []
+			},
+			post: {
+				"id": this.$route.params.request_id,
+				"status": 0,
+				"client": this.$route.params.account_id,
+				"contact": 0,
+				"addresses": [],
+				"request_notes": "",
+				"requests_activity": []
+			}
+		};
+	},
+	created: function () {
+		var self = this;
+		
+	},
+	mounted: function () {
+		var self = this;
+		self.$root._mpb("show", { value: [0, 0], speed: 1 });
+		self.load_options_selects();
+	},
+	methods: {
+		load_options_selects(){
+			var self = this;
+			FG.api('GET', '/status_requests', {
+			}, function(a){
+				if(a[0] != undefined && a[0].id > 0){
+					self.options.status_requests = a;
+				}
+				self.find();
+			});
+			
+		},
+		find(){
+			var self = this;
+			FG.api('GET', '/requests/' + self.$route.params.request_id, {
+				filter: [
+					'client,eq,' + self.$route.params.account_id
+				],
+				join: [
+					'status_requests',
+					'contacts',
+					'requests_activity',
+					'quotations',
+					'quotations,status_quotations',
+				]
+			}, function(a){
+				if(a != undefined && a.id > 0){
+					a.addresses = JSON.parse(a.addresses);
+					self.post = a;
+					self.$root._mpb("show", { value: [0, 100], speed: 1 });
+				}
+			});
+		},
+		changeStatusRequest(){
+			var self = this;
+			FG.api('GET', '/requests/' + self.$route.params.request_id, {
+				client: self.$route.params.account_id,
+			}, function (a) {
+				if(a != undefined && a.id > 0){
+					if(a.status != self.post.status.id){
+						FG.api('PUT', '/requests/' + self.$route.params.request_id, {
+							id: self.$route.params.request_id,
+							client: self.$route.params.account_id,
+							status: self.post.status.id
+						}, function(s){
+							if(s != undefined && s > 0){
+								FG.api('POST', '/requests_activity', {
+									request: self.$route.params.request_id,
+									comment: 'Se cambio el estado de la solicitud por ' + self.post.status.name
+								}, function (c) {
+									$.notify("La solicitud fue actualizada de manera correctamenta.!", "success");
+									self.find()
+									return false;
+								});
+							}else{
+								$.notify('Ocurrio un error intenta nuevamente, si el problema persiste contacta con el equipo de Monteverde LTDA.', 'error');
+								return false;
+							}
+						});
+					}else{
+						$.notify('La solucitud ya se encuentra en este Estado.', 'warning');
+					}
+				}
+			});
+				
+			
+		},
+	}
+});
+
+var PagesAccountsRequestsSingleCalendarAdd = Vue.extend({
+	template: '#page-accounts-requests-single-calendar-add',
+	data: function() {
+		return {
+			posts: []
+		};
+	},
+	created: function () {
+		var self = this;
+		self.$root._mpb("show", { value: [0, 0], speed: 1 });		
+	},
+	mounted: function () {
+		var self = this;
+		self.$root._mpb("show", { value: [0, 100], speed: 1 });
+		self.find();
+	},
+	methods: {
+		find(){
+			var self = this;
+			FG.api('GET', '/crew_technical_visits', {
+				join: [ 'employees', ]
+			}, function(a){
+				if(a[0] != undefined && a[0].id > 0){
+					console.log(a);
+				}
+			});
+		},
+	}
+});
+
+var PagesAccountsRequestsSingleCalendarView = Vue.extend({
+	template: '#page-accounts-requests-single-calendar-view',
+	data: function() {
+		return {
+			posts: []
+		};
+	},
+	created: function () {
+		var self = this;
+		self.$root._mpb("show", { value: [0, 0], speed: 1 });		
+	},
+	mounted: function () {
+		var self = this;
+		self.$root._mpb("show", { value: [0, 100], speed: 1 });
+		self.find();
+	},
+	methods: {
+		find(){
+			var self = this;
+			FG.api('GET', '/crew_technical_visits', {
+				join: [ 'employees', ]
+			}, function(a){
+				if(a[0] != undefined && a[0].id > 0){
+					console.log(a);
+				}
+			});
+		},
+	}
+});
+
+var PagesAccountsCalendarView = Vue.extend({
+	template: '#page-accounts-calendar-view',
+	data: function() {
+		return {
+			calendar: null,
+			seletedEvent: null,
+			posts: [],
+		};
+	},
+	created: function () {
+		var self = this;
+		self.$root._mpb("show",{value: [0,0],speed: 0});
+	},
+	mounted: function () {
+		var self = this;
+		self.find();
+	},
+	methods: {
+		prepare_external_list(){
+			var self = this;
+			$('#external-events .external-event').each(function() {
+					var eventObject = {title: $.trim($(this).text())};
+
+					$(this).data('eventObject', eventObject);
+					$(this).draggable({
+							zIndex: 999,
+							revert: true,
+							revertDuration: 0
+					});
+			});                    
+			
+		},
+		load_calendar(){
+			var self = this;
+			if($("#calendar").length > 0){
+                var date = new Date();
+                var d = date.getDate();
+                var m = date.getMonth();
+                var y = date.getFullYear();
+
+                self.prepare_external_list();
+
+                self.calendar = $('#calendar').fullCalendar({
+					eventClick: function(event, element) {
+						self.seletedEvent = event;
+						//console.log(event);
+						console.log(event.title);
+						//console.log(event.start);
+						//console.log(event.end);
+						//event.title = "CLICKED!";
+						self.calendar.fullCalendar('updateEvent', event);
+					},
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay'
+                    },
+                    editable: true,
+					//events: ,
+                    // eventSources: {
+					// 	url: "/assets/ajax_fullcalendar.php"
+					// },
+					events: self.posts,
+                    droppable: true,
+                    selectable: true,
+                    selectHelper: true,
+					select: function(start, end, allDay) {
+                        var title = prompt('Event Title:');
+                        if (title) {
+                            self.calendar.fullCalendar('renderEvent',
+                            {
+                                title: title,
+                                start: start,
+                                end: end,
+                                allDay: allDay
+                            },
+                            true
+                            );
+                        }
+                        self.calendar.fullCalendar('unselect');
+                    },
+                    drop: function(date, allDay) {
+                        var originalEventObject = $(this).data('eventObject');
+                        var copiedEventObject = $.extend({}, originalEventObject);
+                        copiedEventObject.start = date;
+                        copiedEventObject.allDay = allDay;
+                        self.calendar.fullCalendar('renderEvent', copiedEventObject, true);
+                        if ($('#drop-remove').is(':checked')) {
+                            $(this).remove();
+                        }
+
+                    }
+                });
+                
+                $("#new-event").on("click",function(){
+                    var et = $("#new-event-text").val();
+                    if(et != ''){
+                        $("#external-events").prepend('<a class="list-group-item external-event">'+et+'</a>');
+                        self.prepare_external_list();
+                    }
+                });
+                
+            }
+		},
+		find: function(){
+			var self = this;
+			self.posts = [];
+			FG.api('GET', '/calendar_clients', {
+				join: [
+				]
+			}, function(r){
+				if(r[0] != undefined && r[0].id > 0){
+					r.forEach(function(c){
+						console.log(c);
+						self.posts.push({
+							allDay: c.all_day,
+							title: c.title,
+							start: c.start,
+							end: c.end,
+							className: 'blue',
+							// url: 'https://www.facebook.com/sweetsamshopco/'
+						});
+					});
+					self.load_calendar();
+					self.$root._mpb("show",{value: [0,100],speed: 0});
+				}
+			});
+		},
+	}
+});
+
 /* END ACCOUNTS */
 
 /* CONTACTS */
@@ -1656,12 +2894,6 @@ var PagesContactsListAccountsAddContactToAccount = Vue.extend({
 								if(Number(b) > 0)
 								{
 									$.notify("El contacto fue creado correctamente.!", "success");
-									router.push({
-										name: 'page-contacts-list-accounts',
-										params: {
-											
-										}
-									});
 								}
 							});
 						}
@@ -2589,7 +3821,7 @@ var PagesUsersView = Vue.extend({
 					'pictures',
 				]
 			}, function(r){
-				console.log(r);
+				
 				if(r != undefined && r.id > 0){
 					self.post = r;
 					self.$root._mpb("show",{value: [0,10],speed: 1});
@@ -2738,7 +3970,7 @@ var PagesUsersAdd = Vue.extend({
 					newContact = {};
 					for (var k in self.post){ if (typeof self.post[k] !== 'function') { newContact[k] = self.post[k]; } }
 					
-					console.log(newContact);
+					
 					FG.api('GET', '/users', {
 						filter: [
 							'username,eq,' + self.post.username,
@@ -2995,7 +4227,7 @@ var PagesAddressesView = Vue.extend({
 					if(info.address.suburb != undefined){ searchTxT += info.address.suburb + ' '; }
 					
 					self.geo_search.street = searchTxT;
-					console.log(searchTxT);
+					
 					self.address_search();
 					
 					
@@ -3017,7 +4249,7 @@ var PagesAddressesView = Vue.extend({
 					'geo_departments',
 				]
 			}, function(d){
-				console.log(d);
+				
 				if(d != undefined && d.id > 0){
 					self.post = d;
 					d.completo = JSON.parse(d.completo);
@@ -3045,7 +4277,7 @@ var PagesAddressesView = Vue.extend({
 					d.completo.polygonpoints.forEach(function(a){
 						polygonPoints.push(new L.LatLng(a[1], a[0]))
 					});
-					console.log(polygonPoints);
+					
 					self.currentPolygon = new L.Polygon(polygonPoints);
 					self.map.addLayer(self.currentPolygon);
 					$("#vector_world_map").focus();
@@ -3056,34 +4288,201 @@ var PagesAddressesView = Vue.extend({
 });
 /* END ADDRESSES */
 
+/* MEDIA */
+var PagesMediaGalleryPictures = Vue.extend({
+	template: '#page-media-gallery-pictures',
+	data: function() {
+		return {
+			posts: [],
+		};
+	},
+	created: function () {
+		var self = this;
+	},
+	mounted: function () {
+		var self = this;
+		
+		/*
+		 document.getElementById('links').onclick = function (event) {
+			event = event || window.event;
+			var target = event.target || event.srcElement;
+			var link = target.src ? target.parentNode : target;
+			var options = {index: link, event: event,onclosed: function(){
+					setTimeout(function(){
+						$("body").css("overflow","");
+					},200);                        
+				}};
+			var links = this.getElementsByTagName('a');
+			blueimp.Gallery(links, options);
+		}
+		*/
+		
+$(document).on('click', '#close-preview', function(){ 
+    $('.image-preview').popover('hide');
+    // Hover befor close the preview
+    $('.image-preview').hover(
+        function () {
+           $('.image-preview').popover('show');
+        }, 
+         function () {
+           $('.image-preview').popover('hide');
+        }
+    );    
+});
+
+$(function() {
+    // Create the close button
+    var closebtn = $('<button/>', {
+        type:"button",
+        text: 'x',
+        id: 'close-preview',
+        style: 'font-size: initial;',
+    });
+    closebtn.attr("class","close pull-right");
+    // Set the popover default content
+    $('.image-preview').popover({
+        trigger:'manual',
+        html:true,
+        title: "<strong>Preview</strong>"+$(closebtn)[0].outerHTML,
+        content: "There's no image",
+        placement:'bottom'
+    });
+    // Clear event
+    $('.image-preview-clear').click(function(){
+        $('.image-preview').attr("data-content","").popover('hide');
+        $('.image-preview-filename').val("");
+        $('.image-preview-clear').hide();
+        $('.image-preview-input input:file').val("");
+        $(".image-preview-input-title").text("Browse"); 
+    }); 
+    // Create the preview image
+    $(".image-preview-input input:file").change(function (){     
+        var img = $('<img/>', {
+            id: 'dynamic',
+            width:250,
+            height:200
+        });      
+        var file = this.files[0];
+        var reader = new FileReader();
+        // Set preview image into the popover data-content
+        reader.onload = function (e) {
+            $(".image-preview-input-title").text("Change");
+            $(".image-preview-clear").show();
+            $(".image-preview-filename").val(file.name);            
+            img.attr('src', e.target.result);
+            $(".image-preview").attr("data-content",$(img)[0].outerHTML).popover("show");
+        }        
+        reader.readAsDataURL(file);
+    });  
+});
+		
+		self.find();
+	},
+	methods: {
+		find: function(){
+			var self = this;
+			FG.api('GET', '/pictures', {
+				include: [
+					'id,name,size,type,create',
+				]
+			}, function(r){
+				if(r.length > 0 && r[0].id > 0){
+					self.posts = r;
+					// $("#gallery-container").html('');
+					r.forEach(function(el){
+						/*
+						$("#gallery-container").append(`
+							<a class="gallery-item" href="/assets/images/gallery/nature-1.jpg" title="Nature Image 1" data-gallery />
+								<div class="image">
+									<img src="/assets/images/gallery/nature-1.jpg" alt="Nature Image 1"/>
+									<ul class="gallery-item-controls">
+										<li><label class="check"><input type="checkbox" class="icheckbox"/></label></li>
+										<li><span class="gallery-item-remove"><i class="fa fa-times"></i></span></li>
+									</ul>
+								</div>
+								<div class="meta">
+									<strong>Nature image 1</strong>
+									<span>Description</span>
+								</div>
+							</a>`);
+						*/
+					});
+				}
+			});
+		},
+	}
+});
+/* END MEDIA */
+
 var router = new VueRouter({
 	routes: [
 		{ path: '/', component: PagesDashboard, name: 'page-dashboard' },
 		{ path: '/login', component: PagesLogin, name: 'page-login' },
-		/* CUENTAS */
+		
+		/* ACCOUNTS */
 		{ path: '/accounts/list', component: PagesAccountsList, name: 'page-accounts-list' },
 		{ path: '/accounts/add', component: PagesAccountsAdd, name: 'page-accounts-add' },
 		{ path: '/accounts/view/:account_id', component: PagesAccountsView, name: 'page-accounts-view' },
 		{ path: '/accounts/edit/:account_id', component: PagesAccountsEdit, name: 'page-accounts-edit' },
-		/* CONTACTOS */
+		
+			/* CONTACTS IN ACCOUNTS */
+			{ path: '/accounts/view/:account_id/contacts', component: PagesAccountsContactsView, name: 'page-accounts-contacts-view' },
+			{ path: '/accounts/view/:account_id/contacts/:contact_id', component: PagesAccountsContactsSingleView, name: 'page-accounts-contacts-single-view' },
+			/* END CONTACTS IN ACCOUNTS */
+			
+			/* ADDRESSES IN ACCOUNTS */
+			{ path: '/accounts/view/:account_id/addresses', component: PagesAccountsAddressesView, name: 'page-accounts-addresses-view' },
+			{ path: '/accounts/view/:account_id/addresses/:address_id', component: PagesAccountsAddressesSingleView, name: 'page-accounts-addresses-single-view' },
+			/* END ADDRESSES IN ACCOUNTS */
+			
+			/* REQUESTS IN ACCOUNTS */
+			{ path: '/accounts/view/:account_id/requests', component: PagesAccountsRequestsView, name: 'page-accounts-requests-view' },
+			{ path: '/accounts/view/:account_id/requests/:request_id', component: PagesAccountsRequestsSingleView, name: 'page-accounts-requests-single-view' },
+			{ path: '/accounts/view/:account_id/requests/:request_id/calendar', component: PagesAccountsRequestsSingleCalendarView, name: 'page-accounts-requests-single-calendar-view' },
+			{ path: '/accounts/view/:account_id/requests/:request_id/calendar/add', component: PagesAccountsRequestsSingleCalendarAdd, name: 'page-accounts-requests-single-calendar-add' },
+			/* END REQUESTS IN ACCOUNTS */
+			
+			/* CALENDAR IN ACCOUNTS */
+			{ path: '/accounts/view/:account_id/calendar', component: PagesAccountsCalendarView, name: 'page-accounts-calendar-view' },
+			/* END CALENDAR IN ACCOUNTS */
+			
+			/* QUOTATIONS IN ACCOUNTS */
+			{ path: '/accounts/view/:account_id/requests/:request_id/quotations/add', component: PagesAccountsRequestsQuotationsAdd, name: 'page-accounts-requests-quotations-add' },
+			{ path: '/accounts/view/:account_id/requests/:request_id/quotations/:quotation_id/view', component: PagesAccountsRequestsQuotationsSingleView, name: 'page-accounts-requests-quotations-single-view' },
+			/* END QUOTATIONS IN ACCOUNTS */
+			
+		/* END ACCOUNTS */
+		
+		/* CONTACTS */
 		{ path: '/contacts/list', component: PagesContactsList, name: 'page-contacts-list' },
 		{ path: '/contacts/list/accounts', component: PagesContactsListAccounts, name: 'page-contacts-list-accounts' },
 		{ path: '/contacts/list/accounts/:account_id/add', component: PagesContactsListAccountsAddContactToAccount, name: 'page-contacts-list-accounts-add-to-account' },
 		{ path: '/contacts/add', component: PagesContactsAdd, name: 'page-contacts-add' },
 		{ path: '/contacts/view/:contact_id', component: PagesContactsView, name: 'page-contacts-view' },
 		{ path: '/contacts/edit/:contact_id', component: PagesContactsEdit, name: 'page-contacts-edit' },
+		/* END CONTACTS */
+		
 		/* PROFILES */
 		{ path: '/profiles/:user_id', component: PagesProfilesB2BViewById, name: 'page-profiles-b2b-for-id-view' },
+		/* END PROFILES */
+		
 		/* USERS */
 		{ path: '/users/list', component: PagesUsersList, name: 'page-users-list' },
 		{ path: '/users/view/:user_id', component: PagesUsersView, name: 'page-users-view' },
 		{ path: '/users/edit/:user_id', component: PagesUsersEdit, name: 'page-users-edit' },
 		{ path: '/users/add', component: PagesUsersAdd, name: 'page-users-add' },
+		/* END USERS */
+		
 		/* ADDRESSES */
 		{ path: '/addresses/list', component: PagesAddressesList, name: 'page-addresses-list' },
 		{ path: '/addresses/view/:address_id', component: PagesAddressesView, name: 'page-addresses-view' },
+		/* END ADDRESSES */
+		
+		/* MEDIA */
+		{ path: '/media/gallery/pictures', component: PagesMediaGalleryPictures, name: 'page-gallery-pictures' },
+		/* END MEDIA */
 	]
-});	
+});
 
 var app = new Vue({
 	data: {
@@ -3115,7 +4514,6 @@ var app = new Vue({
 			}
 		},
 		appName: 'B2B Monteverde',
-		
 		theme_settings: {
 			st_head_fixed: 0,
 			st_sb_fixed: 1,
@@ -3174,6 +4572,7 @@ var app = new Vue({
 		checkSession: function(){
 			var self = this;
 			if(self.status === 'not_authorized'){
+				localStorage.clear();
 				self.LogInPop();
 			}
 		},
@@ -3258,7 +4657,6 @@ var app = new Vue({
 			var self = this;
 			self._mpb("show",{value: [0,50],speed: 5});
 		},
-		
 		load_root: function(){
 			var self = this;
 			self.loadingProgess();
@@ -3710,7 +5108,6 @@ var app = new Vue({
 				}
 			}
 		},
-
 		load_plugins: function(){
 			var self = this;
 			
@@ -3769,6 +5166,7 @@ var app = new Vue({
 	mounted: function() {
 		var self = this;
 		self.load_actions();
+		
 	},
 	created: function() {
 		var self = this;
@@ -3798,6 +5196,7 @@ var MyPlugin = {
 						}
 					},
 					options: options,
+						currentRoute: '',
 				}
 			},
 			methods: {
@@ -3820,7 +5219,12 @@ var MyPlugin = {
 						self.$root.checkSession();
 					}
 					self.$root.load_actions();
+					
+					
 				});
+				
+				
+				
 			},
 			beforeCreate() {
 				var self = this;				
@@ -3844,6 +5248,12 @@ var MyPlugin = {
 						});
 					} else{
 						
+					}
+					
+					if(self.$route.name == self.currentRoute){
+						console.log('reboot.');
+					}else{
+						console.log('No reboot.');
 					}
 				});
 			},

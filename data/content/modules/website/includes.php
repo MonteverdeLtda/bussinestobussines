@@ -37,3 +37,8 @@ $this->include_template("/addresses/lists.php");
 $this->include_template("/addresses/single.php");
 #$this->include_template("/addresses/single-edit.php");
 /* END ADDRESSES */
+
+/* GALLERY */
+$this->include_template("/media/gallery.php");
+
+/* END GALLERY */

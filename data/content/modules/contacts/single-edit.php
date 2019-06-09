@@ -19,12 +19,7 @@
 										<i class="fas fa-trash"></i>
 									</a>
 								</li>
-								
-								<li>
-									<router-link data-toggle="tooltip" data-placement="bottom" title="Cerrar" tag="a" :to="{ name: 'page-contacts-list' }" class="panel-remove">
-										<span class="fa fa-times"></span>
-									</router-link>
-								</li>
+								<li><a @click="$router.go(-1)" class="panel-remove"><span class="fa fa-times"></span></a></li>
 							</ul>
 						</div>
 						<form id="jvalidate" role="form" class="form-horizontal" action="javascript:alert('Form #validate2 submited');">

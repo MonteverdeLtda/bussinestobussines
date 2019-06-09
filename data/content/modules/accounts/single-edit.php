@@ -10,17 +10,12 @@
 							<h3 class="panel-title"><strong>Modificar</strong> Cuenta</h3>
 							<ul class="panel-controls">
 								<li>
-									<router-link data-toggle="tooltip" data-placement="bottom" title="Ver Cuenta" tag="a" :to="{ name: 'page-accounts-view', params: { account_id: post.id } }" class="panel-remove">
-										<span class="fas fa-eye"></span>
-									</router-link>
-								</li>
-								<li>
 									<a data-toggle="tooltip" data-placement="bottom" title="Eliminar Cuenta" @click="delete_row(post.id);">
 										<i class="fas fa-trash"></i>
 									</a>
 								</li>
 								<li>
-									<router-link tag="a" :to="{ name: 'page-accounts-list' }" class="panel-remove" title="Cerrar" data-toggle="tooltip" data-placement="bottom">
+									<router-link tag="a" :to="{ name: 'page-accounts-view', params: { account_id: post.id } }" class="panel-remove" title="Cerrar" data-toggle="tooltip" data-placement="bottom">
 										<span class="fa fa-times"></span>
 									</router-link>
 								</li>

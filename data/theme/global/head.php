@@ -4,15 +4,13 @@
 <link rel="icon" href="favicon.ico" type="image/x-icon" />
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" id="theme" href="/css/theme-default.css"/>
+<link rel="stylesheet" href="/css/dropzone/dropzone.css" />
 
 <!-- Load Vue followed by BootstrapVue -->
 <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
 <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/vue-router/2.2.1/vue-router.js"></script>
 <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
-
-
-
 
 
 

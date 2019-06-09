@@ -14,11 +14,7 @@
 										<span class="fas fa-pencil-alt"></span>
 									</router-link>
 								</li>
-								<li>
-									<router-link tag="a" :to="{ name: 'page-contacts-list' }" class="panel-remove">
-										<span class="fa fa-times"></span>
-									</router-link>
-								</li>
+								<li><a @click="$router.go(-1)" class="panel-remove"><span class="fa fa-times"></span></a></li>
 							</ul>
 						</div>
 						<form role="form" class="form-horizontal" >
