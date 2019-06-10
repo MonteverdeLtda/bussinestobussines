@@ -1,4 +1,4 @@
-	<template id="component-navigation-top-pages-accounts">
+<template id="component-navigation-top-pages-accounts">
 	<div>
 		<div class="panel panel-default tabs">
 			<ul class="nav nav-tabs" role="">
@@ -1188,15 +1188,20 @@
 					
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title"><strong>Añadir</strong> Visita Tecnica </h3>
+							<h3 class="panel-title"><strong>Añadir</strong> Calendario </h3>
 							<ul class="panel-controls">
-								
 								<li><a @click="$router.go(-1)" class="panel-remove"><span class="fa fa-times"></span></a></li>
 							</ul>
 						</div>
-						<div class="panel-body">
+						<div class="panel-body table-responsive">
+							<div id="gc-gantt"></div>
 							
-						
+							<form role="form" class="form-horizontal">
+								<div class="row">
+									<div class="col-md-12">
+									</div>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -1204,8 +1209,6 @@
 		</div>
 	</div>
 </template>
-
-
 
 <template id="page-accounts-requests-single-calendar-view">
 	<div>		
@@ -1268,12 +1271,10 @@
 							</ul>                                
 						</div>
 						<div class="panel-body">
-							
 							<!-- START CONTENT FRAME -->
 							<div class="content-frame">
 								<div class="content-frame-top">
 								</div>
-								
 								<!-- START CONTENT FRAME LEFT -->
 								<div class="content-frame-left">
 									<!-- //
@@ -1298,13 +1299,20 @@
 										</label>
 									</div>
 									-->
-									
-									<div class="panel panel-default push-up-10">
+									<div class="panel panel-default push-up-10" v-if="seletedEvent.id > 0">
+										<div class="panel-heading">
+											<h3 class="panel-title">{{ seletedEvent.title }}</h3>
+										</div>
 										<div class="panel-body padding-top-0">
-											<h4>Fullcalendar</h4>
-											<p>
-												{{ seletedEvent }}
-											</p>
+											<ul class="list-group">
+												<li class="list-group-item"><b>Fecha y Hora de Inicio</b></li>
+												<li class="list-group-item">{{ seletedEvent.start }}</li>
+												<li class="list-group-item"><b>Fecha y Hora de Termino</b></li>
+												<li class="list-group-item">{{ seletedEvent.end }}</li>
+												<li class="list-group-item"><b>¿Es todo el día?</b></li>
+												<li class="list-group-item" v-if="seletedEvent.all_day == 1">Si</li>
+												<li class="list-group-item" v-if="seletedEvent.all_day == 0">No</li>
+											</ul>
 										</div>
 									</div>
 								</div>
@@ -1312,7 +1320,6 @@
 								
 								<!-- START CONTENT FRAME BODY -->
 								<div class="content-frame-body padding-bottom-0">
-									
 									<div class="row">
 										<div class="col-md-12">
 											<div id="alert_holder"></div>
@@ -1321,10 +1328,8 @@
 											</div>
 										</div>
 									</div>
-									
 								</div>
 								<!-- END CONTENT FRAME BODY -->
-								
 							</div>
 							<!-- END CONTENT FRAME -->
 							

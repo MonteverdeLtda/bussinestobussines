@@ -123,7 +123,6 @@ var Component_Navigation_Top = Vue.component('component-navigation-top', {
 				]
 			}, function(r){
 				if(r[0] != undefined && r[0].id > 0){
-					console.log(r[0]);
 					r.forEach(function(a){
 						a.addresses = JSON.parse(a.addresses);
 						self.requests.push(a);
@@ -2351,7 +2350,60 @@ var PagesAccountsRequestsSingleCalendarAdd = Vue.extend({
 	template: '#page-accounts-requests-single-calendar-add',
 	data: function() {
 		return {
-			posts: []
+			post: {
+				title: '',
+				all_day: false,
+				start: '',
+				end: '',
+				type: 0,
+				request: 0,
+			},
+			posts: [],
+			jsonData: [
+				{
+				 "id": 1,
+				 "description": "group tasks 1",
+				 "start": "2016-12-01",
+				 "end": "2016-12-15",
+				 "calculatePercent": false,
+				 "color": "#004d00",
+				 "tasks": [
+					/*
+					{
+					   "id": 2,
+					   "description": "group tasks 2",
+					   "start": "2016-12-03",
+					   "end": "2016-12-10",
+					   "calculatePercent": true,
+					   "tasks": [{
+							 "id": 1,
+							 "description": "Task 1",
+							 "start": "2016-12-03",
+							 "end": "2016-12-07",
+							 "resources": ["person A", "person B"],
+							 "percent": 50
+						  }
+					   ],
+					}
+					*/
+				 ]
+			  }
+			],
+			calendar: {
+				config: {
+					showResources: true, //boolean - show/hide column resource
+					showStartDate: true, //boolean - show/hide column date start
+					showEndDate: true, //boolean - show/hide column date end
+					title: { //change column titles
+						task: "Titulo", // column task title
+						start: "F. Inicio", // column date start title
+						end: "F. Termino", // column date end title
+						resources: "Recursos", // column resource titlte
+						percent: "Porcentaje (%)" // column percent title
+					}
+				}
+			},
+			gcGantt: null,
 		};
 	},
 	created: function () {
@@ -2364,8 +2416,14 @@ var PagesAccountsRequestsSingleCalendarAdd = Vue.extend({
 		self.find();
 	},
 	methods: {
+		load_calendar(){
+			var self = this;
+			self.gcGantt = new GCGantt('gc-gantt', self.jsonData, self.calendar.config);
+		},
 		find(){
 			var self = this;
+			self.load_calendar();
+			
 			FG.api('GET', '/crew_technical_visits', {
 				join: [ 'employees', ]
 			}, function(a){
@@ -2373,6 +2431,26 @@ var PagesAccountsRequestsSingleCalendarAdd = Vue.extend({
 					console.log(a);
 				}
 			});
+			// var gcGantt = new GCGantt('gc-gantt', self.jsonData, {});
+			/*
+			
+			gcGantt.onTaskNameClick = function (id, group) {
+				if (group) {
+					alert("Clicked on name of group name ID: " + id);
+				} else {
+					alert("Clicked on name of task name ID: " + id);
+				}
+			}
+			
+			gcGantt.onTaskClick = function (id, group) {
+				if (group) {
+					alert("Clicked on group ID: " + id);
+				} else {
+					alert("Clicked on task ID: " + id);
+				}
+			}
+
+			*/
 		},
 	}
 });
@@ -2412,7 +2490,18 @@ var PagesAccountsCalendarView = Vue.extend({
 	data: function() {
 		return {
 			calendar: null,
-			seletedEvent: null,
+			seletedEvent: {
+				id: 0,
+				title: "",
+				all_day: false,
+				start: "",
+				end: "",
+				type: {
+					id: 0,
+					name: "",
+					colorClass: ""
+				}
+			},
 			posts: [],
 		};
 	},
@@ -2451,27 +2540,31 @@ var PagesAccountsCalendarView = Vue.extend({
 
                 self.calendar = $('#calendar').fullCalendar({
 					eventClick: function(event, element) {
-						self.seletedEvent = event;
-						//console.log(event);
-						console.log(event.title);
-						//console.log(event.start);
-						//console.log(event.end);
-						//event.title = "CLICKED!";
-						self.calendar.fullCalendar('updateEvent', event);
+						if(event.id != undefined && event.id > 0){
+							FG.api('GET', '/calendar/' + event.id, {
+								join: [ 'types_calendars', ]
+							}, function(a){
+								if(a != undefined && a.id > 0){
+									self.seletedEvent = a;
+								}
+							});
+						}
+						// self.calendar.fullCalendar('updateEvent', event);
 					},
                     header: {
                         left: 'prev,next today',
                         center: 'title',
                         right: 'month,agendaWeek,agendaDay'
                     },
-                    editable: true,
+                    editable: false,
 					//events: ,
                     // eventSources: {
 					// 	url: "/assets/ajax_fullcalendar.php"
 					// },
+					// eventSources: self.posts,
 					events: self.posts,
                     droppable: true,
-                    selectable: true,
+                    selectable: false,
                     selectHelper: true,
 					select: function(start, end, allDay) {
                         var title = prompt('Event Title:');
@@ -2514,15 +2607,26 @@ var PagesAccountsCalendarView = Vue.extend({
 		find: function(){
 			var self = this;
 			self.posts = [];
+			
 			FG.api('GET', '/calendar_clients', {
 				join: [
+					'calendar',
+					'calendar,types_calendars'
 				]
 			}, function(r){
 				if(r[0] != undefined && r[0].id > 0){
-					r.forEach(function(c){
+					r.forEach(function(x){
+						c = x.calendar;
 						console.log(c);
+						var d_s = new Date(c.start.replace(/-/g,"/"));
+						var d_e = new Date(c.end.replace(/-/g,"/"));
+						
+						formatted_date_start =  d_s.getFullYear() + "-" + (d_s.getMonth() + 1) + "-" + d_s.getDate();
+						formatted_date_end =  d_e.getFullYear() + "-" + (d_e.getMonth() + 1) + "-" + d_e.getDate();
+						
 						self.posts.push({
-							allDay: c.all_day,
+							id: c.id,
+							allDay: Boolean(c.all_day),
 							title: c.title,
 							start: c.start,
 							end: c.end,
@@ -2530,8 +2634,8 @@ var PagesAccountsCalendarView = Vue.extend({
 							// url: 'https://www.facebook.com/sweetsamshopco/'
 						});
 					});
-					self.load_calendar();
 					self.$root._mpb("show",{value: [0,100],speed: 0});
+					self.load_calendar();
 				}
 			});
 		},
@@ -4414,10 +4518,386 @@ $(function() {
 });
 /* END MEDIA */
 
+/* EMPLOYEES */
+var Component_Navigation_Top_PagesEmployees = Vue.component('component-navigation-top-pages-employees', {
+	template: '#component-navigation-top-pages-employees',
+	props: [
+		''
+	],
+	data: function () {
+		return {
+		};
+	},
+	mounted: function () {
+		var self = this;
+		
+	},
+	methods: {
+		find: function(){
+			var self = this;
+			
+		},
+		isActiveClass(thisName){
+			var self = this;
+			if(self.$route.name == thisName){
+				return 'active';
+			}else{
+				return 'not-active';
+			};
+			
+		},
+	}
+});
+
+var PagesEmployeesList = Vue.extend({
+	template: '#page-employees-list',
+	data: function() {
+		return {
+			posts: [],
+		};
+	},
+	created: function () {
+		var self = this;
+	},
+	mounted: function () {
+		var self = this;
+		self.find();
+	},
+	methods: {
+		find: function(){
+			var self = this;
+			FG.api('GET', '/employees', {
+				join: [
+					'types_identifications',
+					'types_bloods_rhs',
+					'types_bloods',
+					'status_employees',
+					'eps',
+					'arls',
+					'funds_pensions',
+					'funds_compensations',
+					'funds_severances',
+					'geo_departments',
+					'geo_citys',
+				]
+			}, function(r){
+				if(r.length > 0 && r[0].id > 0){
+					$(".datatable tbody").html('');
+					r.forEach(function(el){
+						$(".datatable tbody").append(`
+							<tr>
+								<td>` + el.identification_type.name + `</td>
+								<td>` + el.identification_number + `</td>
+								
+								<td>` + el.first_name + ' ' + el.second_name + ' ' + el.surname + ' ' + el.second_surname + `</td>								
+								<td>` + el.birthdate + `</td>
+								<td>` + el.blood_type.name + `</td>
+								<td>` + el.blood_rh.name + `</td>
+								<td>` + el.status.name + `</td>
+								<td>
+									<button data-toggle="tooltip" data-placement="top" title="Ver Empleado" class="btn btn-default btn-rounded btn-xs" onClick="javascript:window.location.href = 'https://b2b.monteverdeltda.com/#/employees/view/` + el.id + `';">
+										<i class="fas fa-eye"></i>
+									</button>
+								</td>
+							</tr>
+						`);
+					});
+					$(".datatable").DataTable();
+				}
+			});
+		},
+	}
+});
+
+var PagesEmployeesSingleView = Vue.extend({
+	template: '#page-employees-single-view',
+	data: function() {
+		return {
+			post: {
+				"id": this.$route.params.employee_id,
+				"first_name": null,
+				"second_name": null,
+				"surname": null,
+				"second_surname": null,
+				"identification_type": {
+					"id": null,
+					"name": null
+				},
+				"identification_number": null,
+				"identification_date_expedition": null,
+				"birthdate": null,
+				"blood_type": {
+					"id": null,
+					"name": null
+				},
+				"blood_rh": {
+					"id": null,
+					"name": null
+				},
+				"mail": null,
+				"number_phone": null,
+				"number_mobile": null,
+				"company_date_entry": null,
+				"company_date_out": null,
+				"company_mail": null,
+				"company_number_phone": null,
+				"company_number_mobile": null,
+				"avatar": null,
+				"status": {
+					"id": null,
+					"name": null
+				},
+				"eps": {
+					"id": null,
+					"code": null,
+					"name": null
+				},
+				"arl": {
+					"id": null,
+					"code": null,
+					"name": null
+				},
+				"pension_fund": {
+					"id": null,
+					"code": null,
+					"name": null
+				},
+				"compensation_fund": {
+					"id": null,
+					"code": null,
+					"name": null
+				},
+				"severance_fund": {
+					"id": null,
+					"code": null,
+					"name": null
+				},
+				"department": {
+					"id": null,
+					"code": null,
+					"name": null
+				},
+				"city": {
+					"id": null,
+					"name": null,
+					"department": null
+				},
+				"address": null,
+				"geo_address": null,
+				"observations": null
+			},
+		};
+	},
+	created: function () {
+		var self = this;
+	},
+	mounted: function () {
+		var self = this;
+		self.find();
+	},
+	methods: {
+		find: function(){
+			var self = this;
+			FG.api('GET', '/employees/' + this.$route.params.employee_id, {
+				join: [
+					'types_identifications',
+					'types_bloods_rhs',
+					'types_bloods',
+					'status_employees',
+					'eps',
+					'arls',
+					'funds_pensions',
+					'funds_compensations',
+					'funds_severances',
+					'geo_departments',
+					'geo_citys',
+					'pictures',
+				]
+			}, function(r){
+				if(r != undefined && r.id > 0){
+					self.post = r;
+				}
+			});
+		},
+	}
+});
+
+var PagesEmployeesCalendarView = Vue.extend({
+	template: '#page-employees-single-view-calendar',
+	data: function() {
+		return {
+			calendar: null,
+			seletedEvent: {
+				id: 0,
+				title: "",
+				all_day: false,
+				start: "",
+				end: "",
+				type: {
+					id: 0,
+					name: "",
+					colorClass: ""
+				},
+				calendar_clients: []
+			},
+			posts: [],
+		};
+	},
+	created: function () {
+		var self = this;
+		self.$root._mpb("show",{value: [0,0],speed: 0});
+	},
+	mounted: function () {
+		var self = this;
+		self.find();
+	},
+	methods: {
+		prepare_external_list(){
+			var self = this;
+			$('#external-events .external-event').each(function() {
+					var eventObject = {title: $.trim($(this).text())};
+
+					$(this).data('eventObject', eventObject);
+					$(this).draggable({
+							zIndex: 999,
+							revert: true,
+							revertDuration: 0
+					});
+			});                    
+			
+		},
+		load_calendar(){
+			var self = this;
+			if($("#calendar").length > 0){
+                var date = new Date();
+                var d = date.getDate();
+                var m = date.getMonth();
+                var y = date.getFullYear();
+
+                self.prepare_external_list();
+
+                self.calendar = $('#calendar').fullCalendar({
+					eventClick: function(event, element) {
+						if(event.id != undefined && event.id > 0){
+							FG.api('GET', '/calendar/' + event.id, {
+								join: [
+									'types_calendars',
+									'calendar_clients',
+									'calendar_clients,clients',
+									'requests',
+								]
+							}, function(a){
+								console.log(a);
+								if(a != undefined && a.id > 0){
+									self.seletedEvent = a;
+								}
+							});
+						}
+						// self.calendar.fullCalendar('updateEvent', event);
+					},
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay'
+                    },
+                    editable: false,
+					//events: ,
+                    // eventSources: {
+					// 	url: "/assets/ajax_fullcalendar.php"
+					// },
+					// eventSources: self.posts,
+					events: self.posts,
+                    droppable: true,
+                    selectable: false,
+                    selectHelper: true,
+					select: function(start, end, allDay) {
+                        var title = prompt('Event Title:');
+                        if (title) {
+                            self.calendar.fullCalendar('renderEvent',
+                            {
+                                title: title,
+                                start: start,
+                                end: end,
+                                allDay: allDay
+                            },
+                            true
+                            );
+                        }
+                        self.calendar.fullCalendar('unselect');
+                    },
+                    drop: function(date, allDay) {
+                        var originalEventObject = $(this).data('eventObject');
+                        var copiedEventObject = $.extend({}, originalEventObject);
+                        copiedEventObject.start = date;
+                        copiedEventObject.allDay = allDay;
+                        self.calendar.fullCalendar('renderEvent', copiedEventObject, true);
+                        if ($('#drop-remove').is(':checked')) {
+                            $(this).remove();
+                        }
+
+                    }
+                });
+                
+                $("#new-event").on("click",function(){
+                    var et = $("#new-event-text").val();
+                    if(et != ''){
+                        $("#external-events").prepend('<a class="list-group-item external-event">'+et+'</a>');
+                        self.prepare_external_list();
+                    }
+                });
+                
+            }
+		},
+		find: function(){
+			var self = this;
+			self.posts = [];
+			
+			FG.api('GET', '/calendar_employees', {
+				join: [
+					'calendar',
+					'calendar,types_calendars',
+				]
+			}, function(r){
+				if(r[0] != undefined && r[0].id > 0){
+					r.forEach(function(x){
+						c = x.calendar;
+						var d_s = new Date(c.start.replace(/-/g,"/"));
+						var d_e = new Date(c.end.replace(/-/g,"/"));
+						
+						formatted_date_start =  d_s.getFullYear() + "-" + (d_s.getMonth() + 1) + "-" + d_s.getDate();
+						formatted_date_end =  d_e.getFullYear() + "-" + (d_e.getMonth() + 1) + "-" + d_e.getDate();
+						
+						self.posts.push({
+							id: c.id,
+							allDay: Boolean(c.all_day),
+							title: c.title,
+							start: c.start,
+							end: c.end,
+							className: 'blue',
+							// url: 'https://www.facebook.com/sweetsamshopco/'
+						});
+					});
+					
+				}
+					self.$root._mpb("show",{value: [0,100],speed: 0});
+				self.load_calendar();
+			});
+		},
+	}
+});
+/* END EMPLOYEES */
+
 var router = new VueRouter({
 	routes: [
 		{ path: '/', component: PagesDashboard, name: 'page-dashboard' },
 		{ path: '/login', component: PagesLogin, name: 'page-login' },
+		
+		/* EMPLOYEES */
+		{ path: '/employees/list', component: PagesEmployeesList, name: 'page-employees-list' },
+		{ path: '/employees/view/:employee_id', component: PagesEmployeesSingleView, name: 'page-employees-single-view' },
+		{ path: '/employees/view/:employee_id/calendar', component: PagesEmployeesCalendarView, name: 'page-employees-single-view-calendar' },
+		/* END EMPLOYEES */
+		
 		
 		/* ACCOUNTS */
 		{ path: '/accounts/list', component: PagesAccountsList, name: 'page-accounts-list' },

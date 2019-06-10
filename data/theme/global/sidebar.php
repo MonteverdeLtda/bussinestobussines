@@ -50,6 +50,18 @@
 				</li>
 				<!-- // END ACCOUNTS -->
 				
+				<!-- // EMPLOYEES -->
+				<li class="xn-openable">
+					<a href="#">
+						<i class="fas fa-user-circle"></i>
+						<span class="xn-text"> Empleados</span>
+					</a>
+					<ul>
+						<li><a @click="router.push({ name: 'page-employees-list' })"><span class="fas fa-list"></span> Listar todas</a></li>
+					</ul>
+				</li>
+				<!-- // END EMPLOYEES -->
+				
 				<!-- // CONTACTS -->
 				<li class="xn-openable">
 					<a href="#"><span class="far fa-address-book"></span> <span class="xn-text"> Contactos</span></a>

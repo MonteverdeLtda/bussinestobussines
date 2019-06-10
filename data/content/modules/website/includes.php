@@ -40,5 +40,10 @@ $this->include_template("/addresses/single.php");
 
 /* GALLERY */
 $this->include_template("/media/gallery.php");
-
 /* END GALLERY */
+
+
+/* EMPLOYEES */
+$this->include_template("/employees/lists.php");
+$this->include_template("/employees/single.php");
+/* END EMPLOYEES */
