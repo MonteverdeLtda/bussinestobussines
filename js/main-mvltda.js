@@ -2359,38 +2359,9 @@ var PagesAccountsRequestsSingleCalendarAdd = Vue.extend({
 				request: 0,
 			},
 			posts: [],
-			jsonData: [
-				{
-				 "id": 1,
-				 "description": "group tasks 1",
-				 "start": "2016-12-01",
-				 "end": "2016-12-15",
-				 "calculatePercent": false,
-				 "color": "#004d00",
-				 "tasks": [
-					/*
-					{
-					   "id": 2,
-					   "description": "group tasks 2",
-					   "start": "2016-12-03",
-					   "end": "2016-12-10",
-					   "calculatePercent": true,
-					   "tasks": [{
-							 "id": 1,
-							 "description": "Task 1",
-							 "start": "2016-12-03",
-							 "end": "2016-12-07",
-							 "resources": ["person A", "person B"],
-							 "percent": 50
-						  }
-					   ],
-					}
-					*/
-				 ]
-			  }
-			],
 			calendar: {
 				config: {
+					showpercents: false, //boolean - show/hide column resource
 					showResources: true, //boolean - show/hide column resource
 					showStartDate: true, //boolean - show/hide column date start
 					showEndDate: true, //boolean - show/hide column date end
@@ -2401,7 +2372,8 @@ var PagesAccountsRequestsSingleCalendarAdd = Vue.extend({
 						resources: "Recursos", // column resource titlte
 						percent: "Porcentaje (%)" // column percent title
 					}
-				}
+				},
+				data: [],
 			},
 			gcGantt: null,
 		};
@@ -2418,17 +2390,61 @@ var PagesAccountsRequestsSingleCalendarAdd = Vue.extend({
 	methods: {
 		load_calendar(){
 			var self = this;
-			self.gcGantt = new GCGantt('gc-gantt', self.jsonData, self.calendar.config);
+			self.gcGantt = new GCGantt('gc-gantt', self.calendar.data, self.calendar.config);
 		},
 		find(){
 			var self = this;
-			self.load_calendar();
 			
 			FG.api('GET', '/crew_technical_visits', {
-				join: [ 'employees', ]
+				join: [
+					'employees',
+					'employees,calendar',
+				]
 			}, function(a){
+				console.log(a);
 				if(a[0] != undefined && a[0].id > 0){
-					console.log(a);
+					a.forEach(function(technical){
+						date_c = new Date();
+						console.log(date_c.getFullYear() + '-' + date_c.getMonth() + '-' + (date_c.getDate() - 2));
+				
+						if(self.calendar.data[technical.employee.id] == undefined || self.calendar.data[technical.employee.id] <= 0){
+							self.calendar.data[technical.employee.id] = {
+								 id: technical.employee.id,
+								 description: technical.employee.first_name + '' + technical.employee.second_name + '' + technical.employee.surname + '' + technical.employee.second_surname,
+								 start: date_c.getFullYear() + '-' + date_c.getMonth() + '-' + (date_c.getDate() - 2),
+								 end: date_c.getFullYear() + '-' + (date_c.getMonth() + 2) + '-' + (date_c.getDate() + 2),
+								 calculatePercent: true,
+								 color: "#FFFFFF",
+								 tasks: []
+							};
+						};
+						
+						
+						technical.employee.calendar.forEach(function(calend){
+							self.calendar.data[technical.employee.id].tasks.push({
+								"id": calend.id,
+								"description": calend.title,
+								"start": calend.start,
+								"end": calend.end,
+								"resources": ["person A", "person B"],
+								"percent": 1
+							});
+						});
+						
+						
+						/*
+						self.calendar.data.push({
+							 id: a.id,
+							 description: a.title,
+							 start: a.start,
+							 end: a.end,
+							 calculatePercent: false,
+							 color: "#004d00",
+							 tasks: []
+						});
+						*/
+					});
+					self.load_calendar();
 				}
 			});
 			// var gcGantt = new GCGantt('gc-gantt', self.jsonData, {});
