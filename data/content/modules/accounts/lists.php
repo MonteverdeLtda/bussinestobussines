@@ -4,7 +4,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="panel panel-default">
-						<div class="panel-heading">                                
+						<div class="panel-heading">
 							<h3 class="panel-title">Cuentas</h3>
 							<ul class="panel-controls">
 								<li>
@@ -29,8 +29,8 @@
 								</li>
 							</ul>                                
 						</div>
-						<div class="panel-body">
-							<table class="table table-hover table-bordereds datatable">
+						<div class="panel-body table-responsive">
+							<table class="table table-hover datatable">
 								<thead>
 									<tr>
 										<th>Tipo de Cliente</th>
@@ -39,8 +39,8 @@
 										<th>Nombre / Titular</th>
 										<th>Direccion Principal</th>
 										<th>Direccion de Facturacion</th>
-										<th>Representante Legal</th>
-										<th>Contacto Principal</th>
+										<th>Teléfono Fijo</th>
+										<th>Móvil</th>
 										<th></th>
 									</tr>
 								</thead>
@@ -53,16 +53,6 @@
 										<td>{{ post.names }}</td>
 										<td>{{ post.address_principal }}, {{ post.address_principal_city.name }}, {{ post.address_principal_department.name }}</td>
 										<td>{{ post.address_invoices }}, {{ post.address_invoices_city.name }}, {{ post.address_invoices_department.name }}</td>
-										<td>
-											<router-link tag="a" :to="{ name: 'page-contacts-view', params: { contact_id: post.represent_legal.id } }" class="panel-remove" title="Ver Contacto" data-toggle="tooltip" data-placement="bottom">
-												{{ post.represent_legal.first_name }} {{ post.represent_legal.second_name }} {{ post.represent_legal.surname }} {{ post.represent_legal.second_surname }}
-											</router-link>
-										</td>
-										<td>
-											<router-link tag="a" :to="{ name: 'page-contacts-view', params: { contact_id: post.contact.id } }" class="panel-remove" title="Ver Contacto" data-toggle="tooltip" data-placement="bottom">
-												{{ post.contact.first_name }} {{ post.contact.second_name }} {{ post.contact.surname }} {{ post.contact.second_surname }}
-											</router-link>
-										</td>
 										<td>
 											<router-link data-toggle="tooltip" data-placement="top" title="Ver Cuenta" tag="button" :to="{ name: 'page-accounts-view', params: { account_id: post.id } }" class="btn btn-default btn-rounded btn-xs">
 												<i class="fas fa-eye"></i>

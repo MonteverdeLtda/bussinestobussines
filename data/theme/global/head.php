@@ -20,22 +20,27 @@
 <script src="https://harrywood.co.uk/maps/examples/leaflet/leaflet/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/2.11/lib/OpenLayers.js"></script> 
 <style type="text/css">
-	#controls {
-		width: 512px;
-	}
-	#controlToggle {
-		padding-left: 1em;
-	}
-	#controlToggle li {
-		list-style: none;
-	}
-	.smallmap {
-		width: 100%;
-		height: 512px;
-		border: 1px solid #ccc;
-	}
+#controls {
+	width: 512px;
+}
+#controlToggle {
+	padding-left: 1em;
+}
+#controlToggle li {
+	list-style: none;
+}
+.smallmap {
+	width: 100%;
+	height: 512px;
+	border: 1px solid #ccc;
+}
+.cursorPointer {
+	cursor: pointer;
+}
 </style>
 <script src="https://ol2.dataservix.com/lib/OpenLayers.js"></script>
 
 
-<link href="/css/gc-gantt-master/gcGantt.css" media="all" rel="stylesheet" type="text/css" />
+<!-- // <link href="/css/gc-gantt-master/gcGantt.css" media="all" rel="stylesheet" type="text/css" /> -->
+<link href="/js/plugins/jQuery.Gantt/css/style.css" media="all" rel="stylesheet" type="text/css" />
+

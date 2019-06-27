@@ -59,7 +59,7 @@
 																</tr>
 															</thead>
 															<tbody>
-																<tr v-for="crew in item.crew_clients">
+																<tr v-for="crew in item.accounts_contacts">
 																	<td>{{ crew.contact.identification_type.name }}</td>
 																	<td>{{ crew.contact.identification_number }}</td>
 																	<td>{{ crew.contact.first_name }} {{ crew.contact.second_name }}</td>

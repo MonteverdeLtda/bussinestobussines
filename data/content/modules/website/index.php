@@ -35,6 +35,10 @@
 			.content-frame-right {
 				height: auto !important;
 			}
+						
+			.form-group .input-group-addon {
+				color: #666;
+			}
 		</style>
 		<?php $this->include_file_global("/navigation.php"); ?>
 		<?php $this->include_file_global("/sidebar.php"); ?>

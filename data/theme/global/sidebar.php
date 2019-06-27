@@ -15,7 +15,6 @@
 					<div class="profile">
 						<div class="profile-image">
 							<img :src="'/api/media/?picture=' + $root.authResponse.userData.avatar"/>
-							{{  }}
 						</div>
 						<div class="profile-data">
 							<div class="profile-data-name">{{ $root.authResponse.userData.names }}</div>
@@ -57,10 +56,24 @@
 						<span class="xn-text"> Empleados</span>
 					</a>
 					<ul>
+						<li><a @click="router.push({ name: 'page-employees-add' })"><span class="fas fa-user-plus"></span> Añadir Empleado</a></li>
 						<li><a @click="router.push({ name: 'page-employees-list' })"><span class="fas fa-list"></span> Listar todas</a></li>
 					</ul>
 				</li>
 				<!-- // END EMPLOYEES -->
+				
+				<!-- // DEPARTMENTS -->
+				<li class="xn-openable">
+					<a href="#">
+						<i class="fas fa-building"></i>
+						<span class="xn-text"> Departamentos</span>
+					</a>
+					<ul>
+						<li><a @click="router.push({ name: 'page-departments-add' })"><span class="fas fa-user-plus"></span> Añadir Departamento</a></li>
+						<li><a @click="router.push({ name: 'page-departments-list' })"><span class="fas fa-list"></span> Listar todos</a></li>
+					</ul>
+				</li>
+				<!-- // END DEPARTMENTS -->
 				
 				<!-- // CONTACTS -->
 				<li class="xn-openable">
@@ -78,10 +91,28 @@
 				</li>
 				<!-- // END CONTACTS -->
 				
-				<!-- // ADDRESS -->
+				<!-- // EVENTS -->
+				<li class="xn-openable">
+					<a href="#"><span class="far fa-calendar-alt"></span> <span class="xn-text"> Calendario</span></a>
+					<ul>
+						<li><a @click="router.push({ name: 'page-events-list' })"><span class="fas fa-list"></span> Listar</a></li>
+						<!-- //
+						<li class="xn-openable">
+							<a href="#"><span class="fas fa-stream"></span> Mas opciones</a>
+							<ul>
+								<li><a @click="router.push({ name: 'page-contacts-list' })"><span class="fas fa-list"></span> Listar X Cuentas</span></a></li>
+							</ul>
+						</li>
+						-->
+					</ul>
+				</li>
+				<!-- // END EVENTS -->
+				
+				<!-- // ADDRESSES -->
 				<li class="xn-openable">
 					<a href="#"><span class="fas fa-map-marked-alt"></span> <span class="xn-text"> Direcciones</span></a>
 					<ul>
+						<li><a @click="router.push({ name: 'page-addresses-add' })"><span class="fas fa-marked-alt"></span> Añadir Dirección</a></li>
 						<li><a @click="router.push({ name: 'page-addresses-list' })"><span class="fas fa-list"></span> Listar</a></li>
 						<!-- //
 						<li class="xn-openable">
@@ -93,7 +124,7 @@
 						-->
 					</ul>
 				</li>
-				<!-- // END ADDRESS -->
+				<!-- // END ADDRESSES -->
 				
 				<!-- // USERS -->
 				<li class="xn-openable">
@@ -129,29 +160,52 @@
 				</li>
 				<!-- // END MEDIA -->
 				
-				<!--
+				<!-- // SYSTEM -->
 				<li class="xn-openable">
-					<a href="#"><span class="fa fa-sitemap"></span> <span class="xn-text">Navigation Levels</span></a>
-					<ul>                            
+					<a href="#"><span class="fas fa-cogs"></span> <span class="xn-text"> Sistema</span></a>
+					<ul>
+						
 						<li class="xn-openable">
-							<a href="#">Second Level</a>
+							<a href="#"><span class="fas fa-stream"></span> Empleados</a>
 							<ul>
-								<li class="xn-openable">
-									<a href="#">Third Level</a>
-									<ul>
-										<li class="xn-openable">
-											<a href="#">Fourth Level</a>
-											<ul>
-												<li><a href="#">Fifth Level</a></li>
-											</ul>
-										</li>
-									</ul>
-								</li>
+								<li><a @click="router.push({ name: 'page-system-types-eps' })"><span class="fas fa-list"></span> Listado de EPS</a></li>
 							</ul>
-						</li>                            
+						</li>
+						<li class="xn-openable">
+							<a href="#"><span class="fas fa-stream"></span> Personas</a>
+							<ul>
+								<li><a @click="router.push({ name: 'page-system-types-identifications' })"><span class="fas fa-list"></span> Tipos de Identificacion</a></li>
+								<li><a @click="router.push({ name: 'page-system-types-genders' })"><span class="fas fa-list"></span> Tipos de Generos</a></li>
+								<li><a @click="router.push({ name: 'page-system-types-contacts' })"><span class="fas fa-list"></span> Tipo de Contactos</a></li>
+								<li><a @click="router.push({ name: 'page-system-types-bloods-rhs' })"><span class="fas fa-list"></span> Tipos de RH</a></li>
+								<li><a @click="router.push({ name: 'page-system-types-bloods' })"><span class="fas fa-list"></span> Tipos de Sangre</a></li>
+							</ul>
+						</li>
+						<li class="xn-openable">
+							<a href="#"><span class="fas fa-stream"></span> Bancos</a>
+							<ul>
+								<li><a @click="router.push({ name: 'page-system-types-banks' })"><span class="fas fa-list"></span> Tipos de Cuentas de Bancos</a></li>
+							</ul>
+						</li>
+						<li class="xn-openable">
+							<a href="#"><span class="fas fa-stream"></span> Direcciones</a>
+							<ul>
+								<li><a @click="router.push({ name: 'page-system-types-letters-addresses' })"><span class="fas fa-list"></span> Letras</a></li>
+							</ul>
+						</li>
+						
+						<!-- //
+						<li class="xn-openable">
+							<a href="#"><span class="fas fa-stream"></span> Mas opciones</a>
+							<ul>
+								<li><a @click="router.push({ name: 'page-contacts-list' })"><span class="fas fa-list"></span> Listar X Cuentas</span></a></li>
+							</ul>
+						</li>
+						-->
 					</ul>
 				</li>
-				-->
+				<!-- // END SYSTEM -->
+				
 			</ul>
 		</div>
 	</div>

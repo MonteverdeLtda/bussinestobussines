@@ -2,7 +2,6 @@
 	<div>
 		<ul class="x-navigation x-navigation-horizontal x-navigation-panel" v-if="$root.status === 'connected'">
 			<div>
-			
 				<li class="xn-icon-button">
 					<a href="#" class="x-navigation-minimize"><span class="fa fa-dedent"></span></a>
 				</li>
@@ -41,6 +40,7 @@
 					</div>                        
 				</li>
 				
+				
 				<li class="xn-icon-button pull-right">
 					<a href="#" title="Solicitudes" data-toggle="tooltip" data-placement="bottom"><span class="fa fa-tasks"></span></a>
 					<div class="informer informer-warning">{{ requests.length }}</div>
@@ -53,8 +53,8 @@
 						</div>
 						<div class="panel-body list-group scroll" style="height: 200px;">
 							
-							<a @click="linkRequests(request.id, request.client.id)" class="list-group-item" v-for="request in requests">
-								<strong>{{ request.client.names }}</strong>
+							<a @click="linkRequests(request.id, request.account.id)" class="list-group-item" v-for="request in requests" style="cursor:pointer;">
+								<strong>{{ request.account.names }}</strong>
 								<p></p>
 								<div class="progress progress-small progress-striped active">
 									<div v-if="request.status.id == 1" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%;">15%</div>
@@ -70,7 +70,87 @@
 						<div class="panel-footer text-center">
 							<a style="cursor:pointer;">Mostrar todas las solicitudes</a>
 						</div>                            
-					</div>                        
+					</div>
+				</li>
+				
+				<!--
+				<li class="xn-icon-button pull-right">
+					<a href="#" title="Tareas" data-toggle="tooltip" data-placement="bottom"><span class="fa fa-tasks"></span></a>
+					<div class="informer informer-warning">{{ tasks.length }}</div>
+					<div class="panel panel-primary animated zoomIn xn-drop-left xn-panel-dragging">
+						<div class="panel-heading">
+							<h3 class="panel-title"><span class="fa fa-tasks"></span> Tareas</h3>
+							<div class="pull-right">
+								<span class="label label-warning">{{ tasks.length }} pendientes</span>
+							</div>
+						</div>
+						<div class="panel-body list-group scroll" style="height: 200px;">
+							<a class="list-group-item" v-for="task in tasks">
+								<strong>{{ task.type.name }}</strong>
+								<p>
+									{{ task.title }} <br>
+								</p>
+								
+								<div v-if="task.type.id == 2">
+									Debes validar la solictud que este correctamente diligenciada y con los datos correctos.
+								</div>
+								<div v-if="task.type.id == 2">
+									Debes agendar una visita.
+								</div>
+								<div v-if="task.type.id == 3">
+									Debes entregar el producto/servicio al cliente.
+								</div>
+								<div v-if="task.type.id == 4">
+									Debes visitar la direccion y crear el inventario para esta solicitud.
+								</div>
+								<div v-if="task.type.id == 5">
+									Debes comunicarte con el cliente.
+								</div>
+								
+								<small class="text-muted">{{ task.created }}</small>
+							</a>
+						</div>
+						<div class="panel-footer text-center">
+							<a style="cursor:pointer;">Mostrar todas las solicitudes</a>
+						</div>
+					</div>
+				</li>
+				-->
+				
+				
+				<li class="xn-icon-button pull-right">
+					<a href="#" title="Esperando Asignacion de personal" data-toggle="tooltip" data-placement="bottom"><span class="fas fa-business-time"></span></a>
+					<div class="informer informer-warning">{{ events.length }}</div>
+					<div class="panel panel-primary animated zoomIn xn-drop-left xn-panel-dragging">
+						<div class="panel-heading">
+							<h3 class="panel-title"><span class="fas fa-business-time"></span> Esperando Asignacion de personal</h3>
+							<div class="pull-right">
+								<span class="label label-warning">{{ events.length }} pendientes</span>
+							</div>
+						</div>
+						<div class="panel-body list-group scroll" style="height: 200px;">
+							<a class="list-group-item" v-for="event in events">
+								<strong>
+									{{ event.type.name }}
+									<span class="label label-warning">{{ event.status.name }}</span>
+								</strong>
+								<p>
+									{{ event.title }} <br>
+									<button type="button" class="btn btn-xs btn-info">
+										Agregar Personal
+									</button>
+								</p>
+								
+								<div v-if="event.type.id == 1">
+									Pendiente asignar personal al evento.
+								</div>
+								<small class="text-muted">{{ event.created }}</small>
+							</a>
+						</div>
+						<div class="panel-footer text-center">
+							<a style="cursor:pointer;">Mostrar todos los eventos</a>
+						</div>
+					</div>
 				</li>
 			</div>
 		</ul>

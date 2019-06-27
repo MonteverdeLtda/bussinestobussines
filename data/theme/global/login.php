@@ -62,7 +62,7 @@
 	background: url(../img/bg.png) left top repeat #1b1e244d;
 }
 .login-container .login-box {
-	width: 400px;
+	/* width: 400px; */
 	margin: 0px auto;
 	padding-top: 20px;
 }
@@ -72,5 +72,6 @@
 	height: 250px;
 	float: left;
 	margin-bottom: 10px;
+	background-size: 100% auto;
 }
 </style>

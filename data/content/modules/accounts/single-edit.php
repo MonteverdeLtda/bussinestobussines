@@ -2,9 +2,23 @@
 	<div>
 		<div class="page-content-wrap">
 			<div class="row">
-				<div class="col-md-1">
-				</div>
-				<div class="col-md-10">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title"><strong>Viendo</strong> Cuenta</h3>
+							<ul class="panel-controls">
+								<li>
+									<router-link tag="a" :to="{ name: 'page-accounts-list' }" class="panel-remove">
+										<span class="fa fa-times"></span>
+									</router-link>
+								</li>
+							</ul>
+						</div>
+						<div class="panel-body">
+							<component-navigation-top-pages-accounts></component-navigation-top-pages-accounts>
+						</div>
+					</div>
+					
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title"><strong>Modificar</strong> Cuenta</h3>
@@ -62,26 +76,6 @@
 											<span class="input-group-addon"><span class="fas fa-signature"></span></span>
 											<input type="text" class="form-control" name="names" v-model="post.names" />
 										</div>                                            
-										<span class="help-block">Este campo es obligatorio.</span>
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Representante Legal</label>
-									<div class="col-md-6 col-xs-12">
-										<select class="form-control select" name="represent_legal" data-v-model="represent_legal" data-live-search="true">
-											<option value=""></option>
-										</select>
-										<span class="help-block">Este campo es obligatorio.</span>
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Contacto Principal</label>
-									<div class="col-md-6 col-xs-12">
-										<select class="form-control select" name="contact" data-v-model="contact" data-live-search="true">
-											<option value=""></option>
-										</select>
 										<span class="help-block">Este campo es obligatorio.</span>
 									</div>
 								</div>
@@ -147,6 +141,26 @@
 										<span class="help-block">Este campo es obligatorio.</span>
 									</div>
 								</div>
+								
+								<div class="form-group">
+									<label class="col-md-3 col-xs-12 control-label">Teléfono</label>
+									<div class="col-md-6 col-xs-12">                                            
+										<div class="input-group">
+											<span class="input-group-addon"><span class="fas fa-fingerprint"></span></span>
+											<input type="text" class="form-control mask_phone_ext" name="phone" v-model="post.phone" />
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-3 col-xs-12 control-label">Móvil</label>
+									<div class="col-md-6 col-xs-12">                                            
+										<div class="input-group">
+											<span class="input-group-addon"><span class="fas fa-fingerprint"></span></span>
+											<input type="text" class="form-control mask_phone" name="mobile" v-model="post.mobile" />
+										</div>
+									</div>
+								</div>
 							</div>
 								
 							<div class="panel-body">
@@ -160,8 +174,6 @@
 							</div>
 						</form>
 					</div>
-				</div>
-				<div class="col-md-1">
 				</div>
 			</div>
 		</div>

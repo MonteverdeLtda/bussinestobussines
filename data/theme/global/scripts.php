@@ -1,7 +1,14 @@
 <!-- START PLUGINS -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<!-- // <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+  
 <script type="text/javascript" src="/js/plugins/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="/js/plugins/jquery/jquery-ui.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!-- <script type="text/javascript" src="/js/plugins/jquery/jquery-ui.min.js"></script> -->
 <script type="text/javascript" src="/js/plugins/bootstrap/bootstrap.min.js"></script>
+
+
+
 <!-- END PLUGINS -->
 
 <!-- START THIS PAGE PLUGINS-->
@@ -35,15 +42,23 @@
 <script type="text/javascript" src="/js/plugins/nvd3/nv.d3.min.js"></script>
 <script type="text/javascript" src="/js/plugins/datatables/jquery.dataTables.min.js"></script>    
    
+        <script type="text/javascript" src="/js/plugins/smartwizard/jquery.smartWizard-2.0.min.js"></script>       
 <script type='text/javascript' src='/js/plugins/validationengine/languages/jquery.validationEngine-en.js'></script>
 <script type='text/javascript' src='/js/plugins/validationengine/jquery.validationEngine.js'></script>
 <script type='text/javascript' src='/js/plugins/jquery-validation/jquery.validate.js'></script>
 <script type='text/javascript' src='/js/plugins/maskedinput/jquery.maskedinput.min.js'></script>
 
+<script src="https://www.bing.com/api/maps/mapcontrol?key=Atryp6sZtQXpXgEw8wWqZEAXrSSVgAatL99H5XKB1f6L6zqL-wtsUekQKrTdNwed" async defer></script>
+
+<script src="/js/plugins/jQuery.Gantt/js/jquery.fn.gantt.js"></script>
+
+
+
 <script type="text/javascript" src="/js/plugins/moment.min.js"></script>
 <script type="text/javascript" src="/js/plugins/fullcalendar/fullcalendar.min.js"></script>
 
-<script src="/js/plugins/gc-gantt-master/gcGantt.js" type="text/javascript"></script>
+<!-- // <script src="/js/plugins/gc-gantt-master/gcGantt.js" type="text/javascript"></script> -->
+
 
 <!-- END THIS PAGE PLUGINS-->
 <script type="text/javascript">

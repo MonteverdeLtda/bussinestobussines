@@ -19,9 +19,9 @@
     # $data[] = array('title'=>'Proin laoreet justo nec','start'=>$year.'-'.$month.'-16','className'=>'orange');
     # $data[] = array('title'=>'Ut faucibus sapien','start'=>date("Y-m-d"));
     # $data[] = array('title'=>'Donec porta orci dapibus','start'=>$year.'-'.$month.'-21','end'=>$year.'-'.$month.'-28','className'=>'blue');
-    $data[] = array('id'=>1, 'title'=>'Phasellus ac arcu in tortor faucibus pharetra','start'=>$year.'-'.$month.'-01','end'=>$year.'-'.$month.'-01','className'=>'green');
-    $data[] = array('id'=>2, 'title'=>'Phasellus ac arcu in tortor faucibus pharetra','start'=>$year.'-'.$month.'-01','end'=>$year.'-'.$month.'-05','className'=>'blue');
-    $data[] = array('id'=>3, 'title'=>'Phasellus ac arcu in tortor faucibus pharetra','start'=>$year.'-'.$month.'-07 06:00:00','end'=>$year.'-'.$month.'-07 10:00:00','className'=>'red');
+    $data[] = array('id'=>10001, 'title'=>'Phasellus ac arcu in tortor faucibus pharetra','start'=>$year.'-'.$month.'-01','end'=>$year.'-'.$month.'-01','className'=>'green');
+    $data[] = array('id'=>10002, 'title'=>'Phasellus ac arcu in tortor faucibus pharetra','start'=>$year.'-'.$month.'-01','end'=>$year.'-'.$month.'-05','className'=>'blue');
+    $data[] = array('id'=>10003, 'title'=>'Phasellus ac arcu in tortor faucibus pharetra','start'=>$year.'-'.$month.'-07 06:00:00','end'=>$year.'-'.$month.'-07 10:00:00','className'=>'red');
     
     echo json_encode($data);
 ?>

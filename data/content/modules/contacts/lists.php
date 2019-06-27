@@ -26,24 +26,25 @@
 							</ul>                                
 						</div>
 						<div class="panel-body table-responsive">
-							<table class="table table-hover table-bordereds datatable">
+							<table class="table table-hover table-bordered datatable">
 								<thead>
 									<tr>
-										<th>Tipo de DNI</th>
+										<th>Doc.</th>
 										<th># Identificacion</th>
 										<th>Nombres</th>
 										<th>Apellidos</th>
 										<th>T. Fijo</th>
 										<th>T. Móvil</th>
 										<th>E-Mail</th>
-										<th>Mail</th>
+										<th class="col-md-4">Direccion</th>
 										<th></th>
 									</tr>
 								</thead>
 								<tbody>
+									<!-- 
 									<tr v-for="post in posts">
 										<td>{{ post.id }}</td>
-										<td>{{ post.identification_type.name }}</td>
+										<td>{{ post.identification_type.code }}</td>
 										<td>{{ post.identification_number }}</td>
 										<td>{{ post.first_name }} {{ post.second_name }}</td>
 										<td>{{ post.surname }} {{ post.second_surname }}</td>
@@ -63,6 +64,7 @@
 											</button>
 										</td>
 									</tr>
+									-->
 								</tbody>
 							</table>
 						</div>

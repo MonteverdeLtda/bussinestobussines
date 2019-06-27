@@ -8,11 +8,9 @@
 							<h3 class="panel-title">Empleados</h3>
 							<ul class="panel-controls">
 								<li>
-									<!-- //
-									<router-link tag="a" :to="{ name: 'page-addresses-add' }" class="panel-plus" title="Añadir Cuenta" data-toggle="tooltip" data-placement="bottom">
+									<router-link tag="a" :to="{ name: 'page-employees-add' }" class="panel-plus" title="Añadir Empleado" data-toggle="tooltip" data-placement="bottom">
 										<span class="fas fa-user-plus"></span>
 									</router-link>
-									-->
 								</li>
 								<li><a @click="find()" class="panel-refresh" title="Actualizar" data-toggle="tooltip" data-placement="bottom"><span class="fa fa-refresh"></span></a></li>
 								<li>

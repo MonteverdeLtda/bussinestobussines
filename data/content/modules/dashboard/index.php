@@ -3,6 +3,11 @@
       <div class="page-content-wrap">
          <!-- START WIDGETS -->                    
          <div class="row">
+		 
+			<div id="dialogWellcome" title="Basic dialog">
+			  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+			</div>
+			 
             <!-- START WIDGET SLIDER 
             <div class="col-md-3">
                <div class="widget widget-default widget-carousel">
@@ -24,7 +29,7 @@
                      </div>
                   </div>
                   <div class="widget-controls">                                
-                     <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
+                     <a style="cursor:pointer;" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
                   </div>
                </div>
             </div>
@@ -41,7 +46,7 @@
                      <div class="widget-subtitle">Solicitudes Totales</div>
                   </div>
                   <div class="widget-controls">                                
-                     <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
+                     <a style="cursor:pointer;" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
                   </div>
                </div>
             </div>
@@ -59,7 +64,7 @@
                      <div class="widget-subtitle">Total de usuarios B2B</div>
                   </div>
                   <div class="widget-controls">                                
-                     <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
+                     <a style="cursor:pointer;" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
                   </div>
                </div>
             </div>
@@ -72,12 +77,12 @@
                      <span class="fa fa-user"></span>
                   </div>
                   <div class="widget-data">
-                     <div class="widget-int num-count">{{ users_clients }}</div>
+                     <div class="widget-int num-count">{{ accounts_users }}</div>
                      <div class="widget-title">Usuarios Clientes</div>
                      <div class="widget-subtitle">Total de usuarios B2B</div>
                   </div>
                   <div class="widget-controls">                                
-                     <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
+                     <a style="cursor:pointer;" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="top" title="Remove Widget"><span class="fa fa-times"></span></a>
                   </div>
                </div>
             </div>
@@ -96,17 +101,17 @@
 					{{ $root.plugins.date.year }}
 				  </div>
                   <div class="widget-controls">                                
-                     <a href="#" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="left" title="Remove Widget"><span class="fa fa-times"></span></a>
+                     <a style="cursor:pointer;" class="widget-control-right widget-remove" data-toggle="tooltip" data-placement="left" title="Remove Widget"><span class="fa fa-times"></span></a>
                   </div>
                   <div class="widget-buttons widget-c3">
                      <div class="col">
-                        <a href="#"><span class="fa fa-clock-o"></span></a>
+                        <a style="cursor:pointer;"><span class="fa fa-clock-o"></span></a>
                      </div>
                      <div class="col">
-                        <a href="#"><span class="fa fa-bell"></span></a>
+                        <a style="cursor:pointer;"><span class="fa fa-bell"></span></a>
                      </div>
                      <div class="col">
-                        <a href="#"><span class="fa fa-calendar"></span></a>
+                        <a style="cursor:pointer;"><span class="fa fa-calendar"></span></a>
                      </div>
                   </div>
                </div>
@@ -124,13 +129,13 @@
                         <span>Users vs returning</span>
                      </div>
                      <ul class="panel-controls" style="margin-top: 2px;">
-                        <li><a href="#" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
-                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a style="cursor:pointer;" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
+                        <li><a style="cursor:pointer;" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
                         <li class="dropdown">
-                           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span></a>                                        
+                           <a style="cursor:pointer;" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span></a>                                        
                            <ul class="dropdown-menu">
-                              <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span> Collapse</a></li>
-                              <li><a href="#" class="panel-remove"><span class="fa fa-times"></span> Remove</a></li>
+                              <li><a style="cursor:pointer;" class="panel-collapse"><span class="fa fa-angle-down"></span> Collapse</a></li>
+                              <li><a style="cursor:pointer;" class="panel-remove"><span class="fa fa-times"></span> Remove</a></li>
                            </ul>
                         </li>
                      </ul>
@@ -146,17 +151,17 @@
                <div class="panel panel-default">
                   <div class="panel-heading">
                      <div class="panel-title-box">
-                        <h3>Visitors</h3>
-                        <span>Visitors (last month)</span>
+                        <h3>Eventos</h3>
+                        <span>Todas las Visitas</span>
                      </div>
                      <ul class="panel-controls" style="margin-top: 2px;">
-                        <li><a href="#" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
-                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a style="cursor:pointer;" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
+                        <li><a @click="loadEvents()" style="cursor:pointer;" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
                         <li class="dropdown">
-                           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span></a>                                        
+                           <a style="cursor:pointer;" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span></a>                                        
                            <ul class="dropdown-menu">
-                              <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span> Collapse</a></li>
-                              <li><a href="#" class="panel-remove"><span class="fa fa-times"></span> Remove</a></li>
+                              <li><a style="cursor:pointer;" class="panel-collapse"><span class="fa fa-angle-down"></span> Collapse</a></li>
+                              <li><a style="cursor:pointer;" class="panel-remove"><span class="fa fa-times"></span> Remove</a></li>
                            </ul>
                         </li>
                      </ul>
@@ -164,6 +169,8 @@
                   <div class="panel-body padding-0">
                      <div class="chart-holder" id="dashboard-donut-1" style="height: 200px;"></div>
                   </div>
+				  
+				  {{ charts.donut }}
                </div>
                <!-- END VISITORS BLOCK -->
             </div>
@@ -172,17 +179,17 @@
                <div class="panel panel-default">
                   <div class="panel-heading">
                      <div class="panel-title-box">
-                        <h3>Projects</h3>
-                        <span>Projects activity</span>
+                        <h3>Solicitudes</h3>
+                        <span>Nuevas Solicitudes</span>
                      </div>
                      <ul class="panel-controls" style="margin-top: 2px;">
-                        <li><a href="#" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
-                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a style="cursor:pointer;" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
+                        <li><a @click="loadRequestsPending()" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
                         <li class="dropdown">
-                           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span></a>                                        
+                           <a style="cursor:pointer;" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span></a>                                        
                            <ul class="dropdown-menu">
-                              <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span> Collapse</a></li>
-                              <li><a href="#" class="panel-remove"><span class="fa fa-times"></span> Remove</a></li>
+                              <li><a style="cursor:pointer;" class="panel-collapse"><span class="fa fa-angle-down"></span> Collapse</a></li>
+                              <li><a style="cursor:pointer;" class="panel-remove"><span class="fa fa-times"></span> Remove</a></li>
                            </ul>
                         </li>
                      </ul>
@@ -192,48 +199,30 @@
                         <table class="table table-bordered table-striped">
                            <thead>
                               <tr>
-                                 <th width="50%">Project</th>
-                                 <th width="20%">Status</th>
-                                 <th width="30%">Activity</th>
+                                 <th width="50%">Cuenta</th>
+                                 <th width="20%">Estado</th>
+                                 <th width="30%">Actividad</th>
                               </tr>
                            </thead>
                            <tbody>
-                              <tr>
-                                 <td><strong>Joli Admin</strong></td>
-                                 <td><span class="label label-danger">Developing</span></td>
+                              <tr v-for="request in list.requests"> <!-- // @click="linkRequests(request.id, request.account.id)" style="cursor:pointer;" -->
+                                 <td><strong>{{ request.account.names }}</strong></td>
+                                 <td><span class="label label-danger">{{ request.status.name }}</span></td>
                                  <td>
                                     <div class="progress progress-small progress-striped active">
-                                       <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 85%;">85%</div>
+                                       <!-- // <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 85%;">85%</div> -->
+									   
+										<div v-if="request.status.id == 1" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%;">15%</div>
+										<div v-if="request.status.id == 2" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%;">30%</div>
+										<div v-if="request.status.id == 3" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%;">45%</div>
+										<div v-if="request.status.id == 4" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">60%</div>
+										<div v-if="request.status.id == 5" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%;">80%</div>
+										<div v-if="request.status.id == 8" class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%;">15%</div>
                                     </div>
                                  </td>
                               </tr>
-                              <tr>
-                                 <td><strong>Gemini</strong></td>
-                                 <td><span class="label label-warning">Updating</span></td>
-                                 <td>
-                                    <div class="progress progress-small progress-striped active">
-                                       <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 40%;">40%</div>
-                                    </div>
-                                 </td>
-                              </tr>
-                              <tr>
-                                 <td><strong>Taurus</strong></td>
-                                 <td><span class="label label-warning">Updating</span></td>
-                                 <td>
-                                    <div class="progress progress-small progress-striped active">
-                                       <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 72%;">72%</div>
-                                    </div>
-                                 </td>
-                              </tr>
-                              <tr>
-                                 <td><strong>Leo</strong></td>
-                                 <td><span class="label label-success">Support</span></td>
-                                 <td>
-                                    <div class="progress progress-small progress-striped active">
-                                       <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">100%</div>
-                                    </div>
-                                 </td>
-                              </tr>
+							  
+							  <!-- //
                               <tr>
                                  <td><strong>Virgo</strong></td>
                                  <td><span class="label label-success">Support</span></td>
@@ -243,6 +232,7 @@
                                     </div>
                                  </td>
                               </tr>
+							  -->
                            </tbody>
                         </table>
                      </div>
@@ -266,7 +256,7 @@
                               <span></span><b class="caret"></b>
                            </div>
                         </li>
-                        <li><a href="#" class="panel-fullscreen rounded"><span class="fa fa-expand"></span></a></li>
+                        <li><a style="cursor:pointer;" class="panel-fullscreen rounded"><span class="fa fa-expand"></span></a></li>
                      </ul>
                   </div>
                   <div class="panel-body">
@@ -327,13 +317,13 @@
                         <span>Event "Purchase Button"</span>
                      </div>
                      <ul class="panel-controls" style="margin-top: 2px;">
-                        <li><a href="#" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
-                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a style="cursor:pointer;" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
+                        <li><a style="cursor:pointer;" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
                         <li class="dropdown">
-                           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span></a>                                        
+                           <a style="cursor:pointer;" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span></a>                                        
                            <ul class="dropdown-menu">
-                              <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span> Collapse</a></li>
-                              <li><a href="#" class="panel-remove"><span class="fa fa-times"></span> Remove</a></li>
+                              <li><a style="cursor:pointer;" class="panel-collapse"><span class="fa fa-angle-down"></span> Collapse</a></li>
+                              <li><a style="cursor:pointer;" class="panel-remove"><span class="fa fa-times"></span> Remove</a></li>
                            </ul>
                         </li>
                      </ul>

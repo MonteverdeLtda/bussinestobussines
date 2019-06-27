@@ -62,26 +62,6 @@
 								</div>
 								
 								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Representante Legal</label>
-									<div class="col-md-6 col-xs-12">
-										<select class="form-control select" name="represent_legal" data-v-model="represent_legal" data-live-search="true">
-											<option value=""></option>
-										</select>
-										<span class="help-block">Este campo es obligatorio.</span>
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Contacto Principal</label>
-									<div class="col-md-6 col-xs-12">
-										<select class="form-control select" name="contact" data-v-model="contact" data-live-search="true">
-											<option value=""></option>
-										</select>
-										<span class="help-block">Este campo es obligatorio.</span>
-									</div>
-								</div>
-								
-								<div class="form-group">
 									<label class="col-md-3 col-xs-12 control-label">Dirección Principal</label>
 									<div class="col-md-6 col-xs-12">
 										<div class="input-group">
@@ -142,6 +122,29 @@
 										<span class="help-block">Este campo es obligatorio.</span>
 									</div>
 								</div>
+								
+								<div class="form-group">
+									<label class="col-md-3 col-xs-12 control-label">Teléfono Fijo</label>
+									<div class="col-md-6 col-xs-12">
+										<div class="input-group">
+											<span class="input-group-addon"><span class="fa fa-phone"></span></span>
+											<input type="text" class="form-control mask_phone_ext" name="phone" v-model="post.phone" />
+										</div>                                            
+										<!-- // <span class="help-block">This is sample of text field</span> -->
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-3 col-xs-12 control-label">Teléfono Móvil</label>
+									<div class="col-md-6 col-xs-12">
+										<div class="input-group">
+											<span class="input-group-addon"><span class="fa fa-phone"></span></span>
+											<input type="text" class="form-control mask_phone" name="mobile" v-model="post.mobile" />
+										</div>                                            
+										<!-- // <span class="help-block">This is sample of text field</span> -->
+									</div>
+								</div>
+								
 							</div>
 								
 							<div class="panel-body">
