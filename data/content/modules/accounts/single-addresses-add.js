@@ -3,401 +3,481 @@ var PagesAccountsAddressesAdd = Vue.extend({
 	data: function() {
 		return {
 			options: {
+				types_roads: [],
+				types_letters_addresses: [],
+				types_quadrants: [],
 				geo_departments: [],
 				geo_citys: [],
 			},
-			address_search: {
-				text: '',
-				street: '',
-				city: '',
-				county: '',
-				state: '',
-				country: 'Colombia',
-				resultData: [],
-			},
 			post: {
-				"address_input": null,
-				"place_id": null,
-				"place_rank": null,
-				"display_name": null,
-				"city": "",
-				"department": "",
-				"lat": null,
-				"lon": null,
-				"completo": null,
-				"icon": null,
+				address_input: null,
+				display_name: null,
+				completo: null,
+				lon: null,
+				lat: null,
+				department: null,
+				city: null,
+				type_road: null,
+				number_a: null,
+				letter_a: null,
+				quadrant_a: null,
+				number_b: null,
+				letter_b: null,
+				quadrant_b: null,
+				number_c: null,
+				postal_code: null,
+				additional_information: null,
 			},
+			jvalidate: null,
 			map: null,
 			popup: null,
 			currentPolygon: null,
 			currentMarker: null,
 			currentPossition: null,
+			address_search: {
+				resultData: [],
+			},
+			searchManager: '',
+			pin: null,
 		};
 	},
 	created: function () {
 		var self = this;
-		self.$root._mpb("show", { value: [0, 0], speed: 1 });
 	},
 	mounted: function () {
 		var self = this;
-		self.load_options_selects();
+		self.GetMap();
 	},
 	methods: {
-		searchAddress(typeData){
+		GetMap() {
 			var self = this;
-			var temp_params = {};
-			if(typeData === 1){
-				temp_params = {
-					q: self.address_search.text,
+			self.map = new Microsoft.Maps.Map('#myMap', {
+				zoom: 15,
+				mapTypeId: Microsoft.Maps.MapTypeId.aerial
+			});
+			//Make a request to geocode New York, NY.
+			// self.geocodeQuery(document.getElementById("from").value);
+			
+			self.load_options_selects();
+		},
+		//Geocode：Location
+		geocodeQuery(query) {
+			var self = this;
+			//If search manager is not defined, load the search module.
+			if (!self.searchManager) {
+				//Create an instance of the search manager and call the geocodeQuery function again.
+				Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () {
+					self.searchManager = new Microsoft.Maps.Search.SearchManager(self.map);
+					self.geocodeQuery(query);
+				});
+			} else {
+				var searchRequest = {
+					where: query,
+					callback: function (r) {
+						//Add the first result to the map and zoom into it.
+						if (r && r.results && r.results.length > 0) {
+							self.post.lat = r.results[0].location.latitude;
+							self.post.lon = r.results[0].location.longitude;
+							self.post.postal_code = r.results[0].address.postalCode;
+							self.post.completo = JSON.stringify(r.results[0]);
+						
+							// self.pin = new Microsoft.Maps.Pushpin(r.results[0].location);
+							self.pin = new Microsoft.Maps.Pushpin(r.results[0].location, {
+								title: self.post.address_input,
+								// subTitle: 'City Center',
+								text: 'Direccion'
+							});
+							
+							self.map.entities.push(self.pin);
+							self.map.setView({ bounds: r.results[0].bestView });
+						}
+					},
+					errorCallback: function (e) {
+						// alert("No results found.");
+						$.notify("No se han encontrado resultados.");
+					}
 				};
-				self.getSearchAddress(temp_params);
-			} else if(typeData === 2){
-				temp_params = {
-					street: self.address_search.street,
-					city: self.address_search.city,
-					//county: self.address_search.county,
-					state: self.address_search.state,
-					country: 'Colombia',
-				};
-				self.getSearchAddress(temp_params);
+				//Make the geocode request.
+				self.searchManager.geocode(searchRequest);
 			}
 		},
-		getSearchAddress(params){
+		GetMapDEMO() {
 			var self = this;
-			self.address_search.resultData = [];
-			params.format = 'jsonv2';
-			params.addressdetails = 1;
-			params.namedetails = 1;
-			params.limit = 25;
-			//params.polygon_geojson = 1;
-			
-			aPiMap.get('/search', {
-				'params': params
-			})
-			.then(function (response) {
-				json = response.data;
-				self.address_search.resultData = json;
-			})
-			.catch(function (error) {
-				json = error;
-				console.log(json);
+			/*
+			self.map = new Microsoft.Maps.Map('#myMap', {
+				center: new Microsoft.Maps.Location(47.6149, -122.1941),
+				mapTypeId: Microsoft.Maps.MapTypeId.load,
+				zoom: 8  //Zoom:1=zoomOut ~ 20=zoomUp
 			});
-		},
-		setAddressList(index){
-			var self = this;
-			seleted = self.address_search.resultData[index];
-			self.post.address_input = self.address_search.text;
-			self.post.place_id = seleted.place_id;
-			self.post.place_rank = seleted.place_rank;
-			self.post.display_name = seleted.display_name;
-			self.post.lat = seleted.lat;
-			self.post.lon = seleted.lon;
-			self.post.completo = JSON.stringify(seleted);
-			if(seleted.icon != undefined){ self.post.icon = seleted.icon; }
+			*/
 			
 			
-			self.currentPossition = self.currentMarker.getLatLng();
-			self.currentMarker.setLatLng(new L.LatLng(self.post.lat, self.post.lon),{draggable:'true'});
-			self.map.panTo(new L.LatLng(self.post.lat, self.post.lon))
-			// Carrera 50A, Santa María, Itagüí, Valle de Aburrá, Antioquia, 055413, Colombia
+			self.map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+				/* No need to set credentials if already passed in URL */
+				center: new Microsoft.Maps.Location(47.624527, -122.355255),
+				zoom: 8 });
+			Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () {
+				var searchManager = new Microsoft.Maps.Search.SearchManager(map);
+				var requestOptions = {
+					bounds: map.getBounds(),
+					where: 'Seattle',
+					callback: function (answer, userData) {
+						map.setView({ bounds: answer.results[0].bestView });
+						map.entities.push(new Microsoft.Maps.Pushpin(answer.results[0].location));
+					}
+				};
+				searchManager.geocode(requestOptions);
+			});
 		},
 		load_options_selects(){
 			var self = this;
 			self.$root._mpb("show",{value: [0,0],speed: 1});
-			
-			
-			FG.api('GET', '/geo_departments', {}, function(r){
+			FG.api('GET', '/types_roads', {}, function(r){
 				if(r.length > 0 && r[0].id > 0){
-					self.options.geo_departments = r;
-					
-					r.forEach(function(el){
-						$(".select[name='department']").append('<option value="'+el.id+'">'+el.name+'</option>');
-					});
-					
-					$(".select[name='department']").selectpicker('refresh');
-					self.$root._mpb("show",{value: [0,20],speed: 1});
-					self.load_plugins();
+					self.options.types_roads = r;
+					r.forEach(function(el){ $(".select[name='type_road']").append('<option value="'+el.id+'">'+el.name+'</option>'); });
+					$(".select[name='type_road']").selectpicker('refresh');
 				}
-			});
-		},
-		load_plugins(){
-			var self = this;
-			$(".wizard").smartWizard({
-				// This part of code can be removed FROM
-				onLeaveStep: function(obj){
-					var wizard = obj.parents(".wizard");
-					if(wizard.hasClass("wizard-validation")){
-						var valid = true;
-						$('input,textarea',$(obj.attr("href"))).each(function(i,v){
-							valid = validator.element(v) && valid;
+				self.$root._mpb("show",{value: [0,15],speed: 1});
+				FG.api('GET', '/geo_departments', {}, function(r){
+					if(r.length > 0 && r[0].id > 0){
+						self.options.geo_departments = r;
+						r.forEach(function(el){ $(".select[name='department']").append('<option value="'+el.id+'">'+el.name+'</option>'); });
+						$(".select[name='department']").selectpicker('refresh');
+					}
+					self.$root._mpb("show",{value: [0,20],speed: 1});
+					FG.api('GET', '/types_letters_addresses', {}, function(r){
+						if(r.length > 0 && r[0].id > 0){
+							self.options.types_letters_addresses = r;
+							r.forEach(function(el){ $(".letters-addresses").append('<option value="'+el.id+'">'+el.name+'</option>'); });
+							$(".letters-addresses").selectpicker('refresh');
+						}
+						self.$root._mpb("show",{value: [0,25],speed: 1});
+						FG.api('GET', '/types_quadrants', {}, function(r){
+							if(r.length > 0 && r[0].id > 0){
+								self.options.types_quadrants = r;
+								r.forEach(function(el){ $(".quadrants-addresses").append('<option value="'+el.id+'">'+el.name+'</option>'); });
+								$(".quadrants-addresses").selectpicker('refresh');
+							}
+							self.$root._mpb("show",{value: [0,30],speed: 1});
+							
+							self.load_plugins_this();
 						});
-						
-						if(!valid){
-							wizard.find(".stepContainer").removeAttr("style");
-							validator.focusInvalid();
-							return false;
-						}
-					}
-					return true;
-				},// <-- TO
-				//This is important part of wizard init
-				onShowStep: function(obj){
-					var wizard = obj.parents(".wizard");
-					if(wizard.hasClass("show-submit")){
-						var step_num = obj.attr('rel');
-						var step_max = obj.parents(".anchor").find("li").length;
-
-						if(step_num == step_max){
-							obj.parents(".wizard").find(".actionBar .btn-primary").css("display","block");
-						}
-					}
-					return true;
-				}//End
-			});
-			
-			// This par of code used for example
-			if($("#wizard-validation").length > 0){
-				var validator = $("#wizard-validation").validate({
-						rules: {
-							address_input: {
-								required: true,
-							},
-							display_name: {
-								required: true,
-							},
-							lat: {
-								required: true,
-							},
-							lon: {
-								required: true,
-							},
-							city: {
-								required: true,
-							},
-							department: {
-								required: true,
-							},
-							icon: {
-								required: false,
-							},
-						},
-						submitHandler: function() {
-							if(self.post.city > 0 && self.post.department > 0){
-								FG.api('GET', '/addresses', {
-									filter: [
-										'address_input,eq,' + self.post.address_input,
-									]
-								}, function (a) {
-									if(a[0] != undefined && a[0].id > 0){
-										FG.api('GET', '/accounts_addresses', {
-											filter: [
-												'account,eq,' + self.$route.params.account_id,
-												'address,eq,' + a[0].id
-											]
-										}, function (b) {
-											if(b[0] != undefined && b[0].id > 0){
-												$.notify("La direccion ya existe!", "error");
-												router.go(-1);
-											}else{
-												FG.api('POST', '/accounts_addresses', {
-													account: self.$route.params.account_id,
-													address: a[0].id
-												}, function (c) {
-													if(c > 0){
-														$.notify("La direccion fue agregada a la cuenta de manera correctamenta.!", "success");
-														router.go(-1);
-													}else{
-														$.notify("Hubo un problema al agregar la direccion a la cuenta.", "success");
-													}
-												});
-											}
-										});
-									}else{
-										FG.api('POST', '/addresses', self.post, function (d) {
-											if(d > 0){
-												$.notify("La direccion fue creada de manera correctamenta.!", "success");					
-												FG.api('GET', '/accounts_addresses', {
-													filter: [
-														'account,eq,' + self.$route.params.account_id,
-														'address,eq,' + d
-													]
-												}, function (b) {
-													if(b[0] != undefined && b[0].id > 0){
-														$.notify("La direccion ya existe!", "error");
-													}else{
-														FG.api('POST', '/accounts_addresses', {
-															account: self.$route.params.account_id,
-															address: d
-														}, function (c) {
-															if(c > 0){
-																$.notify("La direccion fue agregada a la cuenta de manera correctamenta.!", "success");
-																router.go(-1);
-															}else{
-																$.notify("Hubo un problema al agregar la direccion a la cuenta.", "success");
-															}
-														});
-													}
-												});
-												
-											}else{
-												$.notify("Hubo un problema para crear la direccion.", "success");
-											}
-										});
-									}
-								})
-							}else{
-								$.notify("Campos incompletos.", "error");
-							}
-						}
 					});
-			}// End of example
-					
-			if($(".select").length > 0){
-				$('.selectpicker').selectpicker('destroy');
-				$(".select").selectpicker();				
-				$(".select").on("change", function(){
-					for (var k in self.post){
-						if (typeof self.post[k] !== 'function') {
-							if($(this).attr("name") == k && self.post[k] != $(this).val()){
-								self.post[k] = $(this).val();
-								if(k=='department' || k=='department'){
-									self.load_citys(k);
-								}
-							}
-						}
-					}
 				});
-			}
-			self.$root._mpb("show",{value: [0,50],speed: 0});
-			self.rederMap();
+			});
 		},
-		load_citys(inputSelect){
+		load_citys(){
 			var self = this;
-			self.post.city = 0;
-			self.options.geo_departments = [];
-			self.$root._mpb("show",{value: [0,0],speed: 0});
+			self.post.city = null;
+			self.options.geo_citys = [];
+			self.$root._mpb("show",{value: [0,50],speed: 0});
 			
-			$(".select[name='city']").find('option').remove().end().append('<option value=""></option>');
+			$(".select[name='city']").find('option').remove().end().append('<option value="null"></option>');
 			
 			FG.api('GET', '/geo_citys', {
 				filter: [
 					'department,eq,' + self.post.department
 				]
 			}, function(r){
-				self.$root._mpb("show",{value: [0,50],speed: 0});
 				if(r.length > 0 && r[0].id > 0){
-					self.$root._mpb("show",{value: [0,100],speed: 1});
+					self.options.geo_citys = r;
 					r.forEach(function(el){
 						$(".select[name='city']").append('<option value="'+el.id+'">'+el.name+'</option>');
 					});
 					$(".select[name='city']").selectpicker('refresh');
+					self.$root._mpb("show",{value: [0,100],speed: 1 });
 				}
 			});
 		},
-		rederMap(){
+		load_plugins_this(){
 			var self = this;
-			self.map = new L.Map('vector_world_map');
-			
-			/*
-			var openstreet = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-				maxZoom: 18
-			}).addTo(self.map);
-			var subscriptionKey = 'tTk1JVEaeNvDkxxnxHm9cYaCvqlOq1u-fXTvyXn2XkA';
-			var satellite = L.tileLayer('https://atlas.microsoft.com/map/imagery/png?api-version=1&style=satellite&tileSize=256&zoom={z}&x={x}&y={y}&subscription-key=' + subscriptionKey, {
-				attribution: '© ' + new Date().getFullYear() + ' Microsoft, © ' + new Date().getFullYear() + ' DigitalGlobe',
-				tileSize: 256,
-				maxZoom: 18
-			}).addTo(self.map);
-			 */
-			var CartoDB = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-				maxZoom: 20
-			 }).addTo(self.map);
-			 
-			var satelliteGoogleHybrid = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
-				attribution: '&copy; ',
-				maxZoom: 20
-			 }).addTo(self.map);
-			 
-			var layerControl = L.control.layers({
-				// 'OpenStreetMap': openstreet,
-				'CartoDB': CartoDB,
-				// 'Mapa Satelite': satellite,
-				'Hibrido': satelliteGoogleHybrid,
-			}).addTo(self.map);
-			
-			self.$root._mpb("show",{value: [0,80],speed: 1});
-			
-			self.map.attributionControl.setPrefix('');
-			
-			var colombia = new L.LatLng(2.8894434,-73.783892); 
-			self.currentMarker = L.marker([2.8894434,-73.783892], {draggable:'true'});
-			
-			self.currentMarker.on('dragend', function(event){
-				self.currentMarker = event.target;
-				self.currentPossition = self.currentMarker.getLatLng();
-				self.currentMarker.setLatLng(new L.LatLng(self.currentPossition.lat, self.currentPossition.lng),{draggable:'true'});
-				self.map.panTo(new L.LatLng(self.currentPossition.lat, self.currentPossition.lng))
-				self.post.lat = self.currentPossition.lat;
-				self.post.lon = self.currentPossition.lng;
-				
-				
-				aPiMap.get('/reverse', {
-					params: {
-						'lat': self.currentPossition.lat,
-						'lon': self.currentPossition.lng,
-						'format': 'jsonv2',
-						'addressdetails': 1,
-						'namedetails': 1,
-						'accept-language': 'es',
-						'limit': 25,
-						// 'polygon_geojson': 1,
+            if($(".select").length > 0){
+				$('.selectpicker').selectpicker('destroy');
+                $(".select").selectpicker();				
+                $(".select").on("change", function(){
+					for(var k in self.post){
+						if (typeof self.post[k] !== 'function') {
+							if($(this).attr("name") == k && self.post[k] != $(this).val()){
+								self.post[k] = $(this).val();
+								if(k=='department'){
+									self.load_citys();
+								}
+							}
+						}
 					}
-				})
-				.then(function (r) {
-					info = r.data;
-					
-					self.address_search.text = info.display_name;
-					self.getSearchAddress({
-						q: self.address_search.text,
-					});
-					self.post.address_input = self.address_search.text;
-					self.post.place_id = info.place_id;
-					self.post.place_rank = info.place_rank;
-					self.post.display_name = info.display_name;
-					self.post.lat = info.lat;
-					self.post.lon = info.lon;
-					self.post.completo = JSON.stringify(info);
-					if(info.icon != undefined){ self.post.icon = info.icon; }
-					
-					/*
-					self.popup
-						.setLatLng(e.latlng)
-						// .setContent(info.display_name + "(" + e.latlng.toString() + ")")
-						.setContent(info.display_name)
-						.openOn(self.map);
-						*/
-				})
-				.catch(function (er) {
-					console.log(er);
-				});
+                });
+			}
+			$("input,select,textarea").on("change", function(){
+				for(var k in self.post){
+					if (typeof self.post[k] !== 'function') {
+						if($(this).attr("name") == k && self.post[k] != $(this).val()){
+							self.post[k] = $(this).val();
+						}
+						self.repairAddress();
+					}
+				}
 			});
 			
-			self.currentMarker.addTo(self.map)
-			self.map.setView(colombia, 5);
-			self.popup = L.popup();
-			// self.map.on('click', self.onMapClick);
-			self.find();
+			self.$root._mpb("show",{value: [0,75],speed: 0});
+
+			self.jvalidate = $("#jvalidate").validate({
+				debug: true,
+				errorLabelContainer: "#messageBox",
+				wrapper: "div.item",
+                ignore: [],
+                rules: {
+					address_input: {
+						required: true
+					},
+					display_name: {
+						required: true
+					},
+					department: {
+						required: true
+					},
+					city: {
+						required: true
+					},
+					type_road: {
+						required: true
+					},
+					number_a: {
+						required: true
+					},
+					letter_a: {
+						required: false
+					},
+					quadrant_a: {
+						required: false
+					},
+					number_b: {
+						required: true
+					},
+					letter_b: {
+						required: false
+					},
+					quadrant_b: {
+						required: false
+					},
+					number_c: {
+						required: true
+					},
+					postal_code: {
+						required: false
+					},
+					additional_information: {
+						required: false
+					},
+					lon: {
+						required: true
+					},
+					lat: {
+						required: true
+					},
+				},
+				messages: {
+					address_input: {
+						required: "Completa la direccion."
+					},
+					display_name: {
+						required: "Completa la direccion."
+					},
+					department: {
+						required: "Selecciona el departamento."
+					},
+					city: {
+						required: "Selecciona la ciudad."
+					},
+					type_road: {
+						required: "Selecciona el tipo de vía."
+					},
+					number_a: {
+						required: "Ingrese el numero."
+					},
+					letter_a: {
+						required: ""
+					},
+					quadrant_a: {
+						required: ""
+					},
+					number_b: {
+						required: "Ingrese el numero."
+					},
+					letter_b: {
+						required: ""
+					},
+					quadrant_b: {
+						required: ""
+					},
+					number_c: {
+						required: "Ingrese el numero."
+					},
+					postal_code: {
+						required: ""
+					},
+					additional_information: {
+						required: ""
+					},
+					lon: {
+						required: "No se detecto la correctamente la direccion, falta la longitud."
+					},
+					lat: {
+						required: "No se detecto la correctamente la direccion, falta la latitud."
+					},
+				},
+				submitHandler: function() {
+					bootbox.confirm({
+						title: "Estas Seguro?",
+						message: "¿Quieres añadir la Dirección ahora? Esto no se puede deshacer.",
+						buttons: {
+							cancel: {
+								label: '<i class="fa fa-times"></i> Cancelar'
+							},
+							confirm: {
+								label: '<i class="fa fa-check"></i> Añadir'
+							}
+						},
+						callback: function (result) {
+							if(result == true){
+								FG.api('GET', '/addresses', {
+									filter: [
+										'address_input,eq,' + self.post.address_input
+									]
+								}, function(r){
+									if(r.length > 0 && r[0].id > 0){
+										$.notify("La direccion ya existe.", 'error');
+										
+										FG.api('POST', '/accounts_addresses', {
+											account: self.$route.params.account_id,
+											address: r[0].id
+										}, function (x) {
+											if(x > 0){
+												$.notify("La direccion fue agregada a la cuenta de manera correctamenta.!", "success");
+												router.push({
+													name: 'page-accounts-addresses-view',
+													params: {
+														account_id: self.$route.params.account_id
+													}
+												});
+											}else{
+												$.notify("Hubo un problema al agregar la direccion a la cuenta.", "success");
+											}
+										});
+
+									}else{
+										FG.api('POST', '/addresses', self.post, function(r){
+											if(Number(r) > 0){
+												$.notify("Direccion Añadida con éxito.", 'success');
+												
+												FG.api('POST', '/accounts_addresses', {
+													account: self.$route.params.account_id,
+													address: r
+												}, function (x) {
+													if(x > 0){
+														$.notify("La direccion fue agregada a la cuenta de manera correctamenta.!", "success");
+														router.push({
+															name: 'page-accounts-addresses-view',
+															params: {
+																account_id: self.$route.params.account_id
+															}
+														});
+													}else{
+														$.notify("Hubo un problema al agregar la direccion a la cuenta.", "success");
+													}
+												});
+											}
+										});
+										
+									}
+								});
+							}
+						}
+					});
+				},
+				onsubmit: true
+			});
+			
+			self.$root._mpb("show",{value: [0,100],speed: 0});
 		},
-		onMapClick: function(e){
-			console.log(e);
+		repairAddress(){
 			var self = this;
-				self.$root._mpb("show",{value: [0,100],speed: 0});
-			},
-		find: function(){
-			var self = this;
-			self.$root._mpb("show",{value: [0,100],speed: 1});
+			
+			temp_min = '';
+			temp_full = '';
+			
+			if(Number(self.post.type_road) > 0){
+				temp_type_road = self.options.types_roads.find(road => road.id == self.post.type_road);
+				temp_min += temp_type_road.code;
+				temp_full += temp_type_road.name;
+			};
+			
+			if(Number(self.post.number_a) > 0){
+				temp_min += ' ' + Number(self.post.number_a);
+				temp_full += ' ' + Number(self.post.number_a);
+			};
+			if(Number(self.post.letter_a) > 0){
+				temp_letter_a = self.options.types_letters_addresses.find(letter => letter.id == self.post.letter_a);
+				temp_min += temp_letter_a.name;
+				temp_full += ' ' + temp_letter_a.name;
+			};
+			if(Number(self.post.quadrant_a) > 0){
+				temp_quadrant_a = self.options.types_quadrants.find(quadrant => quadrant.id == self.post.quadrant_a);
+				temp_min += ' ' + temp_quadrant_a.name;
+				temp_full += ' ' + temp_quadrant_a.name;
+			};
+			
+			temp_min += ' #';
+			temp_full += ' #';
+			
+			if(Number(self.post.number_b) > 0){
+				temp_min += ' ' + Number(self.post.number_b);
+				temp_full += ' ' + Number(self.post.number_b);
+			};
+			if(Number(self.post.letter_b) > 0){
+				temp_letter_b = self.options.types_letters_addresses.find(letter => letter.id == self.post.letter_b);
+				temp_min += temp_letter_b.name;
+				temp_full += ' ' + temp_letter_b.name;
+			};
+			if(Number(self.post.quadrant_b) > 0){
+				temp_quadrant_b = self.options.types_quadrants.find(quadrant => quadrant.id == self.post.quadrant_b);
+				temp_min += ' ' + temp_quadrant_b.name;
+				temp_full += ' ' + temp_quadrant_b.name;
+			};
+			
+			if(Number(self.post.number_c) > 0){
+				temp_min += ' - ' + Number(self.post.number_c);
+				temp_full += ' - ' + Number(self.post.number_c);
+			};
+			if(self.post.additional_information != null && self.post.additional_information != ''){
+				temp_min += ' ' + self.post.additional_information.toUpperCase();
+				temp_full += ' ' + self.post.additional_information.toUpperCase();
+			}
+			
+			if(Number(self.post.city) > 0){
+				temp_city = self.options.geo_citys.find(cit => cit.id == self.post.city);
+				temp_min += ', ' + temp_city.name;				
+				temp_full += ', ' + temp_city.name;				
+			};
+			if(Number(self.post.department) > 0){
+				temp_department = self.options.geo_departments.find(cit => cit.id == self.post.department);
+				temp_min += ', ' + temp_department.name;
+				temp_full += ', ' + temp_department.name;
+			};
+			
+			self.post.address_input = temp_min;
+			self.post.display_name = temp_full;
+			
+			if(
+				Number(self.post.department) > 0
+				&& Number(self.post.city) > 0
+				&& Number(self.post.type_road) > 0
+				&& Number(self.post.number_a) > 0
+				&& Number(self.post.number_b) > 0
+				&& Number(self.post.number_c) > 0
+			){
+				self.geocodeQuery(temp_min);
+			}
 		},
 	}
 });

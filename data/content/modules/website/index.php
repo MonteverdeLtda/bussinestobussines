@@ -39,6 +39,10 @@
 			.form-group .input-group-addon {
 				color: #666;
 			}
+			
+			.form-control[disabled], .form-control[readonly] {
+				color: #000;
+			}
 		</style>
 		<?php $this->include_file_global("/navigation.php"); ?>
 		<?php $this->include_file_global("/sidebar.php"); ?>

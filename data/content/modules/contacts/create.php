@@ -1,4 +1,3 @@
-
 <template id="page-contacts-add">
 	<div>
 		<div class="page-content-wrap" id="dialog-create-contact">
@@ -9,7 +8,7 @@
 						<div class="panel-heading">
 							<h3 class="panel-title"><strong>Añadir</strong> Contacto</h3>
 							<ul class="panel-controls">
-								<li><a @click="$router.go(-1)" class="panel-remove"><span class="fa fa-times"></span></a></li>
+								<li><a @click="$router.go(-1)" class="panel-remove" data-toggle="tooltip" data-placement="bottom" title="Cerrar"><span class="fa fa-times"></span></a></li>
 							</ul>
 						</div>
 						<form id="jvalidate" role="form" class="form-horizontal-" action="javascript:alert('Form #validate2 submited');">

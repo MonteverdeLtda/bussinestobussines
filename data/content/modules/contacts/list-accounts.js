@@ -1,4 +1,3 @@
-
 var PagesContactsListAccounts = Vue.extend({
 	template: '#page-contacts-list-accounts',
 	data: function() {

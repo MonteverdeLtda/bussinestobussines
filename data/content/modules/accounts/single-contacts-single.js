@@ -18,29 +18,43 @@ var PagesAccountsContactsSingleView = Vue.extend({
 						name: null
 					},
 					identification_number: null,
-					first_name: null,
-					second_name: '---',
+					gender: {
+						id: null,
+						name: null
+					},
+					names: null,
 					surname: null,
 					second_surname: '---',
-					birthdaydate: '0000-00-00',
+					birthdaydate: null,
 					phone: null,
-					phone_mobile: null,
-					mail: 'contacto@sincorreo.com',
-					department: {
-						id: null,
-						name: null
-					},
-					city: {
-						id: null,
-						department: null,
-						name: null
-					},
-					address: '---'
+					mobile: null,
+					email: null,
+					address:  null,
 				},
 				type_contact: {
 					id: 0,
 					name: ''
 				}
+			},
+			address: {
+				id: null,
+				address_input: null,
+				display_name: null,
+				completo: null,
+				lon: null,
+				lat: null,
+				department: null,
+				city: null,
+				type_road: null,
+				number_a: null,
+				letter_a: null,
+				quadrant_a: null,
+				number_b: null,
+				letter_b: null,
+				quadrant_b: null,
+				number_c: null,
+				postal_code: null,
+				additional_information: null,
 			},
 		};
 	},
@@ -98,13 +112,26 @@ var PagesAccountsContactsSingleView = Vue.extend({
 					'contacts,types_identifications',
 					'contacts,geo_departments',
 					'contacts,geo_citys',
+					'contacts,types_genders',
 					'types_contacts',
 				]
-			}, function(r){
-				if(r != undefined && r.id > 0){
-					self.post = r;
+			}, function(a){
+				if(a != undefined && a.id > 0){
+					self.post = a;
 					self.$root._mpb("show",{value: [0,10],speed: 1});
+				
+					if(a.contact.address != undefined && a.contact.address != null && Number(a.contact.address) > 0){
+						FG.api('GET', '/addresses/' + a.contact.address, {}, function(b){
+							if(b != undefined && b.id > 0){
+								self.address = b;
+								
+							}
+						});
+					}
 				}
+				$("input,select,textarea")
+					.attr('disabled', 'true')
+					.attr('readonly', 'true');
 			});
 		},
 		delete_row(contact){

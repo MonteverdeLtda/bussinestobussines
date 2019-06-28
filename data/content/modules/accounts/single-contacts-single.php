@@ -34,162 +34,162 @@
 								<li><a @click="$router.go(-1)" class="panel-remove"><span class="fa fa-times"></span></a></li>
 							</ul>
 						</div>
-						<form role="form" class="form-horizontal" >
-							<div class="panel-body">	
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Tipo de Documento de Identificación</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fas fa-fingerprint"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.identification_type.name" />
+						<form role="form" class="form-horizontal-" >
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-sm-3 col-md-3">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Relacion/Parentesco</label>
+											<div class="col-xs-12">
+												<input type="text" class="form-control" v-model="post.type_contact.name" />
+											</div>
 										</div>
-										<!-- // <span class="help-block">This is sample of text field</span> -->
 									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label"># de Identificación / DNI</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fas fa-fingerprint"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.identification_number" />
+									
+									<div class="col-sm-3 col-md-3">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Tipo de Documento</label>
+											<div class="col-xs-12">
+												<input type="text" class="form-control" v-model="post.contact.identification_type.name" />
+												<span class="help-block">&nbsp;</span>
+											</div>
 										</div>
-										<!-- // <span class="help-block">This is sample of text field</span> -->
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Primer Nombre</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fas fa-signature"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.first_name" />
-										</div>                                            
-										<!-- // <span class="help-block">This is sample of text field</span> -->
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Segundo Nombre</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fas fa-signature"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.second_name" />
-										</div>                                            
-										<!-- // <span class="help-block">This is sample of text field</span> -->
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Primer Apellido</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fas fa-signature"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.surname" />
-										</div>                                            
-										<!-- // <span class="help-block">This is sample of text field</span> -->
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Segundo Apellido</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fas fa-signature"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.second_surname" />
-										</div>                                            
-										<!-- // <span class="help-block">This is sample of text field</span> -->
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Fecha de Cumpleaños</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fas fa-birthday-cake"></span></span>
-											<input type="text" class="mask_date form-control" v-model="post.contact.birthdaydate"  />
-										</div>                                            
-										<!-- // <span class="help-block">This is sample of text field</span> -->
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Teléfono Fijo</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fas fa-phone-volume"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.phone" />
-										</div>                                            
-										<!-- // <span class="help-block">This is sample of text field</span> -->
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Teléfono Móvil</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fas fa-mobile-alt"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.phone_mobile" />
-										</div>                                            
-										<!-- // <span class="help-block">This is sample of text field</span> -->
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Correo Electronico</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fa fa-envelope"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.mail"/>
-										</div>                                            
-										<!-- // <span class="help-block">This is sample of text field</span> -->
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Departamento</label>
-									<div class="col-md-6 col-xs-12">
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.department.name"/>
+									</div>									
+									<div class="col-sm-3 col-md-3">
+										<div class="form-group">
+											<label class="col-xs-12 control-label"># de Identificación</label>
+											<div class="col-xs-12">                                            
+												<div class="input-group">
+													<span class="input-group-addon"><span class="fas fa-fingerprint"></span></span>
+													<input type="text" class="form-control" name="identification_number" v-model="post.contact.identification_number" />
+												</div>
+												<span class="help-block">&nbsp;</span>
+											</div>
 										</div>
-										<!-- // <span class="help-block">Select box example</span> -->
 									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Ciudad</label>
-									<div class="col-md-6 col-xs-12">
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.city.name"/>
+									<div class="col-sm-3 col-md-3">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Genero</label>
+											<div class="col-xs-12">
+												<input type="text" class="form-control" v-model="post.contact.gender.name" />
+												<span class="help-block">&nbsp;</span>
+											</div>
 										</div>
-										<!-- // <span class="help-block">Select box example</span> -->
 									</div>
 								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Dirección Residencia</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-											<input type="text" class="form-control" v-model="post.contact.address"/>
-										</div>                                            
+								<div class="row">									
+									<div class="col-sm-4 col-md-4">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Nombres</label>
+											<div class="col-xs-12">                                            
+												<div class="input-group">
+													<span class="input-group-addon"><span class="fas fa-signature"></span></span>
+													<input type="text" class="form-control" name="names" v-model="post.contact.names" />
+												</div>                                            
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-4 col-md-4">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Primer Apellido</label>
+											<div class="col-xs-12">                                            
+												<div class="input-group">
+													<span class="input-group-addon"><span class="fas fa-signature"></span></span>
+													<input type="text" class="form-control" name="surname" v-model="post.contact.surname" />
+												</div>                                            
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-4 col-md-4">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Segundo Apellido</label>
+											<div class="col-xs-12">                                            
+												<div class="input-group">
+													<span class="input-group-addon"><span class="fas fa-signature"></span></span>
+													<input type="text" class="form-control" name="second_surname" v-model="post.contact.second_surname" />
+												</div>                                            
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
 									</div>
 								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Relacion/Parentesco</label>
-									<div class="col-md-6 col-xs-12">                                            
-										<div class="input-group">
-											<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-											<input type="text" class="form-control" v-model="post.type_contact.name" />
-										</div>                                            
+								<div class="row">
+									<div class="col-sm-3 col-md-3">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Fecha de Nacimiento</label>
+											<div class="col-xs-12">                                            
+												<div class="input-group">
+													<span class="input-group-addon"><span class="fas fa-birthday-cake"></span></span>
+													<input type="text" class="mask_date form-control datepicker" name="birthday" v-model="post.contact.birthday" autocomplete="off" />
+												</div>                                            
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-3 col-md-3">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Teléfono Fijo</label>
+											<div class="col-xs-12">                                            
+												<div class="input-group">
+													<span class="input-group-addon"><span class="fas fa-phone-volume"></span></span>
+													<input type="text" class="form-control mask_phone_ext" name="phone" v-model="post.contact.phone" />
+												</div>                                            
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-3 col-md-3">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Teléfono Móvil</label>
+											<div class="col-xs-12">                                            
+												<div class="input-group">
+													<span class="input-group-addon"><span class="fas fa-mobile-alt"></span></span>
+													<input type="text" class="form-control mask_phone_mobile" name="mobile" v-model="post.contact.mobile" />
+												</div>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-3 col-md-3">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Correo Electronico</label>
+											<div class="col-xs-12">                                            
+												<div class="input-group">
+													<span class="input-group-addon"><span class="fa fa-envelope"></span></span>
+													<input type="email" class="form-control" name="email" v-model="post.contact.email" />
+												</div>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12 col-md-12">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Direccion</label>
+											<div class="col-md-12">
+												<div class="input-group">
+													<input type="text" class="form-control" readonly="" v-model="address.address_input" />
+													<span class="input-group-btn">
+														<button class="btn btn-secondary" type="button" disabled="">...</button>
+													</span>
+												</div>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
 							<div class="panel-footer">
-								<a @click="delete_row(post.id)" class="btn btn-sm btn-danger"><span class="fas fa-trash"></span> Eliminar</a></li>
+								<!-- // <a @click="delete_row(post.id)" class="btn btn-sm btn-danger"><span class="fas fa-trash"></span> Eliminar</a></li> -->
+								{{ post }}
+							</div>
+							<div class="panel-footer">
+								<!-- // <a @click="delete_row(post.id)" class="btn btn-sm btn-danger"><span class="fas fa-trash"></span> Eliminar</a></li> -->
+								{{ address }}
+							</div>
 						</form>
 					</div>
 				</div>

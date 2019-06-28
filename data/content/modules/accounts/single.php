@@ -38,7 +38,7 @@
 											<label class="col-md-3 col-xs-12 control-label">Tipo de Cliente</label>
 											<div class="col-md-6 col-xs-12">
 												<div class="input-group">
-													<span class="input-group-addon"><span class="fas fa-fingerprint"></span></span>
+													<span class="input-group-addon"><span class="fas fa-briefcase"></span></span>
 													<input readonly="" type="text" class="form-control" name="type" v-model="post.type.name" />
 												</div>
 											</div>
@@ -48,7 +48,7 @@
 											<label class="col-md-3 col-xs-12 control-label">Tipo de Documento de Identificación</label>
 											<div class="col-md-6 col-xs-12">
 												<div class="input-group">
-													<span class="input-group-addon"><span class="fas fa-fingerprint"></span></span>
+													<span class="input-group-addon"><span class="fas fa-address-card"></span></span>
 													<input type="text" class="form-control" name="identification_type" v-model="post.identification_type.name" />
 												</div>
 											</div>
@@ -66,80 +66,21 @@
 										
 										<div class="form-group">
 											<label class="col-md-3 col-xs-12 control-label">Titular o Nombre Comercial</label>
-											<div class="col-md-6 col-xs-12">    
+											<div class="col-md-6 col-xs-12">
 												<div class="input-group">
 													<span class="input-group-addon"><span class="fas fa-signature"></span></span>
-													<input type="text" class="form-control" name="names" v-model="post.names" />
+													<input type="text" class="form-control" name="names" v-model="post.names" onkeyup="javascript:this.value=this.value.toUpperCase();" style="text-transform:uppercase;" />
 												</div>
 											</div>
 										</div>
 										
-										<div class="form-group">
-											<label class="col-md-3 col-xs-12 control-label">Dirección Principal</label>
-											<div class="col-md-6 col-xs-12">
-												<div class="input-group">
-													<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-													<input type="text" class="form-control" name="address_principal" v-model="post.address_principal" />
-												</div>
-											</div>
-										</div>
-										
-										<div class="form-group">
-											<label class="col-md-3 col-xs-12 control-label">Departamento</label>
-											<div class="col-md-6 col-xs-12">
-												<div class="input-group">
-													<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-													<input type="text" class="form-control" name="address_principal_department" v-model="post.address_principal_department.name" />
-												</div>
-											</div>
-										</div>
-										
-										<div class="form-group">
-											<label class="col-md-3 col-xs-12 control-label">Ciudad</label>
-											<div class="col-md-6 col-xs-12">
-												<div class="input-group">
-													<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-													<input type="text" class="form-control" name="address_principal_department" v-model="post.address_principal_city.name" />
-												</div>
-											</div>
-										</div>
-										
-										<div class="form-group">
-											<label class="col-md-3 col-xs-12 control-label">Direccion de Facturación</label>
-											<div class="col-md-6 col-xs-12">    
-												<div class="input-group">
-													<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-													<input type="text" class="form-control" name="address_invoices" v-model="post.address_invoices" />
-												</div>
-											</div>
-										</div>
-										
-										<div class="form-group">
-											<label class="col-md-3 col-xs-12 control-label">Departamento</label>
-											<div class="col-md-6 col-xs-12">
-												<div class="input-group">
-													<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-													<input type="text" class="form-control" name="address_invoices_department" v-model="post.address_invoices_department.name" />
-												</div>
-											</div>
-										</div>
-										
-										<div class="form-group">
-											<label class="col-md-3 col-xs-12 control-label">Ciudad</label>
-											<div class="col-md-6 col-xs-12">
-												<div class="input-group">
-													<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-													<input type="text" class="form-control" name="address_invoices_department" v-model="post.address_invoices_city.name" />
-												</div>
-											</div>
-										</div>
 										
 										<div class="form-group">
 											<label class="col-md-3 col-xs-12 control-label">Teléfono Fijo</label>
 											<div class="col-md-6 col-xs-12">
 												<div class="input-group">
-													<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-													<input type="text" class="form-control" name="phone" v-model="post.phone" />
+													<span class="input-group-addon"><span class="fa fa-phone"></span></span>
+													<input type="text" class="form-control mask_phone_ext" name="phone" v-model="post.phone" />
 												</div>
 											</div>
 										</div>
@@ -148,42 +89,43 @@
 											<label class="col-md-3 col-xs-12 control-label">Teléfono Móvil</label>
 											<div class="col-md-6 col-xs-12">
 												<div class="input-group">
-													<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-													<input type="text" class="form-control" name="mobile" v-model="post.mobile" />
+													<span class="input-group-addon"><span class="fa fa-mobile"></span></span>
+													<input type="text" class="form-control mask_phone_mobile" name="mobile" v-model="post.mobile" />
 												</div>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-md-3 col-xs-12 control-label">Dirección Principal</label>
+											
+											<div class="col-md-6 col-xs-12">
+												<div class="input-group">
+													<input type="text" class="form-control" readonly="" v-model="address_principal.address_input" />
+													<span class="input-group-btn">
+														<button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#modal_basic">...</button>
+													</span>
+												</div>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-md-3 col-xs-12 control-label">Direccion de Facturación</label>
+											
+											<div class="col-md-6 col-xs-12">
+												<div class="input-group">
+													<input type="text" class="form-control" readonly="" v-model="address_invoices.address_input" />
+													<span class="input-group-btn">
+														<button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#modal_basic">...</button>
+													</span>
+												</div>
+												<span class="help-block">&nbsp;</span>
 											</div>
 										</div>
 									</form>
 								</div>
-							</div>
-							<div class="tab-pane" id="tab-second">
-								
-							</div>
-							<div class="tab-pane" id="tab-third">
-								<div class="panel-heading">
-									<h3 class="panel-title">Solicitudes</h3>
-									<ul class="panel-controls">
-										<li>
-											<router-link tag="a" :to="{ name: 'page-accounts-add' }" class="panel-plus" title="Añadir Contacto" data-toggle="tooltip" data-placement="bottom">
-												<span class="fas fa-user-plus"></span>
-											</router-link>
-										</li>
-										
-										<li><a @click="find()" class="panel-refresh" title="Actualizar" data-toggle="tooltip" data-placement="bottom"><span class="fa fa-refresh"></span></a></li>
-										
-									</ul>                                
-								</div>
-								<div class="panel-body">
-									<table class="table table-hover table-bordereds datatable-requests">
-										<thead>
-											<tr>
-												<th></th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-										</tbody>
-									</table>
+								<div class="panel-footer">
+									{{ post }}
 								</div>
 							</div>
 						</div>

@@ -9,72 +9,7 @@ var PagesAccountsContactsView = Vue.extend({
 				geo_citys: [],
 			},
 			post: {
-				"id": this.$route.params.account_id,
-				"type": {
-					"id": 0,
-					"name": ""
-				},
-				"identification_type": {
-					"id": 0,
-					"name": ""
-				},
-				"identification_number": "",
-				"names": "",
-				"address_principal": "",
-				"address_principal_department": {
-					"id": 0,
-					"code": "",
-					"name": ""
-				},
-				"address_principal_city": {
-					"id": 0,
-					"name": "",
-					"department": 0
-				},
-				"address_invoices": "",
-				"address_invoices_department": {
-					"id": 0,
-					"code": "",
-					"name": ""
-				},
-				"address_invoices_city": {
-					"id": 0,
-					"name": "",
-					"department": 0
-				},
-				"represent_legal": {
-					"id": 0,
-					"identification_type": 0,
-					"identification_number": "",
-					"first_name": "",
-					"second_name": "",
-					"surname": "",
-					"second_surname": "",
-					"birthdaydate": "",
-					"phone": "",
-					"phone_mobile": "",
-					"mail": "",
-					"department": 0,
-					"city": 0,
-					"address": ""
-				},
-				"contact": {
-					"id": 0,
-					"identification_type": 0,
-					"identification_number": "",
-					"first_name": "",
-					"second_name": "",
-					"surname": "",
-					"second_surname": "",
-					"birthdaydate": "",
-					"phone": "",
-					"phone_mobile": "",
-					"mail": "",
-					"department": 0,
-					"city": 0,
-					"address": ""
-				},
-				"audit_enabled": 0,
+				"account_id": this.$route.params.account_id,
 				"accounts_contacts": [],
 			}
 		};
@@ -94,8 +29,6 @@ var PagesAccountsContactsView = Vue.extend({
 				join: [
 					'types_accounts',
 					'types_identifications',
-					'geo_departments',
-					'geo_citys',
 					'contacts',
 					'accounts_contacts',
 					'accounts_contacts,contacts',
@@ -117,13 +50,13 @@ var PagesAccountsContactsView = Vue.extend({
 						}
 						$(".datatable-contacts tbody").append(`
 							<tr>
-								<td>` + el.contact.identification_type.name + `</td>
+								<td>` + el.contact.identification_type.code + `</td>
 								<td>` + el.contact.identification_number + `</td>
-								<td>` + el.contact.first_name + ` ` + el.contact.second_name + `</td>
+								<td>` + el.contact.names + `</td>
 								<td>` + el.contact.surname + ` ` + el.contact.second_surname + `</td>
 								<td>` + el.contact.phone + `</td>
-								<td>` + el.contact.phone_mobile + `</td>
-								<td>` + el.contact.mail + `</td>
+								<td>` + el.contact.mobile + `</td>
+								<td>` + el.contact.email + `</td>
 								<td>` + el.type_contact.name + `</td>
 								<td>
 									<button data-toggle="tooltip" data-placement="top" title="Ver Usuario" class="btn btn-default btn-rounded btn-xs" 

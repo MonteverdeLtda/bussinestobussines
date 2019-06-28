@@ -80,65 +80,31 @@
 									</div>
 								</div>
 								
+								
 								<div class="form-group">
 									<label class="col-md-3 col-xs-12 control-label">Dirección Principal</label>
 									<div class="col-md-6 col-xs-12">
 										<div class="input-group">
-											<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-											<input type="text" class="form-control" name="address_principal" v-model="post.address_principal" />
-										</div>                                            
-										<!-- // <span class="help-block">This is sample of text field</span> -->
+											<input type="text" class="form-control" readonly="" v-model="address_principal.address_input" />
+											<span class="input-group-btn">
+												<button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#modal_basic">...</button>
+											</span>
+										</div>
+										<span class="help-block">&nbsp;</span>
 									</div>
 								</div>
-								
+						
 								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Departamento</label>
-									<div class="col-md-6 col-xs-12">                                                                                            
-										<select class="form-control select" data-v-model="address_principal_department" name="address_principal_department" v-model="post.address_principal_department" data-live-search="true">
-											<option value=""></option>
-										</select>
-										<span class="help-block">Este campo es obligatorio.</span>
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Ciudad</label>
-									<div class="col-md-6 col-xs-12">                                                                                            
-										<select class="form-control select" data-v-model="address_principal_city" name="address_principal_city" v-model="post.address_principal_city" data-live-search="true">
-											<option value=""></option>
-										</select>
-										<span class="help-block">Este campo es obligatorio.</span>
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Direccion de Facturación</label>
-									<div class="col-md-6 col-xs-12">                                            
+									<label class="col-md-3 col-xs-12 control-label">Dirección Principal</label>
+									
+									<div class="col-md-6 col-xs-12">
 										<div class="input-group">
-											<span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-											<input type="text" class="form-control" name="address_invoices" v-model="post.address_invoices" />
-										</div>                                            
-										<!-- // <span class="help-block">This is sample of text field</span> -->
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Departamento</label>
-									<div class="col-md-6 col-xs-12">
-										<select class="form-control select" data-v-model="address_invoices_department" name="address_invoices_department" v-model="post.address_invoices_department" data-live-search="true">
-											<option value=""></option>
-										</select>
-										<span class="help-block">Este campo es obligatorio.</span>
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="col-md-3 col-xs-12 control-label">Ciudad</label>
-									<div class="col-md-6 col-xs-12">
-										<select class="form-control select" data-v-model="address_invoices_city" name="address_invoices_city" v-model="post.address_invoices_city" data-live-search="true">
-											<option value=""></option>
-										</select>
-										<span class="help-block">Este campo es obligatorio.</span>
+											<input type="text" class="form-control" readonly="" v-model="address_principal.address_input" />
+											<span class="input-group-btn">
+												<button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#modal_basic">...</button>
+											</span>
+										</div>
+										<span class="help-block">&nbsp;</span>
 									</div>
 								</div>
 								

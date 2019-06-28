@@ -62,11 +62,11 @@
 																<tr v-for="crew in item.accounts_contacts">
 																	<td>{{ crew.contact.identification_type.name }}</td>
 																	<td>{{ crew.contact.identification_number }}</td>
-																	<td>{{ crew.contact.first_name }} {{ crew.contact.second_name }}</td>
+																	<td>{{ crew.contact.names }}</td>
 																	<td>{{ crew.contact.surname }} {{ crew.contact.second_surname }}</td>
 																	<td>{{ crew.contact.phone }}</td>
-																	<td>{{ crew.contact.phone_mobile }}</td>
-																	<td>{{ crew.contact.mail }}</td>
+																	<td>{{ crew.contact.mobile }}</td>
+																	<td>{{ crew.contact.email }}</td>
 																	<td>{{ crew.type_contact.name }}</td>
 																	<td>
 																		<button data-toggle="tooltip" data-placement="top" title="Eliminar Contacto" class="btn btn-danger btn-rounded btn-xs" @click="delete_row(crew.id);">

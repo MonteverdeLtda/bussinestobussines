@@ -46,7 +46,6 @@ var PagesContactsEdit = Vue.extend({
 			jvalidate2: null,
 			map: null,
 			pin: null,
-			inSearch: null,
 		};
 	},
 	created: function () {
@@ -54,7 +53,8 @@ var PagesContactsEdit = Vue.extend({
 	},
 	mounted: function () {
 		var self = this;
-		self.GetMap();
+		
+		self.load_options_selects();
 	},
 	methods: {
 		load_options_selects(){
@@ -108,7 +108,20 @@ var PagesContactsEdit = Vue.extend({
 									}
 									self.$root._mpb("show",{value: [0,30],speed: 1});
 									
-									self.load_plugins_this();
+									FG.api('GET', '/geo_citys', {
+									}, function(r){
+										if(r.length > 0 && r[0].id > 0){
+											self.options.geo_citys = r;
+											r.forEach(function(el){
+												$(".select[data-address-model='city']").append('<option value="'+el.id+'">'+el.name+'</option>');
+											});
+											$(".select[data-address-model='city']").selectpicker('refresh');
+											self.$root._mpb("show",{value: [0,35],speed: 1 });
+											self.load_plugins_this();
+										}
+									});
+			
+									
 								});
 							});
 						});
@@ -152,7 +165,7 @@ var PagesContactsEdit = Vue.extend({
                 $(".select").on("change", function(){
 					for (var k in self.post){
 						if (typeof self.post[k] !== 'function') {
-							if($(this).data("name") == k && self.post[k] != $(this).val()){
+							if($(this).attr("name") == k && self.post[k] != $(this).val()){
 								self.post[k] = $(this).val();
 							}
 						}
@@ -177,6 +190,14 @@ var PagesContactsEdit = Vue.extend({
 						if($(this).attr("name") == k && self.post[k] != $(this).val()){
 							self.post[k] = $(this).val();
 						}
+					}
+				}
+				for(var k in self.address){
+					if (typeof self.address[k] !== 'function') {
+						if($(this).data("address-model") == k && self.address[k] != $(this).val()){
+							self.address[k] = $(this).val();
+						}
+						self.repairAddress();
 					}
 				}
 			});
@@ -269,20 +290,13 @@ var PagesContactsEdit = Vue.extend({
 						]
 					}, function (a) {
 						if(a.length > 0){
-							$.notify("El contacto ya existe!", "error");
-						}else{
-							FG.api('POST', '/contacts', self.post, function (b) {
-								if(Number(b) > 0)
-								{
-									$.notify("El contacto fue creado correctamente.!", "success");
-									router.push({
-										name: 'page-contacts-edit',
-										params: {
-											contact_id: b
-										}
-									});
+							FG.api('PUT', '/contacts/' + self.post.id, self.post, function (b) {
+								if(Number(b) > 0){
+									$.notify("El contacto fue modificado correctamente.!", "success");
 								}
 							});
+						}else{
+							$.notify("El contacto no existe!", "error");
 						}
 					});
 				},
@@ -508,13 +522,13 @@ var PagesContactsEdit = Vue.extend({
 			
 			if(Number(self.address.city) > 0){
 				temp_city = self.options.geo_citys.find(cit => cit.id == self.address.city);
-				temp_min += ', ' + temp_city.name;				
-				temp_full += ', ' + temp_city.name;				
+				temp_min += ', ' + temp_city.name.toUpperCase();				
+				temp_full += ', ' + temp_city.name.toUpperCase();				
 			};
 			if(Number(self.address.department) > 0){
 				temp_department = self.options.geo_departments.find(depart => depart.id == self.address.department);
-				temp_min += ', ' + temp_department.name;
-				temp_full += ', ' + temp_department.name;
+				temp_min += ', ' + temp_department.name.toUpperCase();
+				temp_full += ', ' + temp_department.name.toUpperCase();
 			};
 			
 			self.address.address_input = temp_min;
@@ -535,13 +549,19 @@ var PagesContactsEdit = Vue.extend({
 			var self = this;
 			self.map = new Microsoft.Maps.Map('#myMap', {
 				zoom: 15,
-				mapTypeId: Microsoft.Maps.MapTypeId.aerial
+				mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+				center: new Microsoft.Maps.Location(self.address.lat, self.address.lon)
 			});
-			//Make a request to geocode New York, NY.
-			// self.geocodeQuery(document.getElementById("from").value);
 			
 			
-			self.load_options_selects();
+			self.center = self.map.getCenter();
+			
+			self.pin = new Microsoft.Maps.Pushpin(self.center, {
+				title: 'Direccion',
+				subTitle: self.address.address_input,
+				text: '▼'
+			});
+			self.map.entities.push(self.pin);
 		},
 		//Geocode：Location
 		geocodeQuery(query) {
@@ -562,26 +582,16 @@ var PagesContactsEdit = Vue.extend({
 							self.address.postal_code = r.results[0].address.postalCode;
 							self.address.completo = JSON.stringify(r.results[0]);
 						
-							self.pin = new Microsoft.Maps.Pushpin(r.results[0].location, {
-								title: self.address.address_input,
-								// subTitle: 'City Center',
-								text: 'Direccion'
-							});
-							
-							self.map.entities.push(self.pin);
+							self.pin.setLocation(new Microsoft.Maps.Location(r.results[0].location.latitude, r.results[0].location.longitude));
 							self.map.setView({ bounds: r.results[0].bestView });
-							self.inSearch = false;
 						}
 					},
 					errorCallback: function (e) {
-						$.notify("No se han encontrado resultados.");
-						self.inSearch = false;
+						// $.notify("No se han encontrado resultados.");
+						$("#messageBox-2").html("No se han encontrado resultados.");
 					}
 				};
-				if(self.inSearch == false){
-					self.inSearch = true;
-					self.searchManager.geocode(searchRequest);
-				}
+				self.searchManager.geocode(searchRequest);
 			}
 		},
 		find(){
@@ -590,19 +600,23 @@ var PagesContactsEdit = Vue.extend({
 			FG.api('GET', '/contacts/' + self.$route.params.contact_id, {}, function(a){
 				if(a != undefined > 0 && a.id > 0){
 					self.post = a;
-					$("select[name='identification_type']").val(a.identification_type).change().selectpicker('refresh');
-					$("select[name='gender']").val(a.gender).change().selectpicker('refresh');
-					$("select[name='address']").val(a.address).change().selectpicker('refresh');
+					$(".select[name='identification_type']").val(a.identification_type).change().selectpicker('refresh');
+					$(".select[name='gender']").val(a.gender).change().selectpicker('refresh');
 					
-					self.load_citys();
 					FG.api('GET', '/addresses/' + a.address, {}, function(b){
 						if(b != undefined > 0 && b.id > 0){
 							self.address = b;
+							self.address.completo = JSON.parse(self.address.completo);
 							
-							$("select[name='type_road']").val(b.type_road).change().selectpicker('refresh');
-							$("select[name='department']").val(b.department).change().selectpicker('refresh');
-							$("select[name='city']").val(b.city).change().selectpicker('refresh');
-							$("select[name='type_road']").val(b.type_road).change().selectpicker('refresh');
+							$(".select[name='department']").val(b.department).change().selectpicker('refresh');
+							$(".select[name='city']").val(b.city).change().selectpicker('refresh');
+							$(".select[name='type_road']").val(b.type_road).change().selectpicker('refresh');
+							$(".select[name='letter_a']").val(b.letter_a).change().selectpicker('refresh');
+							$(".select[name='quadrant_a']").val(b.quadrant_a).change().selectpicker('refresh');
+							$(".select[name='letter_b']").val(b.letter_b).change().selectpicker('refresh');
+							$(".select[name='quadrant_b']").val(b.quadrant_b).change().selectpicker('refresh');
+							
+							self.GetMap();
 						}
 					});
 				}

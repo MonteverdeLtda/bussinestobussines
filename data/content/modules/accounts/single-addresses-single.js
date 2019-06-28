@@ -5,27 +5,55 @@ var PagesAccountsAddressesSingleView = Vue.extend({
 		return {
 			post: {
 				"id": this.$route.params.address_id,
-				"place_id": null,
-				"place_rank": null,
-				"address_input": null,
-				"display_name": null,
-				"city": {
-					id: 0,
-					name: '',
-					department: 0,
+				address_input: null,
+				display_name: null,
+				completo: null,
+				lon: null,
+				lat: null,
+				department: {
+					id: null,
+					name: null,
 				},
-				"department": {
-					id: 0,
-					name: ''
+				city: {
+					id: null,
+					name: null,
 				},
-				"lat": null,
-				"lon": null,
-				"completo": null,
+				type_road: {
+					id: null,
+					name: null,
+					code: null,
+				},
+				number_a: null,
+				letter_a: {
+					id: null,
+					name: null,
+				},
+				quadrant_a: {
+					id: null,
+					name: null,
+				},
+				number_b: null,
+				letter_b: {
+					id: null,
+					name: null,
+				},
+				quadrant_b: {
+					id: null,
+					name: null,
+				},
+				number_c: null,
+				postal_code: null,
+				additional_information: null,
 			},
 			map: null,
 			popup: null,
 			currentPolygon: null,
 			currentMarker: null,
+			pin: null,
+			address_search: {
+				resultData: [],
+			},
+			searchManager: '',
 		};
 	},
 	created: function () {
@@ -137,42 +165,67 @@ var PagesAccountsAddressesSingleView = Vue.extend({
 			FG.api('GET', '/accounts_addresses/' + self.$route.params.address_id, {
 				join: [
 					'addresses',
-					'addresses,geo_citys',
 					'addresses,geo_departments',
+					'addresses,geo_citys',
+					'addresses,types_roads',
+					'addresses,types_quadrants',
+					'addresses,types_letters_addresses',
 				]
 			}, function(a){
 				if(a != undefined && a.id > 0){
 					d = a.address;
-					self.post = a.address;
 					d.completo = JSON.parse(d.completo);
-					if(d.place_rank > 18){ d.place_rank = 18; }
 					
-					var LatLng = new L.LatLng(d.lat, d.lon); 
-					self.map.setView(LatLng, (Number(d.place_rank)-2));
 					
-					var greenIcon = L.icon({
-						iconUrl: 'https://mv.dataservix.com/admin/global/images/icons/leaf-green.png',
-						shadowUrl: 'https://mv.dataservix.com/admin/global/images/icons/leaf-shadow.png',
-
-						iconSize:     [19, 47.5], // tamaño del icono
-						shadowSize:   [25, 32], // tamaño de la sombra
-						iconAnchor:   [11, 47], // Punto del icono que corresponderá a la ubicación del marcador.
-						shadowAnchor: [2, 31], // lo mismo para la sombra
-						popupAnchor:  [-1.5, -38] // Punto desde el que se abrirá la ventana emergente en relación con el icono.
-					});
+					for (var k in d){
+						if (typeof d[k] !== 'function') {
+							if(d[k] != null){
+								self.post[k] = d[k];
+							}
+						}
+					}
 					
-					self.currentMarker = new L.Marker(LatLng, {icon: greenIcon});
-					self.map.addLayer(self.currentMarker);
-					self.currentMarker.bindPopup(d.display_name);
+					$("input,select,textarea")
+						.attr('disabled', 'true')
+						.attr('readonly', 'true');
 					
-					var polygonPoints = [];
-					d.completo.polygonpoints.forEach(function(a){
-						polygonPoints.push(new L.LatLng(a[1], a[0]))
-					});
-					
-					self.currentPolygon = new L.Polygon(polygonPoints);
-					self.map.addLayer(new L.Polygon(polygonPoints));
-					
+				}
+			});
+		},
+		delete_this(){
+			var self = this;
+			bootbox.confirm({
+				message: "Estas tratando de realizar cambios irreversibles, antes de realizar dichos cambios debes confirmar por seguridad! Deseas continuar?",
+				buttons: {
+					confirm: {
+						label: 'Si',
+						className: 'btn-success'
+					},
+					cancel: {
+						label: 'No',
+						className: 'btn-danger'
+					}
+				},
+				callback: function (a) {
+					if(a === true){
+						FG.api('DELETE','/accounts_addresses/' + self.$route.params.address_id, {
+						}, function(r){
+							if(r == true)
+							{
+								$.notify("la direccion se elimino con éxito!", "success");
+								router.push({
+									name: 'page-accounts-addresses-view',
+									params: {
+										account_id: self.$route.params.account_id
+									}
+								});
+							}else{
+								if(r.data.message && r.data.message != '')
+									$.notify(r.data.message, "error");
+								$.notify("Ocurrio un inconveniente al intentar eliminar la direccion!", "error");
+							}
+						});
+					}
 				}
 			});
 		},

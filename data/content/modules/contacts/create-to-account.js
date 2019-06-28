@@ -1,4 +1,3 @@
-
 var PagesContactsListAccountsAddContactToAccount = Vue.extend({
 	template: '#page-contacts-list-accounts-add-contact-to-account',
 	data: function() {
@@ -30,8 +29,8 @@ var PagesContactsListAccountsAddContactToAccount = Vue.extend({
 			FG.api('GET', '/contacts', {}, function(r){ if(r.length > 0 && r[0].id > 0){
 				r.forEach(function(el){
 					$(".select[data-v-model='contact']").append('<option value="' + el.id + '">' + 
-					el.first_name + ' ' +
-					el.second_name + ' ' +
+					el.identification_number + ' - ' +
+					el.names + ' ' +
 					el.surname + ' ' +
 					el.second_surname 
 					+ '</option>');

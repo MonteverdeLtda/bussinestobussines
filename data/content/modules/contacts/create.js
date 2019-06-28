@@ -45,6 +45,7 @@ var PagesContactsAdd = Vue.extend({
 			jvalidate2: null,
 			map: null,
 			pin: null,
+			center: null,
 		};
 	},
 	created: function () {
@@ -157,18 +158,6 @@ var PagesContactsAdd = Vue.extend({
 							}
 						}
 					}
-					for (var k in self.address){
-						if (typeof self.address[k] !== 'function'){
-							if($(this).data("address-model") == k && self.address[k] != $(this).val()){
-								self.address[k] = $(this).val();
-								
-								if(k=='department'){
-									self.load_citys();
-								}
-							}
-							self.repairAddress();
-						}
-					}
                 });
 			}
 			$("input,select,textarea").on("change", function(){
@@ -177,6 +166,18 @@ var PagesContactsAdd = Vue.extend({
 						if($(this).attr("name") == k && self.post[k] != $(this).val()){
 							self.post[k] = $(this).val();
 						}
+					}
+				}
+				for (var k in self.address){
+					if (typeof self.address[k] !== 'function'){
+						if($(this).data("address-model") == k && self.address[k] != $(this).val()){
+							self.address[k] = $(this).val();
+							
+							if(k=='department'){
+								self.load_citys();
+							}
+						}
+						self.repairAddress();
 					}
 				}
 			});
@@ -508,13 +509,13 @@ var PagesContactsAdd = Vue.extend({
 			
 			if(Number(self.address.city) > 0){
 				temp_city = self.options.geo_citys.find(cit => cit.id == self.address.city);
-				temp_min += ', ' + temp_city.name;				
-				temp_full += ', ' + temp_city.name;				
+				temp_min += ', ' + temp_city.name.toUpperCase();				
+				temp_full += ', ' + temp_city.name.toUpperCase();				
 			};
 			if(Number(self.address.department) > 0){
 				temp_department = self.options.geo_departments.find(depart => depart.id == self.address.department);
-				temp_min += ', ' + temp_department.name;
-				temp_full += ', ' + temp_department.name;
+				temp_min += ', ' + temp_department.name.toUpperCase();
+				temp_full += ', ' + temp_department.name.toUpperCase();
 			};
 			
 			self.address.address_input = temp_min;
@@ -535,19 +536,24 @@ var PagesContactsAdd = Vue.extend({
 			var self = this;
 			self.map = new Microsoft.Maps.Map('#myMap', {
 				zoom: 15,
-				mapTypeId: Microsoft.Maps.MapTypeId.aerial
+				mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+				center: new Microsoft.Maps.Location(4.0000000, -72.0000000)
 			});
-			//Make a request to geocode New York, NY.
-			// self.geocodeQuery(document.getElementById("from").value);
+			
+			self.center = self.map.getCenter();
+			
+			self.pin = new Microsoft.Maps.Pushpin(self.center, {
+				title: 'Direccion',
+				subTitle: self.address.address_input,
+				text: '▼'
+			});
+			self.map.entities.push(self.pin);
 			
 			self.load_options_selects();
 		},
-		//Geocode：Location
 		geocodeQuery(query) {
 			var self = this;
-			//If search manager is not defined, load the search module.
 			if (!self.searchManager) {
-				//Create an instance of the search manager and call the geocodeQuery function again.
 				Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () {
 					self.searchManager = new Microsoft.Maps.Search.SearchManager(self.map);
 					self.geocodeQuery(query);
@@ -556,30 +562,20 @@ var PagesContactsAdd = Vue.extend({
 				var searchRequest = {
 					where: query,
 					callback: function (r) {
-						//Add the first result to the map and zoom into it.
 						if (r && r.results && r.results.length > 0) {
 							self.address.lat = r.results[0].location.latitude;
 							self.address.lon = r.results[0].location.longitude;
 							self.address.postal_code = r.results[0].address.postalCode;
 							self.address.completo = JSON.stringify(r.results[0]);
-						
-							// self.pin = new Microsoft.Maps.Pushpin(r.results[0].location);
-							self.pin = new Microsoft.Maps.Pushpin(r.results[0].location, {
-								title: self.address.address_input,
-								// subTitle: 'City Center',
-								text: 'Direccion'
-							});
 							
-							self.map.entities.push(self.pin);
+							self.pin.setLocation(new Microsoft.Maps.Location(r.results[0].location.latitude, r.results[0].location.longitude));							
 							self.map.setView({ bounds: r.results[0].bestView });
 						}
 					},
 					errorCallback: function (e) {
-						// alert("No results found.");
 						$.notify("No se han encontrado resultados.");
 					}
 				};
-				//Make the geocode request.
 				self.searchManager.geocode(searchRequest);
 			}
 		},

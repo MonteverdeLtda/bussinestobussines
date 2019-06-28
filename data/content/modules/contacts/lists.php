@@ -26,7 +26,7 @@
 							</ul>                                
 						</div>
 						<div class="panel-body table-responsive">
-							<table class="table table-hover table-bordered datatable">
+							<table class="table table-responsive table-hover table-bordered datatable">
 								<thead>
 									<tr>
 										<th>Doc.</th>

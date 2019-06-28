@@ -8,7 +8,7 @@
 						<div class="panel-heading">
 							<h3 class="panel-title"><strong>Modificar</strong> Contacto</h3>
 							<ul class="panel-controls">
-								<li><a @click="$router.go(-1)" class="panel-remove"><span class="fa fa-times"></span></a></li>
+								<li><a @click="$router.go(-1)" class="panel-remove" data-toggle="tooltip" data-placement="bottom" title="Cerrar"><span class="fa fa-times"></span></a></li>
 							</ul>
 						</div>
 						<form id="jvalidate" role="form" class="form-horizontal-" action="javascript:alert('Form #validate2 submited');">
@@ -167,7 +167,7 @@
 							<div class="panel-footer">
 								<!-- // <button type="reset" class="btn btn-default">Clear Form</button> -->
 								
-								<button class="btn btn-primary pull-right" type="submit">Añadir Contacto</button>
+								<button class="btn btn-primary pull-right" type="submit">Modificar Contacto</button>
 							</div>
 							<div class="panel-footer">
 							{{ post }}
