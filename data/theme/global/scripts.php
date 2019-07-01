@@ -3,6 +3,7 @@
 <!-- // <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
   
 <script type="text/javascript" src="/js/plugins/jquery/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <!-- <script type="text/javascript" src="/js/plugins/jquery/jquery-ui.min.js"></script> -->
 <script type="text/javascript" src="/js/plugins/bootstrap/bootstrap.min.js"></script>
@@ -50,13 +51,14 @@
 
 <script src="https://www.bing.com/api/maps/mapcontrol?key=Atryp6sZtQXpXgEw8wWqZEAXrSSVgAatL99H5XKB1f6L6zqL-wtsUekQKrTdNwed" async defer></script>
 
-<script src="/js/plugins/jQuery.Gantt/js/jquery.fn.gantt.js"></script>
 
 
 
 <script type="text/javascript" src="/js/plugins/moment.min.js"></script>
 <script type="text/javascript" src="/js/plugins/fullcalendar/fullcalendar.min.js"></script>
 
+<script src="/js/plugins/jQuery.Gantt/js/jquery.fn.gantt.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
 <!-- // <script src="/js/plugins/gc-gantt-master/gcGantt.js" type="text/javascript"></script> -->
 
 

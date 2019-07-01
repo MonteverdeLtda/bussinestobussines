@@ -169,6 +169,7 @@
 							<a href="#"><span class="fas fa-stream"></span> Empleados</a>
 							<ul>
 								<li><a @click="router.push({ name: 'page-system-types-eps' })"><span class="fas fa-list"></span> Listado de EPS</a></li>
+								<li><a @click="router.push({ name: 'page-system-types-charges' })"><span class="fas fa-list"></span> Listado de Cargos</a></li>
 							</ul>
 						</li>
 						<li class="xn-openable">

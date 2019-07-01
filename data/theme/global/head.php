@@ -44,3 +44,5 @@
 <!-- // <link href="/css/gc-gantt-master/gcGantt.css" media="all" rel="stylesheet" type="text/css" /> -->
 <link href="/js/plugins/jQuery.Gantt/css/style.css" media="all" rel="stylesheet" type="text/css" />
 
+
+        <link href="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet" type="text/css">

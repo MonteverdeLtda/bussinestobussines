@@ -215,10 +215,10 @@ var PagesAccountsAdd = Vue.extend({
 				 console.log(address_selected);
 				 self.address_selected = address_selected;
 				 
-				$("#jvalidate2 .select")
-					.val(null)
-					.change();
-				 document.getElementById('jvalidate2').reset();
+				// $("#jvalidate2 .select")
+				// 	.val(null)
+				// 	.change();
+				// document.getElementById('jvalidate2').reset();
 				 $('#modal_basic').modal('show');
 				 
 			});
@@ -321,6 +321,27 @@ var PagesAccountsAdd = Vue.extend({
 								if(Number(b) > 0)
 								{
 									$.notify("la cuenta fue creada correctamente.!", "success");
+									
+									if(self.post.address_principal != null && Number(self.post.address_principal) > 0){
+										FG.api('POST', '/accounts_addresses', {
+											account: b,
+											address: self.post.address_principal
+										}, function (x) {
+											if (x > 0){ $.notify("La direccion principal fue agregada a la cuenta de manera correctamenta.!", "success"); }
+											else { $.notify("Hubo un problema al agregar la direccion a la cuenta.", "success"); }
+										});
+									}
+									
+									if(self.post.address_invoices != null && Number(self.post.address_invoices) > 0){
+										FG.api('POST', '/accounts_addresses', {
+											account: b,
+											address: self.post.address_invoices
+										}, function (x) {
+											if (x > 0){ $.notify("La direccion principal fue agregada a la cuenta de manera correctamenta.!", "success"); }
+											else { $.notify("Hubo un problema al agregar la direccion a la cuenta.", "success"); }
+										});
+									}
+										
 									router.push({
 										name: 'page-accounts-view',
 										params: {
@@ -651,7 +672,7 @@ var PagesAccountsAdd = Vue.extend({
 							self[address_selected].postal_code = r.results[0].address.postalCode;
 							self[address_selected].completo = JSON.stringify(r.results[0]);
 							
-							self.pin.setLocation(new Microsoft.Maps.Location(r.results[0].location.latitude, r.results[0].location.longitude));							
+							self.pin.setLocation(new Microsoft.Maps.Location(r.results[0].location.latitude, r.results[0].location.longitude));
 							self.map.setView({ bounds: r.results[0].bestView });
 						}
 					},

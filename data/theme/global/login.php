@@ -69,9 +69,10 @@
 .login-container .login-box .login-logo {
 	background: #FFF url("https://monteverdeltda.com/wp-content/uploads/2019/03/logo-monteverde.png") center center no-repeat;
 	width: 100%;
-	height: 250px;
+	height: 175px;
 	float: left;
 	margin-bottom: 10px;
 	background-size: 100% auto;
+	background-size: contain;
 }
 </style>

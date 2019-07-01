@@ -95,13 +95,14 @@ var router = new VueRouter({
 		
 		/* SYSTEM */
 		{ path: '/system/types/identifications', component: PagesSystemTypesIdentifications, name: 'page-system-types-identifications' },		
-		{ path: '/system/types/genders', component: PagesSystemTypesGenders, name: 'page-system-types-genders' },		
+		{ path: '/system/types/genders', component: PagesSystemTypesGenders, name: 'page-system-types-genders' },
 		{ path: '/system/types/eps', component: PagesSystemTypesEPS, name: 'page-system-types-eps' },
 		{ path: '/system/types/contacts', component: PagesSystemTypesContacts, name: 'page-system-types-contacts' },
 		{ path: '/system/types/bloods/rhs', component: PagesSystemTypesBloodsRHs, name: 'page-system-types-bloods-rhs' },
 		{ path: '/system/types/bloods', component: PagesSystemTypesBloods, name: 'page-system-types-bloods' },
 		{ path: '/system/types/banks', component: PagesSystemTypesBanks, name: 'page-system-types-banks' },
 		{ path: '/system/types/letters-addresses', component: PagesSystemTypesLettersAddresses, name: 'page-system-types-letters-addresses' },
+		{ path: '/system/types/charges', component: PagesSystemTypesCharges, name: 'page-system-types-charges' },
 		/* END SYSTEM */
 	]
 });

@@ -1,4 +1,3 @@
-
 <template id="page-accounts-contacts-single-view">
 	<div>
 		<div class="page-content-wrap">
@@ -24,12 +23,12 @@
 						<div class="panel-heading">
 							<h3 class="panel-title"><strong>Viendo</strong> Contacto en cuenta</h3>
 							<ul class="panel-controls">
+								<li><a @click="delete_this()" class="panel-refresh"><span class="fas fa-trash"></span></a></li>
 								<li>
 									<router-link data-toggle="tooltip" data-placement="bottom" title="Modificar Contacto" tag="a" :to="{ name: 'page-contacts-edit', params: { contact_id: post.contact.id } }" class="panel-remove">
 										<span class="fas fa-user-edit"></span>
 									</router-link>
 								</li>
-								
 								<li><a @click="set_type_contact(-1)" class="panel-refresh"><span class="fas fa-pencil-alt"></span></a></li>
 								<li><a @click="$router.go(-1)" class="panel-remove"><span class="fa fa-times"></span></a></li>
 							</ul>

@@ -182,37 +182,25 @@
 															</div>
 														</div>
 													</div>
-													<div class="col-md-4">
-														<div class="form-group">
-															<label class="col-xs-12 control-label text-left">Departamento Residencia</label>
-															<div class="col-xs-12">
-																<select class="form-control select" name="department" v-model="post.department" data-live-search="true">
-																	<option value="null"></option>
-																</select>
-															</div>
-														</div>
-													</div>
-													<div class="col-md-4">
-														<div class="form-group">
-															<label class="col-xs-12 control-label text-left">Ciudad Residencia</label>
-															<div class="col-xs-12">
-																<select class="form-control select" name="city" v-model="post.city" data-live-search="true">
-																	<option value="null"></option>
-																</select>
-															</div>
-														</div>
-													</div>
-													<div class="col-md-4">
-														<div class="form-group">
-															<label class="col-xs-12 control-label text-left">Direccion Residencia</label>
-															<div class="col-xs-12">
-																<div class="input-group">
-																	<span class="input-group-addon"><span style="color: black;" class="fas fa-signature"></span></span>
-																	<input type="text" class="form-control" name="address" v-model="post.address" />
-																</div>
-															</div>
-														</div>
-													</div>
+													
+								<div class="row">
+									<div class="col-sm-12 col-md-12">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Direccion</label>
+											<div class="col-md-12">
+												<div class="input-group">
+													<input type="hidden" class="form-control" name="address" v-model="post.address" readonly="" />
+													<input type="text" class="form-control" readonly="" v-model="address.address_input" />
+													<span class="input-group-btn">
+														<button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#modal_basic">...</button>
+													</span>
+												</div>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								
 												
 													<div class="col-md-4">
 														<div class="form-group">
@@ -330,5 +318,188 @@
 				</div>
 			</form>
 		</div>
+		
+		
+		
+        <div class="modal" id="modal_basic" tabindex="-1" role="dialog" aria-labelledby="largeModalHead" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+					<form id="jvalidate2" role="form" class="form-horizontal-" action="javascript:alert('Form #validate3 submited');">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+							<h4 class="modal-title" id="largeModalHead">Normalizar Direccion</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="col-sm-3 col-md-4">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Tipo Vía (*)</label>
+											<div class="col-xs-12">
+												<select class="form-control select" name="type_road" data-address-model="type_road" v-model="address.type_road" data-live-search="true">
+													<option value="null"></option>
+												</select>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-3 col-md-2">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Num. (*)</label>
+											<div class="col-xs-12">
+												<input type="text" class="form-control" name="number_a" data-address-model="number_a" v-model="address.number_a" />
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-3 col-md-2">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Letra</label>
+											<div class="col-xs-12">
+												<select class="form-control select letters-addresses" name="letter_a" data-address-model="letter_a" v-model="address.letter_a" data-live-search="true">
+													<option value="null"></option>
+												</select>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-3 col-md-2">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Cuadrante</label>
+											<div class="col-xs-12">
+												<select class="form-control select quadrants-addresses" name="quadrant_a" data-address-model="quadrant_a" v-model="address.quadrant_a" data-live-search="true">
+													<option value="null"></option>
+												</select>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-3 col-md-2">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Num. (*)</label>
+											<div class="col-xs-12">
+												<input type="text" class="form-control" name="number_b" data-address-model="number_b" v-model="address.number_b" />
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-3 col-md-2">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Letra</label>
+											<div class="col-xs-12">
+												<select class="form-control select letters-addresses" name="letter_b" data-address-model="letter_b" v-model="address.letter_b" data-live-search="true">
+													<option value="null"></option>
+												</select>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-3 col-md-2">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Cuadrante</label>
+											<div class="col-xs-12">
+												<select class="form-control select quadrants-addresses" name="quadrant_b" data-address-model="quadrant_b" v-model="address.quadrant_b" data-live-search="true">
+													<option value="null"></option>
+												</select>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-3 col-md-2">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Num. (*)</label>
+											<div class="col-xs-12">
+												<input type="text" class="form-control" name="number_c" data-address-model="number_c" v-model="address.number_c" />
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-4 col-md-6">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Info. Adiccional</label>
+											<div class="col-xs-12">
+												<input type="text" class="form-control" name="additional_information" data-address-model="additional_information" v-model="address.additional_information" onkeyup="javascript:this.value=this.value.toUpperCase();" style="text-transform:uppercase;" />
+												<span class="help-block">Ejemplo: FI, INT, TO</span>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-4 col-md-6">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Departamento (*)</label>
+											<div class="col-xs-12">
+												<select class="form-control select" name="department" data-address-model="department" v-model="address.department" data-live-search="true">
+													<option value="null"></option>
+												</select>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-4 col-md-6">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Ciudad (*)</label>
+											<div class="col-xs-12">
+												<select class="form-control select" name="city" data-address-model="city" v-model="address.city" data-live-search="true">
+													<option value="null"></option>
+												</select>
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-4 col-md-4">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Cod. Postal</label>
+											<div class="col-xs-12">
+												<input type="text" class="form-control" name="postal_code" data-address-model="postal_code" v-model="address.postal_code" />
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									
+									
+									<div class="col-sm-4 col-md-4">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Direccion Normalizada</label>
+											<div class="col-xs-12">
+												<input readonly="" type="text" class="form-control" name="address_input" data-address-model="address_input" v-model="address.address_input" />
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-4 col-md-4">
+										<div class="form-group">
+											<label class="col-xs-12 control-label">Direccion Completa</label>
+											<div class="col-xs-12">
+												<input readonly="" type="text" class="form-control" name="display_name" data-address-model="display_name" v-model="address.display_name" />
+												<span class="help-block">&nbsp;</span>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-12 col-md-12">
+										<hr>
+										<div id='myMap' style='width: 100%; height: 35vh;'></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="pull-left">
+								<div id="messageBox-2"></div>
+							</div>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+							<button class="btn btn-primary pull-right" type="submit">Aceptar</button>
+						</div>
+						<div class="modal-footer">
+							{{ address }}
+						</div>
+					</form>
+                </div>
+            </div>
+        </div>
+		
 	</div>
 </template>

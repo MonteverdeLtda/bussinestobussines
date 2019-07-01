@@ -100,6 +100,7 @@ var PagesAddressesEdit = Vue.extend({
 									text: 'Direccion'
 								});
 								self.inSearch = false;
+								self.map.setView({ bounds: r.results[0].bestView });
 							}
 						},
 						errorCallback: function (e) {

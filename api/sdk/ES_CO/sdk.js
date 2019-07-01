@@ -488,7 +488,6 @@ FG = {
 				}
 				
 				.login-container .login-box .login-logo {
-					background: url("https://monteverdeltda.com/wp-content/uploads/2017/10/logo-monteverde-servicios-ambientales-forestales-medellin-colombia.png") top center no-repeat;
 					width: 100%;
 					height: 135px;
 					float: left;
@@ -496,6 +495,7 @@ FG = {
 					background-color: #FFF;
 					border-radius: 25px;
 					padding: 70px 45px;
+					background-size: contain;
 				}
 				
 				`,

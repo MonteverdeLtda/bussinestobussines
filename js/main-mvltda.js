@@ -278,6 +278,7 @@ var PagesLogin = Vue.extend({
 	<?php echo $this->include_template("/system/types-bloods.js"); ?>
 	<?php echo $this->include_template("/system/types-banks.js"); ?>
 	<?php echo $this->include_template("/system/types-letters-addresses.js"); ?>
+	<?php echo $this->include_template("/system/types-charges.js"); ?>
 /* END SYSTEM */
 
 <?php echo $this->include_template("/website/routers.js"); ?>

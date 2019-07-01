@@ -18,6 +18,8 @@ var PagesEmployeesAdd = Vue.extend({
 					departments: [],
 					citys: [],
 				},
+				geo_departments: [],
+				geo_citys: [],
 				banks: [],
 				types_banks: [],
 				types_genders: [],
@@ -42,8 +44,6 @@ var PagesEmployeesAdd = Vue.extend({
 				"pension_fund": 0,
 				"compensation_fund": 0,
 				"severance_fund": 0,
-				"department": 0,
-				"city": 0,
 				"address": null,
 				"observations": null,
 				"bank": 0,
@@ -51,6 +51,31 @@ var PagesEmployeesAdd = Vue.extend({
 				"bank_number": null,
 				"gender": null,
 			},
+			address: {
+				id: null,
+				address_input: null,
+				display_name: null,
+				completo: null,
+				lon: null,
+				lat: null,
+				department: null,
+				city: null,
+				type_road: null,
+				number_a: null,
+				letter_a: null,
+				quadrant_a: null,
+				number_b: null,
+				letter_b: null,
+				quadrant_b: null,
+				number_c: null,
+				postal_code: null,
+				additional_information: null,
+			},
+			jvalidate: null,
+			jvalidate2: null,
+			map: null,
+			pin: null,
+			center: null,
 		};
 	},
 	created: function () {
@@ -59,51 +84,51 @@ var PagesEmployeesAdd = Vue.extend({
 	mounted: function () {
 		var self = this;
 		self.$root._mpb("show", {value: [0,0], speed: 1 });
-		self.load_scripts();
+		self.GetMap();
 	},
 	methods: {
 		load_scripts: function(){
 			var self = this;
 			
-			if($(".select").length > 0){
-                $(".select").selectpicker();
+			if($(".mask_date").length > 0){ $(".mask_date").datepicker({format: 'yyyy-mm-dd'}); }
+			if($(".mask_phone_mobile").length > 0){ $(".mask_phone_mobile").mask('(999) 999-9999'); }
+			if($(".mask_phone").length > 0){ $(".mask_phone").mask('(999) 999-9999'); }
+			if($(".mask_phone_ext").length > 0){ $(".mask_phone_ext").mask('(99) 999-9999? x99999'); }
+				
+            if($(".select").length > 0){
+				$('.selectpicker').selectpicker('destroy');
+                $(".select").selectpicker();				
                 $(".select").on("change", function(){
 					for (var k in self.post){
 						if (typeof self.post[k] !== 'function') {
-							if($(this).attr("name") == k && self.post[k] != $(this).val()){
+							if($(this).data("name") == k && self.post[k] != $(this).val()){
 								self.post[k] = $(this).val();
-								if(k == 'department'){
-									self.changeCity();
-								}
 							}
 						}
 					}
                 });
 			}
-			
-			$("input").on("change", function(){
-				for (var k in self.post){
+			$("input,select,textarea").on("change", function(){
+				for(var k in self.post){
 					if (typeof self.post[k] !== 'function') {
 						if($(this).attr("name") == k && self.post[k] != $(this).val()){
 							self.post[k] = $(this).val();
 						}
 					}
 				}
-			});
-			
-			$("select").on("change", function(){
-				for(var k in self.post){
-					if(typeof self.post[k] !== 'function'){
-						if($(this).attr("name") == k && self.post[k] != $(this).val()){
-							self.post[k] = $(this).val();
+				for (var k in self.address){
+					if (typeof self.address[k] !== 'function'){
+						if($(this).data("address-model") == k && self.address[k] != $(this).val()){
+							self.address[k] = $(this).val();
+							
+							if(k=='department'){
+								self.load_citys();
+							}
 						}
+						self.repairAddress();
 					}
 				}
 			});
-			
-			if($(".mask_date").length > 0){ $(".mask_date").datepicker({format: 'yyyy-mm-dd'}); }
-			if($(".mask_phone").length > 0){ $(".mask_phone").mask('(999) 999-9999'); }
-			if($(".mask_phone_ext").length > 0){ $(".mask_phone_ext").mask('(99) 999-9999? x99999'); }
 			
 			self.jvalidate = $("#jvalidate").validate({
 				debug: true,
@@ -151,12 +176,6 @@ var PagesEmployeesAdd = Vue.extend({
 						required: true
 					},
 					number_mobile: { 
-						required: true
-					},
-					department: { 
-						required: true
-					},
-					city: { 
 						required: true
 					},
 					address: { 
@@ -235,12 +254,6 @@ var PagesEmployeesAdd = Vue.extend({
 					},
 					number_mobile: { 
 						required: "Ingresa el numero movil (Personal) del empleado."
-					},
-					department: { 
-						required: "Ingresa el departamento de residencia del empleado."
-					},
-					city: { 
-						required: "Ingresa la cuidad de residencia del empleado."
 					},
 					address: { 
 						required: "Ingresa la direccion de residencia del empleado."
@@ -329,7 +342,167 @@ var PagesEmployeesAdd = Vue.extend({
 				},
 				onsubmit: true
 			});
-			self.load_options();
+						
+			self.jvalidate2 = $("#jvalidate2").validate({
+				debug: true,
+				errorLabelContainer: "#messageBox-2",
+				wrapper: "div.item",
+                ignore: [],
+                rules: {
+					address_input: {
+						required: true
+					},
+					display_name: {
+						required: true
+					},
+					department: {
+						required: true
+					},
+					city: {
+						required: true
+					},
+					type_road: {
+						required: true
+					},
+					number_a: {
+						required: true
+					},
+					letter_a: {
+						required: false
+					},
+					quadrant_a: {
+						required: false
+					},
+					number_b: {
+						required: true
+					},
+					letter_b: {
+						required: false
+					},
+					quadrant_b: {
+						required: false
+					},
+					number_c: {
+						required: true
+					},
+					postal_code: {
+						required: false
+					},
+					additional_information: {
+						required: false
+					},
+					lon: {
+						required: true
+					},
+					lat: {
+						required: true
+					},
+				},
+				messages: {
+					address_input: {
+						required: "Completa la direccion."
+					},
+					display_name: {
+						required: "Completa la direccion."
+					},
+					department: {
+						required: "Selecciona el departamento."
+					},
+					city: {
+						required: "Selecciona la ciudad."
+					},
+					type_road: {
+						required: "Selecciona el tipo de vía."
+					},
+					number_a: {
+						required: "Ingrese el numero."
+					},
+					letter_a: {
+						required: ""
+					},
+					quadrant_a: {
+						required: ""
+					},
+					number_b: {
+						required: "Ingrese el numero."
+					},
+					letter_b: {
+						required: ""
+					},
+					quadrant_b: {
+						required: ""
+					},
+					number_c: {
+						required: "Ingrese el numero."
+					},
+					postal_code: {
+						required: ""
+					},
+					additional_information: {
+						required: ""
+					},
+					lon: {
+						required: "No se detecto la correctamente la direccion, falta la longitud."
+					},
+					lat: {
+						required: "No se detecto la correctamente la direccion, falta la latitud."
+					},
+				},
+				submitHandler: function() {
+					if(self.address.address_input != null
+					&& self.address.display_name != null
+					&& self.address.lon != null
+					&& self.address.lat != null
+					&& self.address.department != null
+					&& self.address.city != null
+					&& self.address.type_road != null
+					&& self.address.number_a != null
+					&& self.address.number_b != null
+					&& self.address.number_c != null){						
+						bootbox.confirm({
+							title: "Estas Seguro?",
+							message: "¿Terminaste? Confirma pulsando en el botón aceptar.",
+							buttons: {
+								cancel: {
+									label: '<i class="fa fa-times"></i> Cancelar'
+								},
+								confirm: {
+									label: '<i class="fa fa-check"></i> Aceptar'
+								}
+							},
+							callback: function (result) {
+								if(result == true){
+									FG.api('GET', '/addresses', {
+										filter: [
+											'address_input,eq,' + self.address.address_input
+										]
+									}, function(r){
+										if(r[0] != undefined && r[0].id > 0){
+											self.post.address = r[0].id;
+											self.address = r[0];
+											$.notify("Direccion Seleccionada con éxito.", 'success');
+											
+										}else{
+											FG.api('POST', '/addresses', self.address, function(r){
+												if(Number(r) > 0){
+													$.notify("Direccion Añadida con éxito.", 'success');
+													self.post.address = r;
+													self.address.id = r;
+												}
+											});
+										}
+										$('#modal_basic').modal('hide');
+									});
+								}
+							}
+						});
+					}else{
+						$.notify("Ingrese los datos minimos requeridos.", 'error');
+					}
+				},
+				onsubmit: true
+			});
+			
 		},
 		load_options: function(){
 			var self = this;
@@ -407,39 +580,60 @@ var PagesEmployeesAdd = Vue.extend({
 													});
 													$(".select[name='severance_fund']").selectpicker('refresh');
 												}
-												FG.api('GET', '/geo_departments', {}, function(r){
+												FG.api('GET', '/banks', {}, function(r){
 													if(r.length > 0 && r[0].id > 0){
-														self.options.geo.departments = r;
+														self.options.banks = r;
 														r.forEach(function(el){
-															$(".select[name='department']").append('<option value="'+el.id+'">'+el.name+'</option>');
+															$(".select[name='bank']").append('<option value="'+el.id+'">'+el.name+'</option>');
 														});
-														$(".select[name='department']").selectpicker('refresh');
+														$(".select[name='bank']").selectpicker('refresh');
 													}
-													FG.api('GET', '/banks', {}, function(r){
+													FG.api('GET', '/types_banks', {}, function(r){
 														if(r.length > 0 && r[0].id > 0){
-															self.options.banks = r;
+															self.options.types_banks = r;
 															r.forEach(function(el){
-																$(".select[name='bank']").append('<option value="'+el.id+'">'+el.name+'</option>');
+																$(".select[name='bank_type']").append('<option value="'+el.id+'">'+el.name+'</option>');
 															});
-															$(".select[name='bank']").selectpicker('refresh');
+															$(".select[name='bank_type']").selectpicker('refresh');
 														}
-														FG.api('GET', '/types_banks', {}, function(r){
+														FG.api('GET', '/types_genders', {}, function(r){
 															if(r.length > 0 && r[0].id > 0){
-																self.options.types_banks = r;
+																self.options.types_genders = r;
 																r.forEach(function(el){
-																	$(".select[name='bank_type']").append('<option value="'+el.id+'">'+el.name+'</option>');
+																	$(".select[name='gender']").append('<option value="'+el.id+'">'+el.name+'</option>');
 																});
-																$(".select[name='bank_type']").selectpicker('refresh');
+																$(".select[name='gender']").selectpicker('refresh');
 															}
-															FG.api('GET', '/types_genders', {}, function(r){
+															
+				
+															FG.api('GET', '/types_roads', {}, function(r){
 																if(r.length > 0 && r[0].id > 0){
-																	self.options.types_genders = r;
-																	r.forEach(function(el){
-																		$(".select[name='gender']").append('<option value="'+el.id+'">'+el.name+'</option>');
-																	});
-																	$(".select[name='gender']").selectpicker('refresh');
+																	self.options.types_roads = r;
+																	r.forEach(function(el){ $(".select[data-address-model='type_road']").append('<option value="'+el.id+'">'+el.name+'</option>'); });
+																	$(".select[data-address-model='type_road']").selectpicker('refresh');
 																}
-																
+																FG.api('GET', '/geo_departments', {}, function(r){
+																	if(r.length > 0 && r[0].id > 0){
+																		self.options.geo_departments = r;
+																		r.forEach(function(el){ $(".select[data-address-model='department']").append('<option value="'+el.id+'">'+el.name+'</option>'); });
+																		$(".select[data-address-model='department']").selectpicker('refresh');
+																	}
+																	FG.api('GET', '/types_letters_addresses', {}, function(r){
+																		if(r.length > 0 && r[0].id > 0){
+																			self.options.types_letters_addresses = r;
+																			r.forEach(function(el){ $(".letters-addresses").append('<option value="'+el.id+'">'+el.name+'</option>'); });
+																			$(".letters-addresses").selectpicker('refresh');
+																		}
+																		FG.api('GET', '/types_quadrants', {}, function(r){
+																			if(r.length > 0 && r[0].id > 0){
+																				self.options.types_quadrants = r;
+																				r.forEach(function(el){ $(".quadrants-addresses").append('<option value="'+el.id+'">'+el.name+'</option>'); });
+																				$(".quadrants-addresses").selectpicker('refresh');
+																			}
+																			self.load_scripts();
+																		});
+																	});
+																});
 															});
 														});
 													});
@@ -457,23 +651,165 @@ var PagesEmployeesAdd = Vue.extend({
 		find: function(){
 			var self = this;
 		},
-		changeCity(){
+		load_citys(){
 			var self = this;
-			$(".select[name='city']").html('');
-			$(".select[name='city']").html('<option value="null"></option>');
+			self.address.city = null;
+			self.options.geo_citys = [];
+			self.$root._mpb("show",{value: [0,50],speed: 0});
+			
+			$(".select[data-address-model='city']").find('option').remove().end().append('<option value="null"></option>');
+			
 			FG.api('GET', '/geo_citys', {
 				filter: [
-					'department,eq,' + self.post.department
+					'department,eq,' + self.address.department
 				]
 			}, function(r){
 				if(r.length > 0 && r[0].id > 0){
-					self.options.geo.citys = r;
+					self.options.geo_citys = r;
 					r.forEach(function(el){
-						$(".select[name='city']").append('<option value="'+el.id+'">'+el.name+'</option>');
+						$(".select[data-address-model='city']").append('<option value="'+el.id+'">'+el.name+'</option>');
 					});
-					$(".select[name='city']").selectpicker('refresh');
+					$(".select[data-address-model='city']").selectpicker('refresh');
+					self.$root._mpb("show",{value: [0,100],speed: 1 });
 				}
 			});
-		}
+		},
+		load_plugins_this(){
+			var self = this;
+			
+			
+			self.$root._mpb("show",{value: [0,75],speed: 0});
+			
+			$(".datepicker").datepicker({format: 'yyyy-mm-dd'});
+			
+			
+			self.$root._mpb("show",{value: [0,100],speed: 0});
+		},
+		repairAddress(){
+			var self = this;
+			
+			temp_min = '';
+			temp_full = '';
+			
+			if(Number(self.address.type_road) > 0){
+				temp_type_road = self.options.types_roads.find(road => road.id == self.address.type_road);
+				temp_min += temp_type_road.code;
+				temp_full += temp_type_road.name;
+			};
+			
+			if(Number(self.address.number_a) > 0){
+				temp_min += ' ' + Number(self.address.number_a);
+				temp_full += ' ' + Number(self.address.number_a);
+			};
+			if(Number(self.address.letter_a) > 0){
+				temp_letter_a = self.options.types_letters_addresses.find(letter => letter.id == self.address.letter_a);
+				temp_min += temp_letter_a.name;
+				temp_full += ' ' + temp_letter_a.name;
+			};
+			if(Number(self.address.quadrant_a) > 0){
+				temp_quadrant_a = self.options.types_quadrants.find(quadrant => quadrant.id == self.address.quadrant_a);
+				temp_min += ' ' + temp_quadrant_a.name;
+				temp_full += ' ' + temp_quadrant_a.name;
+			};
+			
+			temp_min += ' #';
+			temp_full += ' #';
+			
+			if(Number(self.address.number_b) > 0){
+				temp_min += ' ' + Number(self.address.number_b);
+				temp_full += ' ' + Number(self.address.number_b);
+			};
+			if(Number(self.address.letter_b) > 0){
+				temp_letter_b = self.options.types_letters_addresses.find(letter => letter.id == self.address.letter_b);
+				temp_min += temp_letter_b.name;
+				temp_full += ' ' + temp_letter_b.name;
+			};
+			if(Number(self.address.quadrant_b) > 0){
+				temp_quadrant_b = self.options.types_quadrants.find(quadrant => quadrant.id == self.address.quadrant_b);
+				temp_min += ' ' + temp_quadrant_b.name;
+				temp_full += ' ' + temp_quadrant_b.name;
+			};
+			
+			if(Number(self.address.number_c) > 0){
+				temp_min += ' - ' + Number(self.address.number_c);
+				temp_full += ' - ' + Number(self.address.number_c);
+			};
+			if(self.address.additional_information != null && self.address.additional_information != ''){
+				temp_min += ' ' + self.address.additional_information.toUpperCase();
+				temp_full += ' ' + self.address.additional_information.toUpperCase();
+			}
+			
+			if(Number(self.address.city) > 0){
+				temp_city = self.options.geo_citys.find(cit => cit.id == self.address.city);
+				temp_min += ', ' + temp_city.name.toUpperCase();				
+				temp_full += ', ' + temp_city.name.toUpperCase();				
+			};
+			if(Number(self.address.department) > 0){
+				temp_department = self.options.geo_departments.find(depart => depart.id == self.address.department);
+				temp_min += ', ' + temp_department.name.toUpperCase();
+				temp_full += ', ' + temp_department.name.toUpperCase();
+			};
+			
+			self.address.address_input = temp_min;
+			self.address.display_name = temp_full;
+			
+			if(
+				Number(self.address.department) > 0
+				&& Number(self.address.city) > 0
+				&& Number(self.address.type_road) > 0
+				&& Number(self.address.number_a) > 0
+				&& Number(self.address.number_b) > 0
+				&& Number(self.address.number_c) > 0
+			){
+				self.geocodeQuery(temp_min);
+			}
+		},
+		GetMap() {
+			var self = this;
+			self.map = new Microsoft.Maps.Map('#myMap', {
+				zoom: 15,
+				mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+				center: new Microsoft.Maps.Location(4.0000000, -72.0000000)
+			});
+			
+			self.center = self.map.getCenter();
+			
+			self.pin = new Microsoft.Maps.Pushpin(self.center, {
+				title: 'Direccion',
+				subTitle: self.address.address_input,
+				text: '▼'
+			});
+			self.map.entities.push(self.pin);
+			
+			self.load_options();
+		},
+		geocodeQuery(query) {
+			var self = this;
+			if (!self.searchManager) {
+				Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () {
+					self.searchManager = new Microsoft.Maps.Search.SearchManager(self.map);
+					self.geocodeQuery(query);
+				});
+			} else {
+				var searchRequest = {
+					where: query,
+					callback: function (r) {
+						if (r && r.results && r.results.length > 0) {
+							self.address.lat = r.results[0].location.latitude;
+							self.address.lon = r.results[0].location.longitude;
+							self.address.postal_code = r.results[0].address.postalCode;
+							self.address.completo = JSON.stringify(r.results[0]);
+							
+							self.pin.setLocation(new Microsoft.Maps.Location(r.results[0].location.latitude, r.results[0].location.longitude));							
+							self.map.setView({ bounds: r.results[0].bestView });
+						}
+					},
+					errorCallback: function (e) {
+						$.notify("No se han encontrado resultados.");
+					}
+				};
+				self.searchManager.geocode(searchRequest);
+			}
+		},
 	}
 });

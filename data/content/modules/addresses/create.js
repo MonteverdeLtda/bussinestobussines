@@ -53,10 +53,18 @@ var PagesAddressesAdd = Vue.extend({
 			var self = this;
 			self.map = new Microsoft.Maps.Map('#myMap', {
 				zoom: 15,
-				mapTypeId: Microsoft.Maps.MapTypeId.aerial
+				mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+				center: new Microsoft.Maps.Location(4.0000000, -72.0000000)
 			});
-			//Make a request to geocode New York, NY.
-			// self.geocodeQuery(document.getElementById("from").value);
+			
+			self.center = self.map.getCenter();
+			
+			self.pin = new Microsoft.Maps.Pushpin(self.center, {
+				title: 'Direccion',
+				subTitle: self.post.address_input,
+				text: '▼'
+			});
+			self.map.entities.push(self.pin);
 			
 			self.load_options_selects();
 		},
@@ -80,15 +88,8 @@ var PagesAddressesAdd = Vue.extend({
 							self.post.lon = r.results[0].location.longitude;
 							self.post.postal_code = r.results[0].address.postalCode;
 							self.post.completo = JSON.stringify(r.results[0]);
-						
-							// self.pin = new Microsoft.Maps.Pushpin(r.results[0].location);
-							self.pin = new Microsoft.Maps.Pushpin(r.results[0].location, {
-								title: self.post.address_input,
-								// subTitle: 'City Center',
-								text: 'Direccion'
-							});
 							
-							self.map.entities.push(self.pin);
+							self.pin.setLocation(new Microsoft.Maps.Location(r.results[0].location.latitude, r.results[0].location.longitude));
 							self.map.setView({ bounds: r.results[0].bestView });
 						}
 					},
@@ -353,7 +354,7 @@ var PagesAddressesAdd = Vue.extend({
 												$.notify("Direccion Añadida con éxito.", 'success');
 												
 												router.push({
-													name: 'page-addresses-edit',
+													name: 'page-addresses-view',
 													params: {
 														address_id: r
 													}

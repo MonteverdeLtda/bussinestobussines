@@ -9,11 +9,12 @@ var PagesAccountsRequestsAdd = Vue.extend({
 				services: [],
 			},
 			post: {
-				"client": this.$route.params.account_id,
+				"account": this.$route.params.account_id,
 				"contact": 0,
 				"request_notes": "",
 				"requests_addresses": [],
-			}
+			},
+			jvalidate: null,
 		};
 	},
 	created: function () {
@@ -26,9 +27,128 @@ var PagesAccountsRequestsAdd = Vue.extend({
 	mounted() {
 		var self = this;
 		self.$root._mpb("show", { value: [0, 0], speed: 1 });
-		self.load_options_selects();
+		self.load_scripts();
 	},
 	methods: {
+		seletedActive(address){
+			var self = this;
+			if(address.id != undefined){
+				search_exist = self.post.requests_addresses.find(addr => addr.id == address.id);
+				if(search_exist != undefined){
+					return 'fas fa-check';
+				}else{
+					return 'fas fa-times';
+				}
+			}
+		},
+		load_scripts(){
+			var self = this;
+			
+			$('#search').on('keyup', function() {
+				var pattern = $(this).val();
+				$('.searchable-container .items').hide();
+				$('.searchable-container .items').filter(function() {
+					return $(this).text().match(new RegExp(pattern, 'i'));
+				}).show();
+			});
+			
+            if($(".wizard").length > 0){
+                $(".wizard > ul").each(function(){
+                    $(this).addClass("steps_"+$(this).children("li").length);
+                });
+                if($("#wizard-validation").length > 0){
+                    var validator = $("#wizard-validation").validate({
+						debug: true,
+						errorLabelContainer: "#messageBox",
+						rules: {
+							contact: {
+								required: true,
+							},
+							"requests_addresses[]": {
+								required: true,
+								
+							},
+							request_notes: {
+								required: false
+							}
+						},
+						messages: {
+							contact: {
+								required: "Seleccione un contacto de la lista",
+							},
+							"requests_addresses[]": {
+								required: "Seleccione minimo 1 dirección"
+							},
+						},
+						submitHandler: function() {
+							if(self.post.account > 0 && self.post.contact > 0 && self.post.requests_addresses.length > 0){
+								suma_a = 0;
+								total_a = self.post.requests_addresses.length;
+								total_s = 0;
+								suma_s = 0;
+								
+								process = true;
+								self.post.requests_addresses.forEach(function(address){
+									if(address.id != undefined && address.requests_addresses_services.length > 0){
+										total_s += address.requests_addresses_services.length;
+										if(address.requests_addresses_services.length == 0){ total_s += 1; }
+										address.requests_addresses_services.forEach(function(service){
+											if(service.id != undefined){
+												suma_a++;
+												suma_s++;
+											}else{
+												$.notify("Hay una direccion sin servicios.", "error");
+												process = false;
+											}
+										});
+									}else{
+										$.notify("Hay una direccion sin servicios.", "error");
+										process = false;
+									}									
+								});
+									
+								if(process == true){
+									self.saveRequest();
+								}
+								
+							}else{
+								$.notify("Complete el formulario correctamente.", "error");
+							};
+						}
+					});
+                }
+                $(".wizard").smartWizard({
+					labelNext:'Continuar', // label for Next button
+					labelPrevious:'Regresar', // label for Previous button
+					labelFinish:'Añadir',  // label for Finish button 
+					buttonOrder: ['finish', 'next', 'prev'],
+                    onLeaveStep: function(obj){
+                        var wizard = obj.parents(".wizard");
+                        if(wizard.hasClass("wizard-validation")){
+                            var valid = true;
+                            $('input,textarea',$(obj.attr("href"))).each(function(i,v){ valid = validator.element(v) && valid; });
+                            if(!valid){ wizard.find(".stepContainer").removeAttr("style"); validator.focusInvalid(); return false; }
+                        }
+                        return true;
+                    },
+                    onShowStep: function(obj){                        
+                        var wizard = obj.parents(".wizard");
+
+                        if(wizard.hasClass("show-submit")){
+                        
+                            var step_num = obj.attr('rel');
+                            var step_max = obj.parents(".anchor").find("li").length;
+
+                            if(step_num == step_max){                             
+                                obj.parents(".wizard").find(".actionBar .btn-primary").css("display","block");
+                            }                         
+                        }
+                        return true;                         
+                    }
+                });
+            };
+			self.load_options_selects();
+		},
 		load_options_selects(){
 			var self = this;
 			FG.api('GET', '/accounts_contacts', {
@@ -74,40 +194,20 @@ var PagesAccountsRequestsAdd = Vue.extend({
 				});
 			});
 		},
-		addAddress(address_index){
+		toggleAddress(address_index){
 			var self = this;
-			//address = self.options.addresses.find( address => address.id === Number(address_id) );
 			address = self.options.addresses[address_index];
 			if(address != undefined){
 				address.requests_addresses_services = [];
-				self.post.requests_addresses.push(address);
-				self.options.addresses.splice(address_index, 1);
-			}
-		},
-		removeAddress(address_index){
-			var self = this;
-			bootbox.confirm({
-				message: "Va eliminar la direccion y su contenido, antes de realizar dichos cambios debes confirmar por seguridad! Deseas continuar?",
-				buttons: {
-					confirm: {
-						label: 'Si',
-						className: 'btn-success'
-					},
-					cancel: {
-						label: 'No',
-						className: 'btn-danger'
-					}
-				},
-				callback: function (a) {
-					if(a === true){
-						if(self.post.requests_addresses[address_index] != undefined){
-							self.post.requests_addresses[address_index].requests_addresses_services = [];
-							self.options.addresses.push(self.post.requests_addresses[address_index]);
-							self.post.requests_addresses.splice(address_index, 1);
-						}
-					}
+				search_exist = self.post.requests_addresses.find(addr => addr.id == address.id);
+				
+				if(search_exist == undefined){
+					self.post.requests_addresses.push(address);
+				}else{
+					position = self.post.requests_addresses.indexOf(address, 0)
+					self.post.requests_addresses.splice(position, 1);
 				}
-			});
+			}
 		},
 		addServicesInAddress(address_index){
 			var self = this;
@@ -122,26 +222,26 @@ var PagesAccountsRequestsAdd = Vue.extend({
 					inputType: 'checkbox',
 					inputOptions: self.options.services,
 					callback: function (b) {
-						services_temp = [];
-						b.forEach(function(c){
-							info = self.services.find( d => d.id === Number(c) );
-							exist = self.post.requests_addresses[address_index].requests_addresses_services.find(e => e.id === Number(c));
-							if(info != undefined && exist === undefined){
-								self.post.requests_addresses[address_index].requests_addresses_services.push(info);
-							}
-						});
-						
-						i = 0;
-						self.post.requests_addresses[address_index].requests_addresses_services.forEach(function(f){
-							id_t = f.id.toString()
-							exist = b.find( fruta => fruta.toString() === id_t );
-							console.log(exist);
-							if(exist === undefined){
-								self.post.requests_addresses[address_index].requests_addresses_services.splice(i, 1);
-							}
-							i++;
-						});
-						
+						if(b != null && b.length > 0){
+							services_temp = [];
+							b.forEach(function(c){
+								info = self.services.find( d => d.id === Number(c) );
+								exist = self.post.requests_addresses[address_index].requests_addresses_services.find(e => e.id === Number(c));
+								if(info != undefined && exist === undefined){
+									self.post.requests_addresses[address_index].requests_addresses_services.push(info);
+								}
+							});
+							
+							i = 0;
+							self.post.requests_addresses[address_index].requests_addresses_services.forEach(function(f){
+								id_t = f.id.toString()
+								exist = b.find( fruta => fruta.toString() === id_t );
+								if(exist === undefined){
+									self.post.requests_addresses[address_index].requests_addresses_services.splice(i, 1);
+								}
+								i++;
+							});
+						}
 					}
 				});
 				
@@ -196,7 +296,7 @@ var PagesAccountsRequestsAdd = Vue.extend({
 									$.notify("Hay direcciones sin servicios, Debes eliminarlas o agregar servicios.", "error");
 								}
 							});
-							if(self.post.client > 0 && self.post.contact > 0 && self.post.requests_addresses.length > 0){
+							if(self.post.account > 0 && self.post.contact > 0 && self.post.requests_addresses.length > 0){
 								FG.api('POST', '/requests', {
 									account: self.$route.params.account_id,
 									contact: self.post.contact,

@@ -603,23 +603,25 @@ var PagesContactsEdit = Vue.extend({
 					$(".select[name='identification_type']").val(a.identification_type).change().selectpicker('refresh');
 					$(".select[name='gender']").val(a.gender).change().selectpicker('refresh');
 					
-					FG.api('GET', '/addresses/' + a.address, {}, function(b){
-						if(b != undefined > 0 && b.id > 0){
-							self.address = b;
-							self.address.completo = JSON.parse(self.address.completo);
-							
-							$(".select[name='department']").val(b.department).change().selectpicker('refresh');
-							$(".select[name='city']").val(b.city).change().selectpicker('refresh');
-							$(".select[name='type_road']").val(b.type_road).change().selectpicker('refresh');
-							$(".select[name='letter_a']").val(b.letter_a).change().selectpicker('refresh');
-							$(".select[name='quadrant_a']").val(b.quadrant_a).change().selectpicker('refresh');
-							$(".select[name='letter_b']").val(b.letter_b).change().selectpicker('refresh');
-							$(".select[name='quadrant_b']").val(b.quadrant_b).change().selectpicker('refresh');
-							
-							self.GetMap();
-						}
-					});
+					if(a.address != null){
+						FG.api('GET', '/addresses/' + a.address, {}, function(b){
+							if(b != undefined > 0 && b.id > 0){
+								self.address = b;
+								self.address.completo = JSON.parse(self.address.completo);
+								
+								$(".select[name='department']").val(b.department).change().selectpicker('refresh');
+								$(".select[name='city']").val(b.city).change().selectpicker('refresh');
+								$(".select[name='type_road']").val(b.type_road).change().selectpicker('refresh');
+								$(".select[name='letter_a']").val(b.letter_a).change().selectpicker('refresh');
+								$(".select[name='quadrant_a']").val(b.quadrant_a).change().selectpicker('refresh');
+								$(".select[name='letter_b']").val(b.letter_b).change().selectpicker('refresh');
+								$(".select[name='quadrant_b']").val(b.quadrant_b).change().selectpicker('refresh');
+								
+							}
+						});
+					}
 				}
+					self.GetMap();
 				self.$root._mpb("show",{value: [0,100],speed: 1 });
 			});
 		}

@@ -206,37 +206,26 @@
 															</div>
 														</div>
 													</div>
-													<div class="col-md-4">
-														<div class="form-group">
-															<label class="col-xs-12 control-label text-left">Departamento Residencia</label>
-															<div class="col-xs-12">
-																<select class="form-control select" name="department" v-model="post.department.id" data-live-search="true">
-																	<option :value="post.department.id">{{ post.department.name }}</option>
-																</select>
-															</div>
-														</div>
-													</div>
-													<div class="col-md-4">
-														<div class="form-group">
-															<label class="col-xs-12 control-label text-left">Ciudad Residencia</label>
-															<div class="col-xs-12">
-																<select class="form-control select" name="city" v-model="post.city.id" data-live-search="true">
-																	<option :value="post.city.id">{{ post.city.name }}</option>
-																</select>
-															</div>
-														</div>
-													</div>
-													<div class="col-md-4">
-														<div class="form-group">
-															<label class="col-xs-12 control-label text-left">Direccion Residencia</label>
-															<div class="col-xs-12">
-																<div class="input-group">
-																	<span class="input-group-addon"><span style="color: black;" class="fas fa-signature"></span></span>
-																	<input type="text" class="form-control" name="address" v-model="post.address" />
+													
+													<div class="row">
+														<div class="col-sm-12 col-md-12">
+															<div class="form-group">
+																<label class="col-xs-12 control-label">Direccion</label>
+																<div class="col-md-12">
+																	<div class="input-group">
+																		<input type="hidden" class="form-control" name="address" v-model="post.address" readonly="" />
+																		<input type="text" class="form-control" readonly="" v-model="address.address_input" />
+																		<span class="input-group-btn">
+																			<button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#modal_basic" disabled="">...</button>
+																		</span>
+																	</div>
+																	<span class="help-block">&nbsp;</span>
 																</div>
 															</div>
 														</div>
-													</div>													
+													</div>
+													
+													
 													<div class="col-md-6">
 														<div class="form-group">
 															<label class="col-md-12 control-label text-left">Banco</label>

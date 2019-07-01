@@ -87,6 +87,7 @@ $this->include_template("/system/types-bloods-rhs.php");
 $this->include_template("/system/types-bloods.php");
 $this->include_template("/system/types-banks.php");
 $this->include_template("/system/types-letters-addresses.php");
+$this->include_template("/system/types-charges.php");
 /* END SYSTEM */
 
 /* EVENTS */

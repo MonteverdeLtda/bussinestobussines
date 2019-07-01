@@ -323,12 +323,14 @@ var PagesContactsView = Vue.extend({
 					$("select[name='identification_type']").val(a.identification_type).change().selectpicker('refresh');
 					$("select[name='gender']").val(a.gender).change().selectpicker('refresh');
 					
-					FG.api('GET', '/addresses/' + a.address, {}, function(b){
-						if(b != undefined > 0 && b.id > 0){
-							console.log(b);
-							self.address = b;
-						}
-					});
+					if(a.address != null){
+						FG.api('GET', '/addresses/' + a.address, {}, function(b){
+							if(b != undefined > 0 && b.id > 0){
+								console.log(b);
+								self.address = b;
+							}
+						});
+					}
 				}
 				self.$root._mpb("show",{value: [0,100],speed: 1 });
 				

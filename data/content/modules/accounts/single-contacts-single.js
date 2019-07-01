@@ -1,4 +1,3 @@
-
 var PagesAccountsContactsSingleView = Vue.extend({
 	template: '#page-accounts-contacts-single-view',
 	data: function() {
@@ -134,7 +133,7 @@ var PagesAccountsContactsSingleView = Vue.extend({
 					.attr('readonly', 'true');
 			});
 		},
-		delete_row(contact){
+		delete_this(){
 			var self = this;
 			bootbox.confirm({
 				message: "Estas tratando de realizar cambios irreversibles, antes de realizar dichos cambios debes confirmar por seguridad! Deseas continuar?",
@@ -150,12 +149,18 @@ var PagesAccountsContactsSingleView = Vue.extend({
 				},
 				callback: function (a) {
 					if(a === true){
-						FG.api('DELETE','/accounts_contacts/' + contact, {
+						FG.api('DELETE','/accounts_contacts/' + self.$route.params.contact_id, {
 						}, function(r){
 							if(r == true)
 							{
 								$.notify("Se elimino con éxito!", "success");
-								router.go(-1)
+								
+								router.push({
+									name: 'page-accounts-contacts-view',
+									params: {
+										account_id: self.$route.params.account_id
+									}
+								});
 							}else{
 								if(r.data.message && r.data.message != '')
 									$.notify(r.data.message, "error");
