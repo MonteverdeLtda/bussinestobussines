@@ -50,6 +50,229 @@ var app = new Vue({
 		'component-site-settings': Component_Site_Settings,
 	},
 	methods: {
+		MV(){
+			var self = this;
+			r = { 
+				callbackRepair: {
+					list(data, callback){
+						a = [];
+						try{
+							if(data[0] != undefined && data[0].id > 0){
+								return callback(data);
+							}else{
+								return callback(a);
+							}
+						}
+						catch(e){
+							return callback(a);
+						}
+					},
+					trash(data, callback){
+						a = false;
+						try{
+							if(data > 0){
+								return callback(true);
+							}else{
+								return callback(false);
+							}
+						}
+						catch(e){
+							return callback(a);
+						}
+					},
+					create(data, callback){
+						a = false;
+						try{
+							if(Number(data) > 0){
+								return callback(true);
+							}else{
+								return callback(false);
+							}
+						}
+						catch(e){
+							return callback(a);
+						}
+					},
+					edit(data, callback){
+						a = false;
+						try{
+							if(Number(data) > 0)
+							{
+								return callback(true);
+							}else{
+								return callback(false);
+							}
+						}
+						catch(e){
+							return callback(a);
+						}
+					},
+					single(data, callback, model){
+						a = model;
+						try{
+							if(data != undefined && data.id > 0){
+								for (var k in model){
+									if (data.hasOwnProperty(k)) {
+										if(data[k] != undefined){
+											a[k] = data[k];
+										}
+									}
+								}
+								return callback(a);
+							}else{
+								return callback(null);
+							}
+						}
+						catch(e){
+							return callback(null);
+						}
+					},
+				},
+				statusRequests: {
+					list(params, callback){
+						if(params == null || params == undefined){ params = {}; }
+						FG.api('GET', '/status_requests', params, function(a){ 
+							return self.MV().callbackRepair.list(a, callback);
+						});
+					},
+				},
+				typesEvents: {
+					list(params, callback){
+						if(params == null || params == undefined){ params = {}; }
+						FG.api('GET', '/types_events', params, function(a){ 
+							return self.MV().callbackRepair.list(a, callback);
+						});
+					},
+				},
+				statusEvents: {
+					list(params, callback){
+						if(params == null || params == undefined){ params = {}; }
+						FG.api('GET', '/status_events', params, function(a){ 
+							return self.MV().callbackRepair.list(a, callback);
+						});
+					},
+				},
+				typesBanks: {
+					Model(disable_id){
+						a = {};
+						if(disable_id == undefined || disable_id == false){ a.id = null; }
+						a.name = null;
+						return a;
+					},
+					single(id, callback, params){
+						if(params == null || params == undefined){ params = {}; }
+						try {
+							FG.api('GET', '/types_banks/' + id, params, function(a){ 
+								return self.MV().callbackRepair.single(a, callback, self.MV().typesBanks.Model());
+							});
+						}
+						catch(e){
+							return callback(e);
+						}
+						/*
+						Ejemplo: 
+						app.MV().typesBanks.single(1, function(a){
+							console.log(a);
+							if(a === null){
+								console.log('No tenemos este tipo de cuenta');
+							}
+						}, {});
+						*/
+					},
+					list(params, callback){
+						if(params == null || params == undefined){ params = {}; }
+						FG.api('GET', '/types_banks', params, function(a){ 
+							return self.MV().callbackRepair.list(a, callback);
+						});
+					},
+					trash(idDelete, callback){
+						try{
+							bootbox.confirm({
+								message: "Estas tratando de realizar cambios irreversibles, antes de realizar dichos cambios debes confirmar por seguridad! Deseas continuar?",
+								buttons: {
+									confirm: {
+										label: 'Si',
+										className: 'btn-success'
+									},
+									cancel: {
+										label: 'No',
+										className: 'btn-danger'
+									}
+								},
+								callback: function (a) {
+									if(a === true){
+										FG.api('DELETE','/types_banks/' + idDelete, {
+										}, function(b){
+											return self.MV().callbackRepair.trash(b, callback);
+										});
+									}
+								}
+							});
+						}
+						catch(e){
+							return false;
+						}
+					},
+					create(params, callback){
+						if(params == null || params == undefined){ params = {}; }
+						try{
+							bootbox.confirm({
+								message: "Deseas continuar?",
+								buttons: {
+									confirm: {
+										label: 'Si',
+										className: 'btn-success'
+									},
+									cancel: {
+										label: 'No',
+										className: 'btn-danger'
+									}
+								},
+								callback: function (a) {
+									if(a === true){
+										FG.api('POST','/types_banks', params, function(b){
+											return self.MV().callbackRepair.create(b, callback);
+										});
+									}
+								}
+							});
+						}
+						catch(e){
+							return false;
+						}
+					},
+					edit(params, callback){
+						if(params == null || params == undefined){ params = {}; }
+						try{							
+							bootbox.confirm({
+								message: "Deseas continuar?",
+								buttons: {
+									confirm: {
+										label: 'Si',
+										className: 'btn-success'
+									},
+									cancel: {
+										label: 'No',
+										className: 'btn-danger'
+									}
+								},
+								callback: function (a) {
+									if(a === true){
+										FG.api('PUT','/types_banks/' + params.id, params, function(b){
+											return self.MV().callbackRepair.edit(b, callback);
+										});
+									}
+								}
+							});
+						}
+						catch(e){
+							return false;
+						}
+					},
+				},
+			}
+			return r;
+		},
 		routeNameIsActive: function(name_validate){
 			var self = this;
 			if(self.$route.name === name_validate){

@@ -27,7 +27,10 @@ var PagesAccountsRequestsView = Vue.extend({
 					'contacts',
 					'requests_addresses',
 					'requests_addresses,requests_addresses_services',
-				]
+				],
+				filter: [
+					'account,eq,' + self.$route.params.account_id
+				],
 			}, function(r){
 				if(r[0] != undefined && r[0].id > 0){
 					$(".datatable tbody").html('');

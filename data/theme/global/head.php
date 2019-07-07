@@ -9,16 +9,24 @@
 <!-- // <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous"> -->
 
 <!-- Load Vue followed by BootstrapVue -->
+<!-- //
 <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
 <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/vue-router/2.2.1/vue-router.js"></script>
 <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+-->
+<link type="text/css" rel="stylesheet" href="/assets/dist/bootstrap-vue.min.css" />
+<script src="/assets/dist/vue.min.js"></script>
+<script src="/assets/dist/vue-router.js"></script>
+<script src="/assets/dist/bootstrap-vue.min.js"></script>
 
-
+<!-- //
 <link rel="stylesheet" href="https://harrywood.co.uk/maps/examples/leaflet/leaflet/leaflet.css" /> 
-<!--[if lte IE 8]><link rel="stylesheet" href="https://harrywood.co.uk/maps/examples/leaflet/leaflet/leaflet.ie.css" /><![endif]-->
+<!--[if lte IE 8]><link rel="stylesheet" href="https://harrywood.co.uk/maps/examples/leaflet/leaflet/leaflet.ie.css" /><![endif]-- >
 <script src="https://harrywood.co.uk/maps/examples/leaflet/leaflet/leaflet.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/2.11/lib/OpenLayers.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/2.11/lib/OpenLayers.js"></script>
+-->
+
 <style type="text/css">
 #controls {
 	width: 512px;

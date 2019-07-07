@@ -52,26 +52,16 @@ var PagesAccountsRequestsSingleView = Vue.extend({
 				],
 				join: [
 					'status_requests',
-					'contacts',
 					'contacts,addresses',
 					'requests_activity',
-					'requests_addresses',
-					'requests_addresses,events',
-					'requests_addresses,events,status_events',
-					'requests_addresses,addresses',
 					'requests_addresses,addresses,addresses_inventories',
-					'requests_addresses,requests_addresses_services',
-					'requests_addresses,requests_addresses_services,services',
-					'requests_addresses,requests_addresses_services,services,services_inventories_required',
-					'requests_addresses,requests_addresses_services,services,services_inventories_required,inventories',
-					'requests_addresses,requests_addresses_services,services,services_inventories_required,inventories,inventories_resources',
+					'requests_addresses,events,requests_addresses_reviews_resources,inventories_resources',
 					'requests_addresses,requests_addresses_services,services,services_inventories_required,inventories,inventories_resources,types_meditions',
-					//'requests_addresses,requests_addresses_services,services,services_inventories_required,inventories,inventories_resources,addresses_inventories',
-					'quotations',
 					'quotations,status_quotations',
 				]
 			}, function(a){
 				if(a != undefined && a.id > 0){
+					// console.log(a.requests_addresses);
 					self.post = a;
 					addresses_t = [];
 					a.requests_addresses.forEach(function(request_address){
@@ -83,8 +73,27 @@ var PagesAccountsRequestsSingleView = Vue.extend({
 								service_inventories_required.type.inventories_resources.forEach(function(inventories_resources){
 									inventories_resources.update_limit = JSON.parse(inventories_resources.update_limit);
 									
+											
+									inventories_resources.calendar_check = false;
+									if(request_address.calendar != null){
+										// console.log(request_address.calendar);
+										if(request_address.calendar.address == request_address.address.id){
+											// console.log("Direccion => " + request_address.address.id);
+											request_address.calendar.requests_addresses_reviews_resources.forEach(function(resource_review){
+												if(inventories_resources.id == resource_review.resource.id){
+													inventories_resources.calendar_check = true;
+													// console.log(inventories_resources);
+													
+													// console.log(resource_review);
+													// console.log(resource_review.calendar);
+													// console.log(resource_review.resource.id);
+												}												
+											});
+										}
+									}
+									
 									inventories_resources.addresses_inventories = [];
-									request_address.address.addresses_inventories.find(function(address_inventory) {
+									request_address.address.addresses_inventories.forEach(function(address_inventory) {
 										if(address_inventory.resource == inventories_resources.id){												
 											var cu = new Date(); // Fecha Actual
 											var co = new Date();
@@ -104,6 +113,16 @@ var PagesAccountsRequestsSingleView = Vue.extend({
 												self.calc.current_budget += inventories_resources.price * address_inventory.quantity;
 											}
 											
+											if(inventories_resources.calendar_check == true && same == false){
+												address_inventory.calendar_check = true;
+												inventories_resources.calendar_check = true;
+											}else{
+												address_inventory.calendar_check = false;
+												inventories_resources.calendar_check = false;
+											}
+											
+											
+											
 											inventories_resources.addresses_inventories.push(address_inventory);
 										}
 									});
@@ -111,6 +130,7 @@ var PagesAccountsRequestsSingleView = Vue.extend({
 								});
 							});
 						});
+						
 						addresses_t.push(request_address);
 					});
 					self.post.requests_addresses = addresses_t;

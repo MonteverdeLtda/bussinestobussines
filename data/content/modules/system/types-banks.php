@@ -7,6 +7,7 @@
 						<div class="panel-heading">
 							<h3 class="panel-title"><strong>Sistema</strong> Tipos de Cuentas de Bancos</h3>
 							<ul class="panel-controls">
+								<li><a @click="find()" class="panel-refresh" title="Actualizar" data-toggle="tooltip" data-placement="bottom"><span class="fa fa-refresh"></span></a></li>
 								<li><a @click="$router.go(-1)" class="panel-remove"><span class="fa fa-times"></span></a></li>
 							</ul>
 						</div>
@@ -17,7 +18,6 @@
 										<div class="panel-heading">
 											<h3 class="panel-title"><strong>Lista</strong> Completa</h3>
 											<ul class="panel-controls">
-												<li><a @click="$router.go(-1)" class="panel-remove"><span class="fa fa-times"></span></a></li>
 											</ul>
 										</div>
 										<div class="panel-body">

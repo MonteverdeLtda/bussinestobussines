@@ -48,7 +48,7 @@
 														<tr>
 															<th colspan="2">
 																<img v-if="address.address.completo.icon != undefined" :src="address.address.completo.icon" />
-																{{ address.address.display_name }}
+																{{ address.address.id }} {{ address.address.display_name }}
 																<span class="label label-default">{{ address.address.completo.category }}</span>
 																<span class="label label-default">{{ address.address.completo.type }}</span>
 															</th>
@@ -99,7 +99,6 @@
 																						</tr>
 																					</thead>
 																					<tbody v-if="inventory.type.inventories_resources.length > 0">
-																						
 																						<tr class="table table-bordered" v-for="item3 in inventory.type.inventories_resources">
 																							<td>{{ item3.name }}</td>
 																							<td>{{ item3.medition.code }} - {{ item3.medition.name }}</td>
@@ -127,20 +126,33 @@
 																										</tr>
 																										<tr v-if="item4.date_compare == false">
 																											<td colspan="3">
-																												El inventario esta desactualizado o fuera de fecha, Debes solicitar una visita tecnica.
-																												
-																												<router-link data-toggle="tooltip" data-placement="top" title="Agendar" tag="button" :to="{ name: 'page-accounts-requests-single-calendar-add', params: { account_id: $route.params.account_id, request_id: $route.params.request_id } }" class="btn btn-sm btn-warning">
-																													<span class="fas fa-calendar"></span>
-																												</router-link>
+																												<div v-if="item3.calendar_check == true">
+																													Este recurso ya está agendo.
+																												</div>
+																												<div v-if="item3.calendar_check == false">
+																													El inventario esta desactualizado o fuera de fecha, Debes solicitar una visita tecnica.
+																													
+																													<router-link data-toggle="tooltip" data-placement="top" title="Agendar" tag="button" :to="{ name: 'page-accounts-requests-single-calendar-add', params: { account_id: $route.params.account_id, request_id: $route.params.request_id } }" class="btn btn-sm btn-warning">
+																														<span class="fas fa-calendar"></span>
+																													</router-link>
+																												</div>
 																											</td>
 																										</tr>
 																									</tbody>
 																								</table>
 																								<div  v-if="item3.addresses_inventories.length == 0">
-																									Debes solicitar una visita tecnica.
-																									<router-link data-toggle="tooltip" data-placement="top" title="Agendar" tag="button" :to="{ name: 'page-accounts-requests-single-calendar-add', params: { account_id: $route.params.account_id, request_id: $route.params.request_id } }" class="btn btn-sm btn-warning">
-																										<span class="fas fa-calendar"></span>
-																									</router-link>
+																									<div v-if="item3.calendar_check == true">
+																										Este recurso ya está agendo.
+																										<router-link data-toggle="tooltip" data-placement="top" title="Ver Agenda" tag="button" :to="{ name: 'page-accounts-requests-single-calendar-add', params: { account_id: $route.params.account_id, request_id: $route.params.request_id } }" class="btn btn-sm btn-success">
+																											<span class="fas fa-calendar"></span>
+																										</router-link>
+																									</div>
+																									<div v-if="item3.calendar_check == false">
+																										Debes solicitar una visita tecnica.
+																										<router-link data-toggle="tooltip" data-placement="top" title="Agendar" tag="button" :to="{ name: 'page-accounts-requests-single-calendar-add', params: { account_id: $route.params.account_id, request_id: $route.params.request_id } }" class="btn btn-sm btn-warning">
+																											<span class="fas fa-calendar"></span>
+																										</router-link>
+																									</div>
 																								</div>
 																							</td>
 																						</tr>

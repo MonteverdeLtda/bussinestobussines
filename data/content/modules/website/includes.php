@@ -67,6 +67,8 @@ $this->include_template("/employees/single-family-add.php");
 $this->include_template("/employees/single.php");
 $this->include_template("/employees/single-contacts-list.php");
 $this->include_template("/employees/single-contacts-add.php");
+
+$this->include_template("/employees/single-events-staff-lists.php");
 /* END EMPLOYEES */
 
 

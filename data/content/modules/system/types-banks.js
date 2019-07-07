@@ -3,14 +3,9 @@ var PagesSystemTypesBanks = Vue.extend({
 	data: function() {
 		return {
 			list: [],
-			create: {
-				name: null,
-			},
+			create: this.$root.MV().typesBanks.Model(1),
 			edit_enabled: false,
-			edit: {
-				id: null,
-				name: null,
-			}
+			edit: this.$root.MV().typesBanks.Model()
 		};
 	},
 	created: function () {
@@ -23,7 +18,6 @@ var PagesSystemTypesBanks = Vue.extend({
 	methods: {
 		load_options_selects(){
 			var self = this;
-			self.$root._mpb("show",{value: [0,50],speed: 0});
 			self.load_plugins_this();
 		},
 		load_plugins_this(){
@@ -53,16 +47,12 @@ var PagesSystemTypesBanks = Vue.extend({
 		},
 		find(){
 			var self = this;
-			
-			FG.api('GET', '/types_banks', {
-			}, function(a){
-				if(a.length > 0 && a[0].id > 0){
-					console.log(a);
+			self.$root.MV().typesBanks.list({}, function(a){
+				if(a[0] != undefined && a[0].id > 0){
 					self.list = a;
 				}
 				self.$root._mpb("show",{value: [0,100],speed: 0});
-			});
-			
+			});			
 		},
 		closeEdit(){
 			var self = this;
@@ -77,97 +67,40 @@ var PagesSystemTypesBanks = Vue.extend({
 		},
 		delete_element(idDelete){
 			var self = this;
-			bootbox.confirm({
-				message: "Estas tratando de realizar cambios irreversibles, antes de realizar dichos cambios debes confirmar por seguridad! Deseas continuar?",
-				buttons: {
-					confirm: {
-						label: 'Si',
-						className: 'btn-success'
-					},
-					cancel: {
-						label: 'No',
-						className: 'btn-danger'
-					}
-				},
-				callback: function (a) {
-					if(a === true){
-						FG.api('DELETE','/types_banks/' + idDelete, {
-						}, function(r){
-							if(r == true)
-							{
-								$.notify("Se elimino con éxito!", "success");
-								self.find();
-							}else{
-								$.notify("Ocurrio un inconveniente al intentar eliminar el elemento!", "error");
-								if(r.data.message && r.data.message != '')
-									$.notify(r.data.message, "error");
-							}
-						});
-					}
+			self.$root.MV().typesBanks.trash(idDelete, function(a){
+				if(a == true){
+					$.notify("Se elimino con éxito!", "success");
+					self.find();
+				}else{
+					$.notify("Ocurrio un inconveniente al intentar eliminar el elemento!", "error");
 				}
 			});
 		},
 		create_element(){
 			var self = this;
-			bootbox.confirm({
-				message: "Deseas continuar?",
-				buttons: {
-					confirm: {
-						label: 'Si',
-						className: 'btn-success'
-					},
-					cancel: {
-						label: 'No',
-						className: 'btn-danger'
-					}
-				},
-				callback: function (a) {
-					if(a === true){
-						FG.api('POST','/types_banks', self.create, function(r){
-							if(Number(r) > 0)
-							{
-								$.notify("Se creo con éxito!", "success");
-								self.find();
-							}else{
-								$.notify("Ocurrio un inconveniente al intentar crear el elemento!", "error");
-								if(r.data.message && r.data.message != '')
-									$.notify(r.data.message, "error");
-							}
-						});
-					}
+			self.$root.MV().typesBanks.create(self.create, function(a){
+				if(a == true){
+					$.notify("Se creo con éxito!", "success");
+					self.find();
+				}else{
+					$.notify("Ocurrio un inconveniente al intentar crear el elemento!", "error");
 				}
-			});
+				self.$root._mpb("show",{value: [0,100],speed: 0});
+			});	
+			
 		},
 		edit_element(){
 			var self = this;
-			bootbox.confirm({
-				message: "Deseas continuar?",
-				buttons: {
-					confirm: {
-						label: 'Si',
-						className: 'btn-success'
-					},
-					cancel: {
-						label: 'No',
-						className: 'btn-danger'
-					}
-				},
-				callback: function (a) {
-					if(a === true){
-						FG.api('PUT','/types_banks/' + self.edit.id, self.edit, function(r){
-							if(Number(r) > 0)
-							{
-								$.notify("Se modificó con éxito!", "success");
-								self.find();
-							}else{
-								$.notify("Ocurrio un inconveniente al intentar modificar el elemento!", "error");
-								if(r.data.message && r.data.message != '')
-									$.notify(r.data.message, "error");
-							}
-						});
-					}
+			self.$root.MV().typesBanks.edit(self.edit, function(a){
+				if(a == true){
+					$.notify("Se modificó con éxito!", "success");
+					self.find();
+				}else{
+					$.notify("Ocurrio un inconveniente al intentar modificar el elemento!", "error");
 				}
+				self.$root._mpb("show",{value: [0,100],speed: 0});
 			});
+			
 		},
 	}
 });

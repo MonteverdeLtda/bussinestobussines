@@ -255,6 +255,7 @@ var PagesLogin = Vue.extend({
 	<?php echo $this->include_template("/employees/single-family-add.js"); ?>
 	<?php echo $this->include_template("/employees/single-family-list.js"); ?>
 	<?php echo $this->include_template("/employees/single.js"); ?>
+	<?php echo $this->include_template("/employees/single-events-staff-lists.js"); ?>
 /* END EMPLOYEES */
 
 /* EVENTS */

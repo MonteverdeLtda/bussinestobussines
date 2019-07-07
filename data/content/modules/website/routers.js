@@ -13,6 +13,8 @@ var router = new VueRouter({
 		{ path: '/employees/view/:employee_id/family/add', component: PagesEmployeesSingleFamilyAdd, name: 'page-employees-family-add' },
 		{ path: '/employees/view/:employee_id/contacts', component: PagesEmployeesSingleContactsList, name: 'page-employees-single-contacts-list' },
 		{ path: '/employees/view/:employee_id/contacts/add', component: PagesEmployeesSingleContactsAdd, name: 'page-employees-contacts-add' },
+		
+		{ path: '/employees/view/:employee_id/events/staff/list', component: PagesEmployeesEventsStaffList, name: 'page-events-staff-lists' },
 		/* END EMPLOYEES */
 		
 		/* ACCOUNTS */
